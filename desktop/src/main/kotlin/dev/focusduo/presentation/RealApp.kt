@@ -237,7 +237,12 @@ internal fun RealApp(
                             style = MaterialTheme.typography.body2, color = FocusDuoColors.Secondary,
                         )
                         if (!repository.canMutate) {
-                            Text("Соединение восстанавливается автоматически. Данные остаются на экране; изменения доступны после актуального снимка и подтверждения незавершённого запроса.", style = MaterialTheme.typography.body2, color = FocusDuoColors.Secondary)
+                            Text(when (connection.status) {
+                                RealConnectionStatus.DISCONNECTED -> "Автоматическое восстановление приостановлено. Данные остаются на экране. Проверь подключение и нажми «Восстановить соединение»."
+                                RealConnectionStatus.CONNECTED -> "Актуальное состояние комнаты получено. Подтверди результат незавершённого запроса перед новыми изменениями."
+                                RealConnectionStatus.NONE -> "Данные остаются на экране. Для новых изменений восстанови соединение с комнатой."
+                                else -> "Соединение восстанавливается автоматически. Данные остаются на экране; изменения доступны после актуального снимка и подтверждения незавершённого запроса."
+                            }, style = MaterialTheme.typography.body2, color = FocusDuoColors.Secondary)
                             SecondaryButton(::reconnect, enabled = !busy && connection.status != RealConnectionStatus.SYNCHRONIZING) { Text(if (reconnecting) "Попробовать сейчас" else "Восстановить соединение") }
                         }
                     }
