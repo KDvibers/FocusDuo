@@ -145,10 +145,14 @@ private class Smoke(private val baseUrl: String) : AutoCloseable {
             "Closed room still has active membership"
         }
         sameBusiness(checkNotNull(restored.refreshCurrentRoom()), closed)
+        val beforeClosedRecovery = restored.recoveryVersion.value
         restored.reconnect()
-        check(restored.connectionState.value.status == RealConnectionStatus.NONE && !restored.canMutate) {
-            "Reconnect reopened a closed room"
+        withTimeout(10_000) {
+            combine(restored.recoveryVersion, restored.connectionState) { version, connection ->
+                version > beforeClosedRecovery && connection.status == RealConnectionStatus.NONE
+            }.first { it }
         }
+        check(!restored.canMutate) { "Reconnect reopened a closed room" }
         sameBusiness(checkNotNull(restored.state.value.room), closed)
         expectCode("CONNECTION_NOT_READY") { restored.updateGoal("Не должно сохраниться") }
         sameBusiness(restored.refreshRoom(closed.roomId), closed)

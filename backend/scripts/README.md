@@ -89,3 +89,12 @@ java --class-path "$(cat target/ws-smoke-classpath.txt)" \
 Дополнительный [kotlin-room-smoke](kotlin-room-smoke/README.md) проверяет цикл подключения, logout/login с восстановлением участия, отзыв токена активного WS и поведение CLOSED. Он добавляется внешним Gradle init script из `backend/`, не меняет клиентскую сборку и не входит в CI.
 
 Обе проверки используют настоящие REST и WS, но не запускают Compose-окна. Нужны JDK 21 и отдельный локальный backend; проверенные Windows-команды и результат — в [ROOM_INTEGRATION.md](../../docs/backend/ROOM_INTEGRATION.md). Используйте одноразовую БД: записи аккаунтов остаются, а desktop `LiveBackendRoomTest` при падении до штатных close/logout не гарантирует серверную очистку. Дополнительный harness пытается закрыть только собственную комнату и отозвать свои сессии с ограниченными ожиданиями; недоступный сервер может помешать очистке.
+
+## Потерянные ответы и автоматическое восстановление Kotlin
+
+После desktop-этапа 7 добавлены два opt-in сценария, использующие его production repository и настоящие ответы Java:
+
+- [kotlin-recovery-smoke](kotlin-recovery-smoke/README.md): потеря полного ответа 200 после commit create/task, pending и блокировка новых действий, точный ручной повтор с исходными ключом/revision, отсутствие повторного эффекта/отката snapshot и настоящий 409 для задержанной команды.
+- [kotlin-restart-smoke](kotlin-restart-smoke/README.md): два клиента переживают принудительные остановки Java в PAUSED и RUNNING, автоматически проходят REST/WS-синхронизацию и получают единственную общую историю. Явный вызов `recoverAfterResume()` проверяется отдельно от физического сна ОС.
+
+Оба запускаются внешними Gradle init scripts и не входят в backend CI. Для restart нужен отдельный [serve.py](kotlin-restart-smoke/serve.py), владеющий собственными Java-процессом и временной PostgreSQL; он не использует `.env` и сохраняет БД между перезапусками Java. Полная последовательность запуска, остановки и проверенные результаты — в [RECOVERY_INTEGRATION.md](../../docs/backend/RECOVERY_INTEGRATION.md). Обычный сервер разработки на 8090 нужно предварительно остановить вручную; контроллер откажется занимать уже используемые порты.
