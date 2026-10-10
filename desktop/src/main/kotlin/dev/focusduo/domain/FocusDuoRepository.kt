@@ -2,7 +2,7 @@ package dev.focusduo.domain
 
 import kotlinx.coroutines.flow.StateFlow
 
-/** Stage 2 room operations. Round commands and network/authentication arrive separately. */
+/** Room and round operations shared by the explicit demo and future network implementation. */
 interface FocusDuoRepository {
     val state: StateFlow<RepositoryState>
 
@@ -13,4 +13,9 @@ interface FocusDuoRepository {
     suspend fun updateTask(taskId: String, title: String? = null, completed: Boolean? = null): RoomSnapshot
     suspend fun deleteTask(taskId: String): RoomSnapshot
     suspend fun updateSettings(focusDurationSeconds: Int, breakDurationSeconds: Int): RoomSnapshot
+    suspend fun startRound(kind: RoundKind): RoomSnapshot
+    suspend fun pauseRound(roundId: String): RoomSnapshot
+    suspend fun resumeRound(roundId: String): RoomSnapshot
+    suspend fun finishRound(roundId: String): RoomSnapshot
+    suspend fun closeRoom(): RoomSnapshot
 }

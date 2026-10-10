@@ -45,7 +45,33 @@ data class RoomSnapshot(
     val round: Round?,
 )
 
-data class RepositoryState(val currentUser: User, val room: RoomSnapshot? = null)
+data class HistoryParticipant(
+    val userId: String,
+    val displayName: String,
+    val goal: String,
+    val tasks: List<Task>,
+    val totalTaskCount: Int,
+    val completedTaskCount: Int,
+)
+
+data class HistoryItem(
+    val roundId: String,
+    val roomId: String,
+    val kind: RoundKind,
+    val status: RoundStatus,
+    val completionReason: CompletionReason,
+    val durationSeconds: Int,
+    val startedAt: Instant,
+    val endedAt: Instant,
+    val activeElapsedMs: Long,
+    val participants: List<HistoryParticipant>,
+)
+
+data class RepositoryState(
+    val currentUser: User,
+    val room: RoomSnapshot? = null,
+    val history: List<HistoryItem> = emptyList(),
+)
 
 class RepositoryException(
     val code: String,

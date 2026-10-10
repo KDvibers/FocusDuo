@@ -12,13 +12,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import dev.focusduo.data.FakeRepository
 import dev.focusduo.designsystem.*
-import dev.focusduo.domain.RepositoryException
-import dev.focusduo.domain.Task
+import dev.focusduo.domain.*
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
-private enum class DemoPage { HOME, ROOM }
-internal enum class RoomDialog { CREATE, JOIN, GOAL, ADD_TASK, EDIT_TASK, DELETE_TASK, SETTINGS, PROFILE, INVITE, RESET }
+private enum class DemoPage { HOME, ROOM, RESULT }
+internal enum class RoomDialog { CREATE, JOIN, GOAL, ADD_TASK, EDIT_TASK, DELETE_TASK, SETTINGS, PROFILE, INVITE, RESET, FINISH_ROUND, CLOSE_ROOM }
 
 /** The shell selects an explicit fake implementation; room components only consume snapshots. */
 @Composable
@@ -33,10 +34,27 @@ fun DemoApp(onExit: () -> Unit) {
     var busy by remember { mutableStateOf(false) }
     var error by remember { mutableStateOf<String?>(null) }
     var notice by remember { mutableStateOf<String?>(null) }
+    var selectedResult by remember { mutableStateOf<HistoryItem?>(null) }
+    var confirmationRoundId by remember { mutableStateOf<String?>(null) }
+
+    // FakeRepository plays the server here. The UI never declares completion on its own.
+    LaunchedEffect(repository) {
+        while (isActive) {
+            repository.refreshDemoTime()
+            delay(200)
+        }
+    }
+    LaunchedEffect(state.history.firstOrNull()?.roundId) {
+        state.history.firstOrNull()?.let { result ->
+            selectedResult = result
+            page = DemoPage.RESULT
+        }
+    }
 
     fun openDialog(next: RoomDialog, task: Task? = null) {
         error = null
         selectedTask = task
+        confirmationRoundId = state.room?.round?.id
         dialog = next
     }
     fun perform(action: suspend () -> Unit) {
@@ -73,11 +91,12 @@ fun DemoApp(onExit: () -> Unit) {
                     Spacer(Modifier.height(24.dp))
                     NavItem("Главная", FocusIcon.Home, page == DemoPage.HOME) { page = DemoPage.HOME }
                     NavItem("Комната", FocusIcon.People, page == DemoPage.ROOM, state.room != null) { page = DemoPage.ROOM }
+                    NavItem("Итог", FocusIcon.Check, page == DemoPage.RESULT, selectedResult != null) { page = DemoPage.RESULT }
                     Spacer(Modifier.weight(1f))
                     Divider(color = FocusDuoColors.Border)
                     Text("ЛОКАЛЬНЫЙ ПРОСМОТР", Modifier.padding(top = 12.dp), style = MaterialTheme.typography.overline, color = FocusDuoColors.Secondary)
                     Text(state.currentUser.displayName, style = MaterialTheme.typography.subtitle1)
-                    TextButton(onClick = { openDialog(RoomDialog.PROFILE) }, enabled = !busy) { Text("Изменить имя") }
+                    TextButton(onClick = { openDialog(RoomDialog.PROFILE) }, enabled = !busy && state.room?.status != RoomStatus.CLOSED) { Text("Изменить имя") }
                     Text("Демо · без сервера", style = MaterialTheme.typography.caption, color = FocusDuoColors.Green)
                     TextButton(onClick = onExit) { Text("Закрыть приложение", style = MaterialTheme.typography.caption, color = FocusDuoColors.Secondary) }
                 }
@@ -88,7 +107,7 @@ fun DemoApp(onExit: () -> Unit) {
             Box(Modifier.weight(1f).fillMaxHeight()) {
                 Column(Modifier.fillMaxSize().verticalScroll(scroll).padding(26.dp), verticalArrangement = Arrangement.spacedBy(18.dp)) {
                     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
-                        Text(if (page == DemoPage.HOME) "ТВОЁ ПРОСТРАНСТВО" else "СОВМЕСТНАЯ РАБОТА", style = MaterialTheme.typography.overline, color = FocusDuoColors.Secondary)
+                        Text(when (page) { DemoPage.HOME -> "ТВОЁ ПРОСТРАНСТВО"; DemoPage.ROOM -> "СОВМЕСТНАЯ РАБОТА"; DemoPage.RESULT -> "ИТОГ СЕССИИ" }, style = MaterialTheme.typography.overline, color = FocusDuoColors.Secondary)
                         DemoBadge()
                     }
                     val banner = if (dialog == null) error ?: notice else notice
@@ -99,7 +118,17 @@ fun DemoApp(onExit: () -> Unit) {
                         }
                     }
                     val room = state.room
-                    if (page == DemoPage.ROOM && room != null) {
+                    val openRoom = room?.status == RoomStatus.OPEN
+                    val result = selectedResult
+                    if (page == DemoPage.RESULT && result != null) {
+                        SessionResultScreen(
+                            item = result, currentUserId = state.currentUser.id, room = room, busy = busy,
+                            onBackToRoom = { page = DemoPage.ROOM },
+                            onStartBreak = { perform { repository.startRound(RoundKind.BREAK); page = DemoPage.ROOM } },
+                            onStartFocus = { perform { repository.startRound(RoundKind.FOCUS); page = DemoPage.ROOM } },
+                            onHome = { page = DemoPage.HOME },
+                        )
+                    } else if (page == DemoPage.ROOM && room != null) {
                         RoomScreen(
                             room = room, currentUserId = state.currentUser.id, busy = busy,
                             onCopyCode = { copyCode() }, onInvite = { openDialog(RoomDialog.INVITE) },
@@ -109,6 +138,13 @@ fun DemoApp(onExit: () -> Unit) {
                             onDeleteTask = { openDialog(RoomDialog.DELETE_TASK, it) },
                             onToggleTask = { task -> perform { repository.updateTask(task.id, completed = !task.completed) } },
                             onEditSettings = { openDialog(RoomDialog.SETTINGS) },
+                            onStartFocus = { perform { repository.startRound(RoundKind.FOCUS) } },
+                            onStartBreak = { perform { repository.startRound(RoundKind.BREAK) } },
+                            onPause = { room.round?.let { round -> perform { repository.pauseRound(round.id) } } },
+                            onResume = { room.round?.let { round -> perform { repository.resumeRound(round.id) } } },
+                            onFinish = { openDialog(RoomDialog.FINISH_ROUND) },
+                            onCloseRoom = { openDialog(RoomDialog.CLOSE_ROOM) },
+                            onShowResult = { state.history.firstOrNull { it.roundId == room.round?.id }?.let { selectedResult = it; page = DemoPage.RESULT } },
                         )
                     } else {
                         Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -117,24 +153,27 @@ fun DemoApp(onExit: () -> Unit) {
                         }
                         FocusCard(Modifier.fillMaxWidth()) {
                             Column(Modifier.padding(28.dp), verticalArrangement = Arrangement.spacedBy(18.dp)) {
-                                Text(if (room == null) "Начните с одной цели" else "Твоя комната ждёт", style = MaterialTheme.typography.h3)
-                                Text(if (room == null) "Планируй задачи, делись целью и двигайся вперёд вместе с другом." else "${room.code} · ${room.participants.size}/2 участника. Задачи и цели сохранены в памяти.", color = FocusDuoColors.Secondary)
-                                if (room == null) {
+                                Text(if (openRoom) "Твоя комната ждёт" else "Начните с одной цели", style = MaterialTheme.typography.h3)
+                                Text(if (openRoom) "${room!!.code} · ${room.participants.size}/2 участника. Задачи и цели сохранены в памяти." else "Планируй задачи, делись целью и двигайся вперёд вместе с другом.", color = FocusDuoColors.Secondary)
+                                if (!openRoom) {
                                     Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                                         PrimaryButton({ openDialog(RoomDialog.CREATE) }, enabled = !busy) { Text("Создать комнату") }
                                         SecondaryButton({ openDialog(RoomDialog.JOIN) }, enabled = !busy) { Text("Войти по коду") }
                                     }
                                 } else PrimaryButton({ page = DemoPage.ROOM }) { Text("Вернуться в комнату") }
+                                if (state.history.isNotEmpty()) TextButton(onClick = { selectedResult = state.history.first(); page = DemoPage.RESULT }) { Text("Открыть последний итог") }
                             }
                         }
                     }
                     DemoTools(
-                        roomExists = room != null, participants = room?.participants?.size ?: 0,
+                        room = room,
                         viewerName = state.currentUser.displayName, busy = busy,
                         onJoinPartner = { perform { repository.simulatePartnerJoin(); notice = "Демоучастник присоединился к комнате" } },
                         onSwitch = { perform { repository.switchPerspective(); notice = "Теперь ты смотришь от имени другого участника" } },
                         onSample = { perform { repository.joinRoom(FakeRepository.SAMPLE_ROOM_CODE); page = DemoPage.ROOM } },
                         onReset = { openDialog(RoomDialog.RESET) },
+                        onAdvanceMinute = { perform { repository.advanceDemoTime(60) } },
+                        onAdvanceToEnd = { perform { repository.advanceDemoTime((((room?.round?.remainingMs ?: 0) + 999) / 1000).coerceAtLeast(1)) } },
                     )
                 }
                 VerticalScrollbar(rememberScrollbarAdapter(scroll), Modifier.align(Alignment.CenterEnd).fillMaxHeight().padding(vertical = 8.dp))
@@ -157,7 +196,9 @@ fun DemoApp(onExit: () -> Unit) {
                             RoomDialog.DELETE_TASK -> repository.deleteTask(requireNotNull(selectedTask).id)
                             RoomDialog.SETTINGS -> repository.updateSettings(first.toInt() * 60, second.toInt() * 60)
                             RoomDialog.PROFILE -> repository.updateDemoProfile(first)
-                            RoomDialog.RESET -> { repository.resetDemo(); page = DemoPage.HOME }
+                            RoomDialog.RESET -> { repository.resetDemo(); selectedResult = null; page = DemoPage.HOME }
+                            RoomDialog.FINISH_ROUND -> repository.finishRound(requireNotNull(confirmationRoundId))
+                            RoomDialog.CLOSE_ROOM -> { repository.closeRoom(); page = DemoPage.ROOM }
                             RoomDialog.INVITE -> Unit
                         }
                         dialog = null
@@ -180,20 +221,28 @@ private fun NavItem(label: String, icon: FocusIcon, selected: Boolean, enabled: 
 }
 
 @Composable
-private fun DemoTools(roomExists: Boolean, participants: Int, viewerName: String, busy: Boolean, onJoinPartner: () -> Unit, onSwitch: () -> Unit, onSample: () -> Unit, onReset: () -> Unit) {
+private fun DemoTools(room: RoomSnapshot?, viewerName: String, busy: Boolean, onJoinPartner: () -> Unit, onSwitch: () -> Unit, onSample: () -> Unit, onReset: () -> Unit, onAdvanceMinute: () -> Unit, onAdvanceToEnd: () -> Unit) {
     Surface(Modifier.fillMaxWidth(), shape = MaterialTheme.shapes.small, color = FocusDuoColors.PaleGreen.copy(alpha = .5f)) {
         Column(Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Text("Управление демо", style = MaterialTheme.typography.subtitle1)
             Text("Данные локальные. Второй участник моделируется на этом компьютере; подключения к серверу нет.", style = MaterialTheme.typography.body2, color = FocusDuoColors.Secondary)
             Row(horizontalArrangement = Arrangement.spacedBy(10.dp), verticalAlignment = Alignment.CenterVertically) {
                 when {
-                    !roomExists -> SecondaryButton(onSample, enabled = !busy) { Text("Открыть пример комнаты") }
-                    participants == 1 -> SecondaryButton(onJoinPartner, enabled = !busy) { Text("Добавить демоучастника") }
-                    else -> SecondaryButton(onSwitch, enabled = !busy) { Text("Сменить участника") }
+                    room == null -> SecondaryButton(onSample, enabled = !busy) { Text("Открыть пример комнаты") }
+                    room.participants.size == 2 -> SecondaryButton(onSwitch, enabled = !busy) { Text("Сменить участника") }
+                    room.status == RoomStatus.OPEN -> SecondaryButton(onJoinPartner, enabled = !busy) { Text("Добавить демоучастника") }
                 }
-                if (roomExists) TextButton(onReset, enabled = !busy) { Text("Сбросить демо", color = FocusDuoColors.Secondary) }
+                if (room != null) TextButton(onReset, enabled = !busy) { Text("Сбросить демо", color = FocusDuoColors.Secondary) }
             }
-            if (roomExists) Text("Сейчас ты: $viewerName", style = MaterialTheme.typography.caption, color = FocusDuoColors.Green)
+            if (room != null) Text("Сейчас ты: $viewerName", style = MaterialTheme.typography.caption, color = FocusDuoColors.Green)
+            if (room?.status == RoomStatus.OPEN && room.round != null) {
+                Text("Проверка времени · только демо", style = MaterialTheme.typography.caption, color = FocusDuoColors.Secondary)
+                Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                    val canAdvance = !busy && room.round.status == RoundStatus.RUNNING
+                    SecondaryButton(onAdvanceMinute, enabled = canAdvance) { Text("+1 минута") }
+                    SecondaryButton(onAdvanceToEnd, enabled = canAdvance) { Text("До окончания раунда") }
+                }
+            }
         }
     }
 }
