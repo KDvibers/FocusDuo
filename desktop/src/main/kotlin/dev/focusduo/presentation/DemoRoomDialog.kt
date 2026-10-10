@@ -63,6 +63,8 @@ internal fun DemoRoomDialog(
         RoomDialog.PROFILE -> "Как тебя называть?"
         RoomDialog.INVITE -> "Пригласить в комнату"
         RoomDialog.RESET -> "Сбросить деморежим?"
+        RoomDialog.FINISH_ROUND -> "Завершить раунд досрочно?"
+        RoomDialog.CLOSE_ROOM -> "Закрыть комнату для обоих?"
     }
     val inputFocus = remember { FocusRequester() }
     Dialog(onDismissRequest = onDismiss) {
@@ -88,6 +90,8 @@ internal fun DemoRoomDialog(
                         Text("Задача исчезнет из твоего списка в этой демокомнате.", style = MaterialTheme.typography.body2, color = FocusDuoColors.Secondary)
                     }
                     kind == RoomDialog.RESET -> Text("Локальная комната, цели и задачи будут сброшены. Ты вернёшься на главную. Это инструмент демо, данные сервера не затрагиваются.")
+                    kind == RoomDialog.FINISH_ROUND -> Text("Текущий раунд завершится для обоих участников. В итог попадут фактическое время работы без пауз и задачи на момент завершения. Перерыв запускается отдельно.")
+                    kind == RoomDialog.CLOSE_ROOM -> Text("Комната закроется для обоих участников. Активный или приостановленный раунд будет отменён, а его итог сохранится. Изменять эту комнату после закрытия нельзя; можно создать новую.")
                     kind == RoomDialog.INVITE -> {
                         Text("Код комнаты", style = MaterialTheme.typography.body2, color = FocusDuoColors.Secondary)
                         SelectionContainer { Text(room?.code.orEmpty(), style = MaterialTheme.typography.h2) }
@@ -114,6 +118,8 @@ internal fun DemoRoomDialog(
                                 RoomDialog.JOIN -> "Войти"
                                 RoomDialog.DELETE_TASK -> "Удалить"
                                 RoomDialog.RESET -> "Сбросить демо"
+                                RoomDialog.FINISH_ROUND -> "Завершить"
+                                RoomDialog.CLOSE_ROOM -> "Закрыть комнату"
                                 else -> "Сохранить"
                             })
                         }
