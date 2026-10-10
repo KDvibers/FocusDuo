@@ -1,0 +1,41 @@
+{
+  "phase": "PAUSED",
+  "capturedAt": "2026-10-10T20:30:29.6525813+00:00",
+  "baseUrl": "http://127.0.0.1:18091",
+  "postgresPort": 55438,
+  "serverVersion": "17.2",
+  "counts": {
+    "rooms": 1,
+    "tasks": 4,
+    "users": 2,
+    "rounds": 1,
+    "history": 0,
+    "sessions": 2,
+    "openRooms": 1,
+    "migrations": 2,
+    "activeMemberships": 2,
+    "unrevokedSessions": 2,
+    "idempotencyResults": 15,
+    "historyParticipants": 0
+  },
+  "rooms": [
+    {
+      "id": "f88a9b67-1375-4ac3-a011-da9109d1f202",
+      "code": "FD-QXW4JH",
+      "status": "OPEN",
+      "revision": 15,
+      "breakDurationSeconds": 60,
+      "focusDurationSeconds": 360
+    }
+  ],
+  "rounds": [
+    {
+      "id": "abbd4a19-0890-4ea5-8a5c-d436d32bb3f3",
+      "kind": "FOCUS",
+      "status": "PAUSED",
+      "activeElapsedMs": 30743,
+      "durationSeconds": 360,
+      "completionReason": null
+    }
+  ]
+}

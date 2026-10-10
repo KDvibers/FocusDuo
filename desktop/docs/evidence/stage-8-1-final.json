@@ -1,0 +1,249 @@
+{
+  "rooms": [
+    {
+      "id": "f88a9b67-1375-4ac3-a011-da9109d1f202",
+      "code": "FD-QXW4JH",
+      "status": "CLOSED",
+      "revision": 21,
+      "breakDurationSeconds": 60,
+      "focusDurationSeconds": 360
+    },
+    {
+      "id": "fa89626a-ec45-4e8e-aac1-42f8d45ee7f5",
+      "code": "FD-4YDEVR",
+      "status": "CLOSED",
+      "revision": 2,
+      "breakDurationSeconds": 300,
+      "focusDurationSeconds": 1500
+    }
+  ],
+  "tasks": [
+    {
+      "id": "fa31bc7e-683b-43e0-a5ec-f13fd7d433e6",
+      "title": "Изменено после итога — история должна сохранить исходный текст",
+      "userId": "221f84a1-01c6-4cc6-a1f2-11e53ccf6f71",
+      "completed": true
+    },
+    {
+      "id": "3250bf2d-708c-41cc-a3d3-8f42641b220a",
+      "title": "Сверить неизменяемую историю",
+      "userId": "221f84a1-01c6-4cc6-a1f2-11e53ccf6f71",
+      "completed": true
+    },
+    {
+      "id": "4cdb5b7e-0ae6-40e7-bc1b-c222d47cc337",
+      "title": "Проверить права участника",
+      "userId": "51aa819b-f24c-4e6e-8537-85eeabddb5df",
+      "completed": true
+    },
+    {
+      "id": "f84f3261-0584-43b3-9d38-36d5bcd4000f",
+      "title": "Проверить паузу и итог в двух окнах",
+      "userId": "51aa819b-f24c-4e6e-8537-85eeabddb5df",
+      "completed": false
+    }
+  ],
+  "users": [
+    {
+      "id": "51aa819b-f24c-4e6e-8537-85eeabddb5df",
+      "username": "stage8_guest_1011",
+      "displayName": "Олег — desktop"
+    },
+    {
+      "id": "221f84a1-01c6-4cc6-a1f2-11e53ccf6f71",
+      "username": "stage8_owner_1011",
+      "displayName": "Анна — desktop"
+    }
+  ],
+  "counts": {
+    "rooms": 2,
+    "tasks": 4,
+    "users": 2,
+    "rounds": 2,
+    "history": 2,
+    "sessions": 5,
+    "openRooms": 0,
+    "migrations": 2,
+    "activeMemberships": 0,
+    "unrevokedSessions": 1,
+    "idempotencyResults": 23,
+    "historyParticipants": 4
+  },
+  "rounds": [
+    {
+      "id": "abbd4a19-0890-4ea5-8a5c-d436d32bb3f3",
+      "kind": "FOCUS",
+      "status": "COMPLETED",
+      "activeElapsedMs": 64245,
+      "durationSeconds": 360,
+      "completionReason": "MANUAL"
+    },
+    {
+      "id": "7b9fc994-8970-4642-92af-ea94ca72f8f4",
+      "kind": "BREAK",
+      "status": "CANCELLED",
+      "activeElapsedMs": 18309,
+      "durationSeconds": 60,
+      "completionReason": "ROOM_CLOSED"
+    }
+  ],
+  "history": [
+    {
+      "kind": "FOCUS",
+      "roomId": "f88a9b67-1375-4ac3-a011-da9109d1f202",
+      "status": "COMPLETED",
+      "endedAt": "2026-10-10T20:31:19.235Z",
+      "roundId": "abbd4a19-0890-4ea5-8a5c-d436d32bb3f3",
+      "startedAt": "2026-10-10T20:29:29.287Z",
+      "participants": [
+        {
+          "goal": "Проверить совместную работу Compose и Java без ручного обновления",
+          "tasks": [
+            {
+              "id": "fa31bc7e-683b-43e0-a5ec-f13fd7d433e6",
+              "title": "Проверить синхронизацию задач через WebSocket",
+              "completed": true
+            },
+            {
+              "id": "3250bf2d-708c-41cc-a3d3-8f42641b220a",
+              "title": "Сверить неизменяемую историю",
+              "completed": false
+            }
+          ],
+          "userId": "221f84a1-01c6-4cc6-a1f2-11e53ccf6f71",
+          "displayName": "Анна — desktop",
+          "totalTaskCount": 2,
+          "completedTaskCount": 1
+        },
+        {
+          "goal": "Пройти рабочую сессию вдвоём и проверить итог",
+          "tasks": [
+            {
+              "id": "4cdb5b7e-0ae6-40e7-bc1b-c222d47cc337",
+              "title": "Проверить права участника",
+              "completed": true
+            },
+            {
+              "id": "f84f3261-0584-43b3-9d38-36d5bcd4000f",
+              "title": "Проверить паузу и итог в двух окнах",
+              "completed": false
+            }
+          ],
+          "userId": "51aa819b-f24c-4e6e-8537-85eeabddb5df",
+          "displayName": "Олег — desktop",
+          "totalTaskCount": 2,
+          "completedTaskCount": 1
+        }
+      ],
+      "activeElapsedMs": 64245,
+      "durationSeconds": 360,
+      "completionReason": "MANUAL"
+    },
+    {
+      "kind": "BREAK",
+      "roomId": "f88a9b67-1375-4ac3-a011-da9109d1f202",
+      "status": "CANCELLED",
+      "endedAt": "2026-10-10T20:34:50.411Z",
+      "roundId": "7b9fc994-8970-4642-92af-ea94ca72f8f4",
+      "startedAt": "2026-10-10T20:34:32.102Z",
+      "participants": [
+        {
+          "goal": "Проверить совместную работу Compose и Java без ручного обновления",
+          "tasks": [
+            {
+              "id": "fa31bc7e-683b-43e0-a5ec-f13fd7d433e6",
+              "title": "Изменено после итога — история должна сохранить исходный текст",
+              "completed": true
+            },
+            {
+              "id": "3250bf2d-708c-41cc-a3d3-8f42641b220a",
+              "title": "Сверить неизменяемую историю",
+              "completed": true
+            }
+          ],
+          "userId": "221f84a1-01c6-4cc6-a1f2-11e53ccf6f71",
+          "displayName": "Анна — desktop",
+          "totalTaskCount": 2,
+          "completedTaskCount": 2
+        },
+        {
+          "goal": "Пройти рабочую сессию вдвоём и проверить итог",
+          "tasks": [
+            {
+              "id": "4cdb5b7e-0ae6-40e7-bc1b-c222d47cc337",
+              "title": "Проверить права участника",
+              "completed": true
+            },
+            {
+              "id": "f84f3261-0584-43b3-9d38-36d5bcd4000f",
+              "title": "Проверить паузу и итог в двух окнах",
+              "completed": false
+            }
+          ],
+          "userId": "51aa819b-f24c-4e6e-8537-85eeabddb5df",
+          "displayName": "Олег — desktop",
+          "totalTaskCount": 2,
+          "completedTaskCount": 1
+        }
+      ],
+      "activeElapsedMs": 18309,
+      "durationSeconds": 60,
+      "completionReason": "ROOM_CLOSED"
+    }
+  ],
+  "members": [
+    {
+      "goal": "Проверить совместную работу Compose и Java без ручного обновления",
+      "slot": 1,
+      "active": false,
+      "userId": "221f84a1-01c6-4cc6-a1f2-11e53ccf6f71",
+      "displayName": "Анна — desktop"
+    },
+    {
+      "goal": "",
+      "slot": 1,
+      "active": false,
+      "userId": "221f84a1-01c6-4cc6-a1f2-11e53ccf6f71",
+      "displayName": "Анна — desktop"
+    },
+    {
+      "goal": "Пройти рабочую сессию вдвоём и проверить итог",
+      "slot": 2,
+      "active": false,
+      "userId": "51aa819b-f24c-4e6e-8537-85eeabddb5df",
+      "displayName": "Олег — desktop"
+    }
+  ],
+  "sessions": [
+    {
+      "userId": "221f84a1-01c6-4cc6-a1f2-11e53ccf6f71",
+      "expired": false,
+      "revoked": false
+    },
+    {
+      "userId": "51aa819b-f24c-4e6e-8537-85eeabddb5df",
+      "expired": false,
+      "revoked": true
+    },
+    {
+      "userId": "51aa819b-f24c-4e6e-8537-85eeabddb5df",
+      "expired": false,
+      "revoked": true
+    },
+    {
+      "userId": "221f84a1-01c6-4cc6-a1f2-11e53ccf6f71",
+      "expired": false,
+      "revoked": true
+    },
+    {
+      "userId": "221f84a1-01c6-4cc6-a1f2-11e53ccf6f71",
+      "expired": false,
+      "revoked": true
+    }
+  ],
+  "serverVersion": "17.2",
+  "phase": "AFTER_FRESH_LOGOUT_FIX",
+  "capturedAt": "2026-10-10T20:44:06.2369629+00:00",
+  "baseUrl": "http://127.0.0.1:18091",
+  "postgresPort": 55438
+}
