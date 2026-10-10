@@ -18,7 +18,7 @@ import dev.focusduo.designsystem.*
 @Composable
 fun StartupScreen(demo: Boolean, onEnterDemo: () -> Unit, onExit: () -> Unit) {
     Surface(Modifier.fillMaxSize(), color = FocusDuoColors.Background) {
-        if (demo) DemoApp(onExit) else Welcome(onEnterDemo, onExit)
+        if (demo) DemoWorkspace(onExit) else Welcome(onEnterDemo, onExit)
     }
 }
 
@@ -40,13 +40,13 @@ private fun Welcome(onEnterDemo: () -> Unit, onExit: () -> Unit) {
                     Text("Совместная работа\nначинается с фокуса", style = MaterialTheme.typography.h1)
                     Text("Меньше отвлечений. Больше внимания тому, что важно. Подготовь свою цель и познакомься с FocusDuo.", color = FocusDuoColors.Secondary)
                     Divider(color = FocusDuoColors.Border)
-                    Text("Создай комнату, пригласи демоучастника и подготовь задачи для совместной сессии.", style = MaterialTheme.typography.body2, color = FocusDuoColors.Secondary)
+                    Text("Открой локальный демоаккаунт или зарегистрируй новый, создай комнату и подготовь задачи для совместной сессии.", style = MaterialTheme.typography.body2, color = FocusDuoColors.Secondary)
                     PrimaryButton(onEnterDemo, Modifier.fillMaxWidth()) {
                         Text("Открыть деморежим")
                         Spacer(Modifier.width(10.dp))
                         FocusIcon(FocusIcon.Arrow, color = Color.White)
                     }
-                    Text("Без регистрации и подключения к серверу", style = MaterialTheme.typography.caption, color = FocusDuoColors.Secondary)
+                    Text("Есть готовый демоаккаунт. Подключение к серверу пока не используется.", style = MaterialTheme.typography.caption, color = FocusDuoColors.Secondary)
                 }
             }
             Spacer(Modifier.height(20.dp))

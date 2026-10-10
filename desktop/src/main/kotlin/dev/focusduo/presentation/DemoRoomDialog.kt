@@ -20,6 +20,7 @@ import dev.focusduo.data.FakeRepository
 import dev.focusduo.designsystem.*
 import dev.focusduo.domain.RepositoryState
 import dev.focusduo.domain.Task
+import dev.focusduo.domain.AuthValidation.characterCount
 
 @Composable
 internal fun DemoRoomDialog(
@@ -45,9 +46,9 @@ internal fun DemoRoomDialog(
     val taskForm = kind == RoomDialog.ADD_TASK || kind == RoomDialog.EDIT_TASK
     val firstError = when {
         durationForm && first.toIntOrNull() !in 5..180 -> "Укажи целое число от 5 до 180 минут."
-        taskForm && first.trim().length !in 1..160 -> "Задача должна содержать от 1 до 160 символов."
-        kind == RoomDialog.GOAL && first.length > 240 -> "Цель должна содержать не более 240 символов."
-        kind == RoomDialog.PROFILE && first.trim().length !in 2..40 -> "Имя должно содержать от 2 до 40 символов."
+        taskForm && characterCount(first.trim()) !in 1..160 -> "Задача должна содержать от 1 до 160 символов."
+        kind == RoomDialog.GOAL && characterCount(first) > 240 -> "Цель должна содержать не более 240 символов."
+        kind == RoomDialog.PROFILE && characterCount(first.trim()) !in 2..40 -> "Имя должно содержать от 2 до 40 символов."
         kind == RoomDialog.JOIN && first.isBlank() -> "Введи код комнаты."
         else -> null
     }
@@ -77,8 +78,8 @@ internal fun DemoRoomDialog(
                         RoomInput("Фокус, минут", first, { first = it }, "5–180", if (attempted) firstError else null, true, !busy, inputFocus)
                         RoomInput("Перерыв, минут", second, { second = it }, "1–60", if (attempted) secondError else null, true, !busy)
                     }
-                    taskForm -> RoomInput("Текст задачи", first, { first = it }, "${first.trim().length} / 160", if (attempted) firstError else null, false, !busy, inputFocus)
-                    kind == RoomDialog.GOAL -> RoomInput("Цель", first, { first = it }, "${first.length} / 240 · можно оставить пустой", if (attempted) firstError else null, false, !busy, inputFocus)
+                    taskForm -> RoomInput("Текст задачи", first, { first = it }, "${characterCount(first.trim())} / 160", if (attempted) firstError else null, false, !busy, inputFocus)
+                    kind == RoomDialog.GOAL -> RoomInput("Цель", first, { first = it }, "${characterCount(first)} / 240 · можно оставить пустой", if (attempted) firstError else null, false, !busy, inputFocus)
                     kind == RoomDialog.PROFILE -> RoomInput("Имя", first, { first = it }, "2–40 символов · только в деморежиме", if (attempted) firstError else null, true, !busy, inputFocus)
                     kind == RoomDialog.JOIN -> {
                         Text("В деморежиме можно войти в подготовленный пример с участником и задачами.", style = MaterialTheme.typography.body2, color = FocusDuoColors.Secondary)

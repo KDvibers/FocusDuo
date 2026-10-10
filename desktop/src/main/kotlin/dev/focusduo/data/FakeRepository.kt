@@ -19,8 +19,9 @@ import java.util.UUID
 class FakeRepository(
     initialDisplayName: String = "Ты",
     private val clock: Clock = DemoMonotonicClock(),
+    initialUsername: String = "demo_user",
 ) : FocusDuoRepository {
-    private var localUser = User(newId(), "demo_user", validateDisplayName(initialDisplayName))
+    private var localUser = User(newId(), initialUsername, validateDisplayName(initialDisplayName))
     private var friendUser = User(newId(), "demo_friend", "Друг")
     private val mutex = Mutex()
     private var demoOffsetMs = 0L
@@ -82,7 +83,7 @@ class FakeRepository(
     }
 
     override suspend fun updateGoal(goal: String): RoomSnapshot = edit { room ->
-        if (goal.length > 240) invalid("goal", "Цель — не более 240 символов.")
+        if (AuthValidation.characterCount(goal) > 240) invalid("goal", "Цель — не более 240 символов.")
         room.updateCurrentParticipant { it.copy(goal = goal) }
     }
 
@@ -195,6 +196,12 @@ class FakeRepository(
             ?: fail("INVALID_STATE", "Сначала добавьте второго участника в демокомнату.")
         val nextUser = if (other.userId == localUser.id) localUser else friendUser
         mutableState.value = state.value.copy(currentUser = nextUser)
+    }
+
+    /** A new demo login restores the account's view without closing its room or resetting a round. */
+    suspend fun restoreDemoUserPerspective() = mutex.withLock {
+        normalizeTime(demoNow())
+        mutableState.value = state.value.copy(currentUser = localUser)
     }
 
     /** Demo profile is local only; the server contract does not expose a profile edit endpoint. */
@@ -335,11 +342,11 @@ class FakeRepository(
         }
 
         private fun validateDisplayName(name: String): String = name.trim().also {
-            if (it.length !in 2..40) invalid("displayName", "Имя — от 2 до 40 символов.")
+            if (AuthValidation.characterCount(it) !in 2..40) invalid("displayName", "Имя — от 2 до 40 символов.")
         }
 
         private fun validateTitle(title: String): String = title.trim().also {
-            if (it.length !in 1..160) invalid("title", "Название задачи — от 1 до 160 символов.")
+            if (AuthValidation.characterCount(it) !in 1..160) invalid("title", "Название задачи — от 1 до 160 символов.")
         }
 
         private fun validateDurations(focus: Int, pause: Int) {

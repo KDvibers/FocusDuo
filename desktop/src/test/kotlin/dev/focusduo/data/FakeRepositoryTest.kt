@@ -15,7 +15,21 @@ import kotlin.test.*
 class FakeRepositoryTest {
     private val clock = Clock.fixed(Instant.parse("2026-10-10T12:00:00Z"), ZoneOffset.UTC)
 
-    @Test fun `fresh room is empty and owned by the current user`() = runBlocking {
+    @Test fun `unicode characters use the same limits in auth room and profile`() = runBlocking<Unit> {
+        val character = String(Character.toChars(0x1F33F))
+        val repository = FakeRepository(character.repeat(40), clock)
+        repository.createRoom()
+        repository.updateGoal(character.repeat(240))
+        repository.addTask(character.repeat(160))
+        assertEquals(character.repeat(40), repository.state.value.currentUser.displayName)
+        assertEquals(character.repeat(240), repository.state.value.room!!.participants.single().goal)
+        assertEquals(character.repeat(160), repository.state.value.room!!.participants.single().tasks.single().title)
+        expectError("VALIDATION_ERROR") { repository.updateDemoProfile(character.repeat(41)) }
+        expectError("VALIDATION_ERROR") { repository.updateGoal(character.repeat(241)) }
+        expectError("VALIDATION_ERROR") { repository.addTask(character.repeat(161)) }
+    }
+
+    @Test fun `fresh room is empty and owned by the current user`() = runBlocking<Unit> {
         val repository = FakeRepository("  Анна  ", clock)
         assertNull(repository.state.value.room)
         val room = repository.createRoom()
@@ -34,7 +48,7 @@ class FakeRepositoryTest {
         assertNotEquals(FakeRepository.SAMPLE_ROOM_CODE, room.code)
     }
 
-    @Test fun `join normalizes opaque code and repeat join changes nothing`() = runBlocking {
+    @Test fun `join normalizes opaque code and repeat join changes nothing`() = runBlocking<Unit> {
         val repository = FakeRepository(clock = clock)
         val room = repository.joinRoom("  ${FakeRepository.SAMPLE_ROOM_CODE.lowercase()}  ")
         assertEquals(2, room.participants.size)
@@ -44,7 +58,7 @@ class FakeRepositoryTest {
         assertEquals(room, repository.state.value.room)
     }
 
-    @Test fun `room admission errors leave state intact`() = runBlocking {
+    @Test fun `room admission errors leave state intact`() = runBlocking<Unit> {
         val repository = FakeRepository(clock = clock)
         expectError("VALIDATION_ERROR") { repository.joinRoom("   ") }
         expectError("NOT_FOUND") { repository.joinRoom("any-opaque-code") }
@@ -56,7 +70,7 @@ class FakeRepositoryTest {
         assertSame(room, repository.joinRoom(room.code.lowercase()))
     }
 
-    @Test fun `partner simulation respects capacity and perspective preserves owner`() = runBlocking {
+    @Test fun `partner simulation respects capacity and perspective preserves owner`() = runBlocking<Unit> {
         val repository = FakeRepository(clock = clock)
         val originalUser = repository.state.value.currentUser
         val created = repository.createRoom()
@@ -74,7 +88,7 @@ class FakeRepositoryTest {
         assertEquals(originalUser, repository.state.value.currentUser)
     }
 
-    @Test fun `task CRUD trims title keeps completion and changes only own participant`() = runBlocking {
+    @Test fun `task CRUD trims title keeps completion and changes only own participant`() = runBlocking<Unit> {
         val repository = FakeRepository(clock = clock)
         repository.createRoom()
         val initial = repository.simulatePartnerJoin()
@@ -95,7 +109,7 @@ class FakeRepositoryTest {
         assertEquals(friend, removed.participants.last())
     }
 
-    @Test fun `even owner cannot change or delete friends tasks`() = runBlocking {
+    @Test fun `even owner cannot change or delete friends tasks`() = runBlocking<Unit> {
         val repository = FakeRepository(clock = clock)
         repository.createRoom()
         val room = repository.simulatePartnerJoin()
@@ -109,7 +123,7 @@ class FakeRepositoryTest {
         assertEquals(room.participants.first(), changed.participants.first())
     }
 
-    @Test fun `invalid task edits are atomic and field errors are useful`() = runBlocking {
+    @Test fun `invalid task edits are atomic and field errors are useful`() = runBlocking<Unit> {
         val repository = FakeRepository(clock = clock)
         repository.createRoom()
         val room = repository.addTask("я".repeat(160))
@@ -126,7 +140,7 @@ class FakeRepositoryTest {
         assertFalse(room.participants.single().tasks.single().completed)
     }
 
-    @Test fun `goals allow empty and preserve text up to 240 characters`() = runBlocking {
+    @Test fun `goals allow empty and preserve text up to 240 characters`() = runBlocking<Unit> {
         val repository = FakeRepository(clock = clock)
         repository.createRoom()
         repository.simulatePartnerJoin()
@@ -140,7 +154,7 @@ class FakeRepositoryTest {
         assertEquals("", repository.updateGoal("").participants.first().goal)
     }
 
-    @Test fun `task capacity stays 20 even with concurrent commands and recovers after delete`() = runBlocking {
+    @Test fun `task capacity stays 20 even with concurrent commands and recovers after delete`() = runBlocking<Unit> {
         val repository = FakeRepository(clock = clock)
         repository.createRoom()
         val results = (1..30).map { number ->
@@ -155,7 +169,7 @@ class FakeRepositoryTest {
         assertEquals(20, repository.addTask("Новая задача").participants.single().tasks.size)
     }
 
-    @Test fun `settings require owner and whole minute bounds`() = runBlocking {
+    @Test fun `settings require owner and whole minute bounds`() = runBlocking<Unit> {
         val repository = FakeRepository(clock = clock)
         expectError("VALIDATION_ERROR") { repository.createRoom(299, 300) }
         assertNull(repository.state.value.room)
@@ -174,7 +188,7 @@ class FakeRepositoryTest {
         assertSame(shared, repository.state.value.room)
     }
 
-    @Test fun `snapshots cannot be altered by later changes or mutable list casts`(): Unit = runBlocking {
+    @Test fun `snapshots cannot be altered by later changes or mutable list casts`(): Unit = runBlocking<Unit> {
         val repository = FakeRepository(clock = clock)
         val emptyRoom = repository.createRoom()
         val roomWithTask = repository.addTask("Исходная задача")
@@ -193,7 +207,7 @@ class FakeRepositoryTest {
         }
     }
 
-    @Test fun `demo profiles and reset preserve the correct local identity`() = runBlocking {
+    @Test fun `demo profiles and reset preserve the correct local identity`() = runBlocking<Unit> {
         val repository = FakeRepository(clock = clock)
         repository.updateDemoProfile("  Моё имя  ")
         val user = repository.state.value.currentUser

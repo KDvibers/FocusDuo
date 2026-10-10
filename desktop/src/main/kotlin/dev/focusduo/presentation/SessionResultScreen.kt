@@ -35,6 +35,7 @@ fun SessionResultScreen(
     onStartBreak: () -> Unit,
     onStartFocus: () -> Unit,
     onHome: () -> Unit,
+    onBackToHistory: (() -> Unit)? = null,
 ) {
     val cancelled = item.status == RoundStatus.CANCELLED || item.completionReason == CompletionReason.ROOM_CLOSED
     val manual = item.completionReason == CompletionReason.MANUAL
@@ -86,6 +87,7 @@ fun SessionResultScreen(
                 if (open && !owner) Text("Следующий раунд запускает создатель комнаты.", Modifier.fillMaxWidth(), style = MaterialTheme.typography.caption, color = FocusDuoColors.Secondary, textAlign = TextAlign.Center)
                 if (sameRoom && room?.status == RoomStatus.CLOSED) Text("Комната закрыта. На главной можно создать новую.", Modifier.fillMaxWidth(), style = MaterialTheme.typography.caption, color = FocusDuoColors.Secondary, textAlign = TextAlign.Center)
                 if (sameRoom) SecondaryButton(onBackToRoom, Modifier.fillMaxWidth(), enabled = !busy) { Text(if (room?.status == RoomStatus.CLOSED) "Посмотреть закрытую комнату" else "Вернуться в комнату") }
+                if (onBackToHistory != null) SecondaryButton(onBackToHistory, Modifier.fillMaxWidth(), enabled = !busy) { Text("К истории") }
                 TextButton(onHome, Modifier.fillMaxWidth(), enabled = !busy) { Text("На главную") }
             }
         }

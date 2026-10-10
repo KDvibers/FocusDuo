@@ -11,6 +11,7 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import dev.focusduo.data.FakeRepository
+import dev.focusduo.data.DesktopPreferences
 import dev.focusduo.designsystem.*
 import dev.focusduo.domain.*
 import kotlinx.coroutines.CancellationException
@@ -18,24 +19,35 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
-private enum class DemoPage { HOME, ROOM, RESULT }
+private enum class DemoPage { HOME, ROOM, HISTORY, RESULT, SETTINGS }
+private enum class HistoryPreview { NORMAL, LOADING, ERROR }
 internal enum class RoomDialog { CREATE, JOIN, GOAL, ADD_TASK, EDIT_TASK, DELETE_TASK, SETTINGS, PROFILE, INVITE, RESET, FINISH_ROUND, CLOSE_ROOM }
 
 /** The shell selects an explicit fake implementation; room components only consume snapshots. */
 @Composable
-fun DemoApp(onExit: () -> Unit) {
-    val repository = remember { FakeRepository() }
+fun DemoApp(
+    repository: FakeRepository,
+    preferences: DesktopPreferences,
+    sessionBusy: Boolean,
+    settingsError: RepositoryException?,
+    onSavePreferences: (DesktopPreferences) -> Unit,
+    onLogout: () -> Unit,
+    onExit: () -> Unit,
+) {
     val state by repository.state.collectAsState()
     val scope = rememberCoroutineScope()
     val clipboard = LocalClipboardManager.current
     var page by remember { mutableStateOf(DemoPage.HOME) }
     var dialog by remember { mutableStateOf<RoomDialog?>(null) }
     var selectedTask by remember { mutableStateOf<Task?>(null) }
-    var busy by remember { mutableStateOf(false) }
+    var operationBusy by remember { mutableStateOf(false) }
+    val busy = operationBusy || sessionBusy
     var error by remember { mutableStateOf<String?>(null) }
     var notice by remember { mutableStateOf<String?>(null) }
     var selectedResult by remember { mutableStateOf<HistoryItem?>(null) }
     var confirmationRoundId by remember { mutableStateOf<String?>(null) }
+    var historyPreview by remember { mutableStateOf(HistoryPreview.NORMAL) }
+    var lastObservedRoundId by remember { mutableStateOf(state.history.firstOrNull()?.roundId) }
 
     // FakeRepository plays the server here. The UI never declares completion on its own.
     LaunchedEffect(repository) {
@@ -45,9 +57,15 @@ fun DemoApp(onExit: () -> Unit) {
         }
     }
     LaunchedEffect(state.history.firstOrNull()?.roundId) {
-        state.history.firstOrNull()?.let { result ->
-            selectedResult = result
-            page = DemoPage.RESULT
+        val latest = state.history.firstOrNull()
+        if (latest?.roundId != lastObservedRoundId) {
+            lastObservedRoundId = latest?.roundId
+            latest?.let { result ->
+                if (page in listOf(DemoPage.HOME, DemoPage.ROOM) && dialog == null) {
+                    selectedResult = result
+                    page = DemoPage.RESULT
+                } else notice = "Раунд завершён. Новый итог доступен в истории."
+            }
         }
     }
 
@@ -59,7 +77,7 @@ fun DemoApp(onExit: () -> Unit) {
     }
     fun perform(action: suspend () -> Unit) {
         if (busy) return
-        busy = true
+        operationBusy = true
         error = null
         notice = null
         scope.launch {
@@ -67,7 +85,7 @@ fun DemoApp(onExit: () -> Unit) {
             catch (cancelled: CancellationException) { throw cancelled }
             catch (failure: RepositoryException) { error = failure.message }
             catch (_: Exception) { error = "Не удалось выполнить действие. Попробуй ещё раз." }
-            finally { busy = false }
+            finally { operationBusy = false }
         }
     }
     fun copyCode(): Boolean {
@@ -87,17 +105,20 @@ fun DemoApp(onExit: () -> Unit) {
         Row(Modifier.fillMaxSize()) {
             Surface(Modifier.width(202.dp).fillMaxHeight(), color = FocusDuoColors.Sidebar) {
                 Column(Modifier.padding(16.dp, 26.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    FocusDuoLogo(Modifier.padding(8.dp), compact = true)
-                    Spacer(Modifier.height(24.dp))
-                    NavItem("Главная", FocusIcon.Home, page == DemoPage.HOME) { page = DemoPage.HOME }
-                    NavItem("Комната", FocusIcon.People, page == DemoPage.ROOM, state.room != null) { page = DemoPage.ROOM }
-                    NavItem("Итог", FocusIcon.Check, page == DemoPage.RESULT, selectedResult != null) { page = DemoPage.RESULT }
-                    Spacer(Modifier.weight(1f))
+                    Column(Modifier.weight(1f).verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        FocusDuoLogo(Modifier.padding(8.dp), compact = true)
+                        Spacer(Modifier.height(24.dp))
+                        NavItem("Главная", FocusIcon.Home, page == DemoPage.HOME, !busy) { page = DemoPage.HOME }
+                        NavItem("Комната", FocusIcon.People, page == DemoPage.ROOM, !busy && state.room != null) { page = DemoPage.ROOM }
+                        NavItem("История", FocusIcon.History, page == DemoPage.HISTORY || page == DemoPage.RESULT, !busy) { page = DemoPage.HISTORY }
+                        NavItem("Настройки", FocusIcon.Settings, page == DemoPage.SETTINGS, !busy) { page = DemoPage.SETTINGS }
+                    }
                     Divider(color = FocusDuoColors.Border)
                     Text("ЛОКАЛЬНЫЙ ПРОСМОТР", Modifier.padding(top = 12.dp), style = MaterialTheme.typography.overline, color = FocusDuoColors.Secondary)
                     Text(state.currentUser.displayName, style = MaterialTheme.typography.subtitle1)
                     TextButton(onClick = { openDialog(RoomDialog.PROFILE) }, enabled = !busy && state.room?.status != RoomStatus.CLOSED) { Text("Изменить имя") }
                     Text("Демо · без сервера", style = MaterialTheme.typography.caption, color = FocusDuoColors.Green)
+                    TextButton(onClick = onLogout, enabled = !busy) { Text("Выйти из аккаунта", style = MaterialTheme.typography.caption) }
                     TextButton(onClick = onExit) { Text("Закрыть приложение", style = MaterialTheme.typography.caption, color = FocusDuoColors.Secondary) }
                 }
             }
@@ -107,7 +128,7 @@ fun DemoApp(onExit: () -> Unit) {
             Box(Modifier.weight(1f).fillMaxHeight()) {
                 Column(Modifier.fillMaxSize().verticalScroll(scroll).padding(26.dp), verticalArrangement = Arrangement.spacedBy(18.dp)) {
                     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
-                        Text(when (page) { DemoPage.HOME -> "ТВОЁ ПРОСТРАНСТВО"; DemoPage.ROOM -> "СОВМЕСТНАЯ РАБОТА"; DemoPage.RESULT -> "ИТОГ СЕССИИ" }, style = MaterialTheme.typography.overline, color = FocusDuoColors.Secondary)
+                        Text(when (page) { DemoPage.HOME -> "ТВОЁ ПРОСТРАНСТВО"; DemoPage.ROOM -> "СОВМЕСТНАЯ РАБОТА"; DemoPage.RESULT -> "ИТОГ СЕССИИ"; DemoPage.HISTORY -> "ТВОИ СЕССИИ"; DemoPage.SETTINGS -> "НАСТРОЙКИ" }, style = MaterialTheme.typography.overline, color = FocusDuoColors.Secondary)
                         DemoBadge()
                     }
                     val banner = if (dialog == null) error ?: notice else notice
@@ -118,7 +139,6 @@ fun DemoApp(onExit: () -> Unit) {
                         }
                     }
                     val room = state.room
-                    val openRoom = room?.status == RoomStatus.OPEN
                     val result = selectedResult
                     if (page == DemoPage.RESULT && result != null) {
                         SessionResultScreen(
@@ -127,6 +147,7 @@ fun DemoApp(onExit: () -> Unit) {
                             onStartBreak = { perform { repository.startRound(RoundKind.BREAK); page = DemoPage.ROOM } },
                             onStartFocus = { perform { repository.startRound(RoundKind.FOCUS); page = DemoPage.ROOM } },
                             onHome = { page = DemoPage.HOME },
+                            onBackToHistory = { page = DemoPage.HISTORY },
                         )
                     } else if (page == DemoPage.ROOM && room != null) {
                         RoomScreen(
@@ -146,26 +167,31 @@ fun DemoApp(onExit: () -> Unit) {
                             onCloseRoom = { openDialog(RoomDialog.CLOSE_ROOM) },
                             onShowResult = { state.history.firstOrNull { it.roundId == room.round?.id }?.let { selectedResult = it; page = DemoPage.RESULT } },
                         )
+                    } else if (page == DemoPage.HISTORY) {
+                        HistoryScreen(
+                            items = state.history, currentUserId = state.currentUser.id,
+                            busy = busy || historyPreview == HistoryPreview.LOADING,
+                            error = if (historyPreview == HistoryPreview.ERROR) "Демонстрационная ошибка загрузки истории. Данные сохранены; попробуй ещё раз." else null,
+                            onOpen = { selectedResult = it; page = DemoPage.RESULT },
+                            onGoHome = { page = DemoPage.HOME },
+                            onRetry = { historyPreview = HistoryPreview.NORMAL; perform { repository.refreshDemoTime(); notice = "История обновлена" } },
+                        )
+                        HistoryPreviewTools(historyPreview, !busy) { historyPreview = it }
+                    } else if (page == DemoPage.SETTINGS) {
+                        SettingsScreen(
+                            preferences = preferences, currentUser = state.currentUser, room = room,
+                            busy = busy, error = settingsError, onSave = onSavePreferences, onLogout = onLogout,
+                            onEditRoomSettings = { openDialog(RoomDialog.SETTINGS) },
+                        )
                     } else {
-                        Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                            Text("Готовы поработать вместе?", style = MaterialTheme.typography.h2)
-                            Text("Создай комнату или войди по коду, чтобы подготовить совместную сессию фокуса.", color = FocusDuoColors.Secondary)
-                        }
-                        FocusCard(Modifier.fillMaxWidth()) {
-                            Column(Modifier.padding(28.dp), verticalArrangement = Arrangement.spacedBy(18.dp)) {
-                                Text(if (openRoom) "Твоя комната ждёт" else "Начните с одной цели", style = MaterialTheme.typography.h3)
-                                Text(if (openRoom) "${room!!.code} · ${room.participants.size}/2 участника. Задачи и цели сохранены в памяти." else "Планируй задачи, делись целью и двигайся вперёд вместе с другом.", color = FocusDuoColors.Secondary)
-                                if (!openRoom) {
-                                    Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                                        PrimaryButton({ openDialog(RoomDialog.CREATE) }, enabled = !busy) { Text("Создать комнату") }
-                                        SecondaryButton({ openDialog(RoomDialog.JOIN) }, enabled = !busy) { Text("Войти по коду") }
-                                    }
-                                } else PrimaryButton({ page = DemoPage.ROOM }) { Text("Вернуться в комнату") }
-                                if (state.history.isNotEmpty()) TextButton(onClick = { selectedResult = state.history.first(); page = DemoPage.RESULT }) { Text("Открыть последний итог") }
-                            }
-                        }
+                        HomeScreen(
+                            room = room, latestResult = state.history.firstOrNull(), busy = busy,
+                            onCreate = { openDialog(RoomDialog.CREATE) }, onJoin = { openDialog(RoomDialog.JOIN) },
+                            onRoom = { page = DemoPage.ROOM }, onHistory = { page = DemoPage.HISTORY },
+                            onLatestResult = { state.history.firstOrNull()?.let { selectedResult = it; page = DemoPage.RESULT } },
+                        )
                     }
-                    DemoTools(
+                    if (page == DemoPage.HOME || page == DemoPage.ROOM) DemoTools(
                         room = room,
                         viewerName = state.currentUser.displayName, busy = busy,
                         onJoinPartner = { perform { repository.simulatePartnerJoin(); notice = "Демоучастник присоединился к комнате" } },
@@ -205,6 +231,21 @@ fun DemoApp(onExit: () -> Unit) {
                     }
                 },
             )
+        }
+    }
+}
+
+@Composable
+private fun HistoryPreviewTools(preview: HistoryPreview, enabled: Boolean, onSelect: (HistoryPreview) -> Unit) {
+    Surface(Modifier.fillMaxWidth(), color = FocusDuoColors.PaleGreen.copy(alpha = .5f), shape = MaterialTheme.shapes.small) {
+        Column(Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+            Text("Проверка состояний истории · только демо", style = MaterialTheme.typography.subtitle1)
+            Text("Эти кнопки показывают загрузку и ошибку без подключения к серверу.", style = MaterialTheme.typography.body2, color = FocusDuoColors.Secondary)
+            Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                listOf(HistoryPreview.NORMAL to "Показать данные", HistoryPreview.LOADING to "Показать загрузку", HistoryPreview.ERROR to "Показать ошибку").forEach { (value, label) ->
+                    SecondaryButton({ onSelect(value) }, enabled = enabled && value != preview) { Text(label) }
+                }
+            }
         }
     }
 }
