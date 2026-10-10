@@ -54,7 +54,7 @@ class RealRepositoryTest {
             assertEquals(password, body.password)
             respond(jsonSession(), HttpStatusCode.Created, JSON_HEADERS)
         }
-        RealRepository.register(ORIGIN, "  ALICE_1 ", " Алиса ", password, engine).use { repository ->
+        RealRepository.register(ORIGIN, "  ALICE_1 ", " Алиса ", password, engine, realtimeEnabled = false).use { repository ->
             assertEquals(1, calls, "Authentication must not be repeated or coupled to restoration")
             assertEquals("Алиса", repository.state.value.currentUser.displayName)
             assertEquals(RealSessionStatus.ACTIVE, repository.sessionStatus.value)
@@ -86,7 +86,7 @@ class RealRepositoryTest {
                 else -> fail("Unexpected path")
             }
         }
-        RealRepository.login(ORIGIN, " ALICE_1 ", PASSWORD, engine).use { repository ->
+        RealRepository.login(ORIGIN, " ALICE_1 ", PASSWORD, engine, realtimeEnabled = false).use { repository ->
             assertNull(repository.state.value.room)
             repository.bootstrap()
             assertEquals(ROOM_ID, repository.state.value.room!!.roomId)
@@ -110,7 +110,7 @@ class RealRepositoryTest {
                 else -> fail("Unexpected path")
             }
         }
-        RealRepository.login(ORIGIN, "alice_1", PASSWORD, engine).use { repository ->
+        RealRepository.login(ORIGIN, "alice_1", PASSWORD, engine, realtimeEnabled = false).use { repository ->
             val error = expectError("NETWORK_ERROR") { repository.bootstrap() }
             assertSafe(error)
             assertEquals(RealSessionStatus.ACTIVE, repository.sessionStatus.value)
@@ -132,7 +132,7 @@ class RealRepositoryTest {
                 else -> fail("Unexpected path")
             }
         }
-        RealRepository.login(ORIGIN, "alice_1", PASSWORD, engine).use { repository ->
+        RealRepository.login(ORIGIN, "alice_1", PASSWORD, engine, realtimeEnabled = false).use { repository ->
             repository.refreshCurrentRoom()
             assertNotNull(repository.state.value.room)
             assertSafe(expectError("UNAUTHORIZED") { repository.refreshCurrentRoom() })
@@ -160,7 +160,7 @@ class RealRepositoryTest {
                 else -> fail("Unexpected path")
             }
         }
-        RealRepository.login(ORIGIN, "alice_1", PASSWORD, engine).use { repository ->
+        RealRepository.login(ORIGIN, "alice_1", PASSWORD, engine, realtimeEnabled = false).use { repository ->
             repository.refreshCurrentRoom()
             repository.logout()
             assertEquals(RealSessionStatus.SIGNED_OUT, repository.sessionStatus.value)
@@ -175,7 +175,7 @@ class RealRepositoryTest {
             if (request.url.encodedPath.endsWith("/login")) respond(jsonSession(), headers = JSON_HEADERS)
             else throw IOException("Authorization Bearer $TOKEN password=$PASSWORD")
         }
-        RealRepository.login(ORIGIN, "alice_1", PASSWORD, engine).use { repository ->
+        RealRepository.login(ORIGIN, "alice_1", PASSWORD, engine, realtimeEnabled = false).use { repository ->
             assertSafe(expectError("NETWORK_ERROR") { repository.logout() })
             assertEquals(RealSessionStatus.SIGNED_OUT, repository.sessionStatus.value)
             assertNull(repository.state.value.room)
@@ -187,22 +187,22 @@ class RealRepositoryTest {
         val engine = MockEngine {
             respond("""{"code":"VALIDATION_ERROR","message":"$PASSWORD $TOKEN trace","requestId":"request-1","fieldErrors":{"username":"$PASSWORD","password":"$TOKEN","sql":"trace"},"snapshot":null}""", HttpStatusCode.BadRequest, JSON_HEADERS)
         }
-        val error = expectError("VALIDATION_ERROR") { RealRepository.login(ORIGIN, "alice_1", PASSWORD, engine) }
+        val error = expectError("VALIDATION_ERROR") { RealRepository.login(ORIGIN, "alice_1", PASSWORD, engine, realtimeEnabled = false) }
         assertEquals(setOf("username", "password"), error.fieldErrors.keys)
         assertSafe(error)
         val duplicate = MockEngine {
             respond("""{"code":"USERNAME_TAKEN","message":"$PASSWORD","requestId":"request-2","fieldErrors":{},"snapshot":null}""", HttpStatusCode.Conflict, JSON_HEADERS)
         }
-        assertSafe(expectError("USERNAME_TAKEN") { RealRepository.register(ORIGIN, "alice_1", "Алиса", PASSWORD, duplicate) })
+        assertSafe(expectError("USERNAME_TAKEN") { RealRepository.register(ORIGIN, "alice_1", "Алиса", PASSWORD, duplicate, realtimeEnabled = false) })
     }
 
     @Test fun `HTML error is never presented and unexpected successful JSON is protocol error`() = runBlocking<Unit> {
         val unavailable = MockEngine { respond("<html>Stack trace $TOKEN $PASSWORD</html>", HttpStatusCode.InternalServerError) }
-        assertSafe(expectError("INTERNAL_ERROR") { RealRepository.login(ORIGIN, "alice_1", PASSWORD, unavailable) })
+        assertSafe(expectError("INTERNAL_ERROR") { RealRepository.login(ORIGIN, "alice_1", PASSWORD, unavailable, realtimeEnabled = false) })
         val forbidden = MockEngine { respond("<html>$TOKEN $PASSWORD</html>", HttpStatusCode.Forbidden) }
-        assertSafe(expectError("FORBIDDEN") { RealRepository.login(ORIGIN, "alice_1", PASSWORD, forbidden) })
+        assertSafe(expectError("FORBIDDEN") { RealRepository.login(ORIGIN, "alice_1", PASSWORD, forbidden, realtimeEnabled = false) })
         val malformed = MockEngine { respond("{\"unexpected\":true}", headers = JSON_HEADERS) }
-        assertSafe(expectError("PROTOCOL_ERROR") { RealRepository.login(ORIGIN, "alice_1", PASSWORD, malformed) })
+        assertSafe(expectError("PROTOCOL_ERROR") { RealRepository.login(ORIGIN, "alice_1", PASSWORD, malformed, realtimeEnabled = false) })
     }
 
     @Test fun `redirect is not followed and bearer cannot be forwarded to another origin`() = runBlocking<Unit> {
@@ -212,7 +212,7 @@ class RealRepositoryTest {
             if (request.url.encodedPath.endsWith("/login")) respond(jsonSession(), headers = JSON_HEADERS)
             else respond("", HttpStatusCode.TemporaryRedirect, headersOf(HttpHeaders.Location, "https://other.invalid/collect"))
         }
-        RealRepository.login(ORIGIN, "alice_1", PASSWORD, engine).use { repository ->
+        RealRepository.login(ORIGIN, "alice_1", PASSWORD, engine, realtimeEnabled = false).use { repository ->
             expectError("HTTP_ERROR") { repository.refreshMe() }
             assertEquals(2, calls)
             assertEquals(RealSessionStatus.ACTIVE, repository.sessionStatus.value)
@@ -226,7 +226,7 @@ class RealRepositoryTest {
             if (request.url.encodedPath.endsWith("/login")) respond(jsonSession(), headers = JSON_HEADERS)
             else throw CancellationException("cancelled")
         }
-        RealRepository.login(ORIGIN, "alice_1", PASSWORD, engine).use { repository ->
+        RealRepository.login(ORIGIN, "alice_1", PASSWORD, engine, realtimeEnabled = false).use { repository ->
             try { repository.refreshMe(); fail("Cancellation expected") } catch (_: CancellationException) { }
             assertEquals(RealSessionStatus.ACTIVE, repository.sessionStatus.value)
             assertEquals(2, calls)
@@ -236,26 +236,25 @@ class RealRepositoryTest {
     @Test fun `invalid expiration token and mismatched identity are rejected safely`() = runBlocking<Unit> {
         for (session in listOf(AuthSessionDto(USER, TOKEN, "invalid-date"), AuthSessionDto(USER, "bad\r\ntoken", EXPIRES))) {
             val engine = MockEngine { respond(FocusDuoJson.encodeToString(session), headers = JSON_HEADERS) }
-            assertSafe(expectError("PROTOCOL_ERROR") { RealRepository.login(ORIGIN, "alice_1", PASSWORD, engine) })
+            assertSafe(expectError("PROTOCOL_ERROR") { RealRepository.login(ORIGIN, "alice_1", PASSWORD, engine, realtimeEnabled = false) })
         }
         val engine = MockEngine { request ->
             if (request.url.encodedPath.endsWith("/login")) respond(jsonSession(), headers = JSON_HEADERS)
             else respond(FocusDuoJson.encodeToString(USER.copy(id = "10000000-0000-4000-8000-000000000002")), headers = JSON_HEADERS)
         }
-        RealRepository.login(ORIGIN, "alice_1", PASSWORD, engine).use { repository ->
+        RealRepository.login(ORIGIN, "alice_1", PASSWORD, engine, realtimeEnabled = false).use { repository ->
             expectError("PROTOCOL_ERROR") { repository.refreshMe() }
             assertEquals(USER.id, repository.state.value.currentUser.id)
         }
     }
 
-    @Test fun `unsupported writes make no HTTP calls and never manufacture fake data`() = runBlocking<Unit> {
+    @Test fun `existing room writes require realtime snapshot and never manufacture fake data`() = runBlocking<Unit> {
         var calls = 0
         val engine = MockEngine { calls++; respond(jsonSession(), headers = JSON_HEADERS) }
-        RealRepository.login(ORIGIN, "alice_1", PASSWORD, engine).use { repository ->
-            expectError("FEATURE_NOT_AVAILABLE") { repository.createRoom() }
-            expectError("FEATURE_NOT_AVAILABLE") { repository.joinRoom("FD-EXAMPLE") }
-            expectError("FEATURE_NOT_AVAILABLE") { repository.startRound(RoundKind.FOCUS) }
-            expectError("FEATURE_NOT_AVAILABLE") { repository.addTask("Задача") }
+        RealRepository.login(ORIGIN, "alice_1", PASSWORD, engine, realtimeEnabled = false).use { repository ->
+            expectError("CONNECTION_NOT_READY") { repository.startRound(RoundKind.FOCUS) }
+            expectError("CONNECTION_NOT_READY") { repository.addTask("Задача") }
+            assertFalse(repository.canMutate)
             assertEquals(1, calls)
             assertNull(repository.state.value.room)
             assertTrue(repository.state.value.history.isEmpty())
@@ -269,7 +268,7 @@ class RealRepositoryTest {
                 if (request.url.encodedPath.endsWith("/login")) respond(jsonSession(), headers = JSON_HEADERS)
                 else respond(FocusDuoJson.encodeToString(CurrentRoomDto(invalid)), headers = JSON_HEADERS)
             }
-            RealRepository.login(ORIGIN, "alice_1", PASSWORD, engine).use { repository ->
+            RealRepository.login(ORIGIN, "alice_1", PASSWORD, engine, realtimeEnabled = false).use { repository ->
                 expectError("PROTOCOL_ERROR") { repository.refreshCurrentRoom() }
                 assertNull(repository.state.value.room)
             }
@@ -286,7 +285,7 @@ class RealRepositoryTest {
             if (request.url.encodedPath.endsWith("/login")) respond(jsonSession(), headers = JSON_HEADERS)
             else respond(FocusDuoJson.encodeToString(CurrentRoomDto(replies.removeFirst())), headers = JSON_HEADERS)
         }
-        RealRepository.login(ORIGIN, "alice_1", PASSWORD, engine).use { repository ->
+        RealRepository.login(ORIGIN, "alice_1", PASSWORD, engine, realtimeEnabled = false).use { repository ->
             repository.refreshCurrentRoom()
             val first = repository.state.value.room!!
             repository.refreshCurrentRoom()
@@ -305,8 +304,8 @@ class RealRepositoryTest {
     @Test fun `invalid input and secret bearing base URL are rejected before a request`() = runBlocking<Unit> {
         var calls = 0
         val engine = MockEngine { calls++; respond(jsonSession(), headers = JSON_HEADERS) }
-        expectError("VALIDATION_ERROR") { RealRepository.login(ORIGIN, "!", PASSWORD, engine) }
-        expectError("VALIDATION_ERROR") { RealRepository.login("http://alice:$PASSWORD@127.0.0.1:8090", "alice_1", PASSWORD, engine) }
+        expectError("VALIDATION_ERROR") { RealRepository.login(ORIGIN, "!", PASSWORD, engine, realtimeEnabled = false) }
+        expectError("VALIDATION_ERROR") { RealRepository.login("http://alice:$PASSWORD@127.0.0.1:8090", "alice_1", PASSWORD, engine, realtimeEnabled = false) }
         assertEquals(0, calls)
         engine.close()
     }
@@ -322,7 +321,7 @@ class RealRepositoryTest {
                 respond(FocusDuoJson.encodeToString(CurrentRoomDto(room())), headers = JSON_HEADERS)
             }
         }
-        val repository = RealRepository.login(ORIGIN, "alice_1", PASSWORD, engine)
+        val repository = RealRepository.login(ORIGIN, "alice_1", PASSWORD, engine, realtimeEnabled = false)
         val pending = async {
             try { repository.refreshCurrentRoom() } catch (_: CancellationException) { null } catch (error: RepositoryException) {
                 assertEquals("UNAUTHORIZED", error.code)
@@ -340,12 +339,12 @@ class RealRepositoryTest {
 
     @Test fun `owned engine is released after close and failed authentication`() = runBlocking<Unit> {
         val successful = MockEngine { respond(jsonSession(), headers = JSON_HEADERS) }
-        val repository = RealRepository.login(ORIGIN, "alice_1", PASSWORD, successful)
+        val repository = RealRepository.login(ORIGIN, "alice_1", PASSWORD, successful, realtimeEnabled = false)
         repository.close()
         withTimeout(5_000) { successful.coroutineContext[Job]!!.join() }
         assertTrue(successful.coroutineContext[Job]!!.isCompleted)
         val rejected = MockEngine { respond("", HttpStatusCode.Unauthorized) }
-        expectError("UNAUTHORIZED") { RealRepository.login(ORIGIN, "alice_1", PASSWORD, rejected) }
+        expectError("UNAUTHORIZED") { RealRepository.login(ORIGIN, "alice_1", PASSWORD, rejected, realtimeEnabled = false) }
         withTimeout(5_000) { rejected.coroutineContext[Job]!!.join() }
         assertTrue(rejected.coroutineContext[Job]!!.isCompleted)
     }

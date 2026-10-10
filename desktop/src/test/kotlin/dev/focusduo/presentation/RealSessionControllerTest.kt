@@ -34,7 +34,7 @@ class RealSessionControllerTest {
         val store = store()
         store.save(DesktopPreferences("http://localhost:8091", "anna"))
         val engines = AtomicInteger()
-        val controller = RealSessionController(store, engineFactory = { engines.incrementAndGet(); healthyEngine() })
+        val controller = RealSessionController(store, engineFactory = { engines.incrementAndGet(); healthyEngine() }, realtimeEnabled = false)
         try {
             controller.initialize()
             assertFalse(controller.state.value.loading)
@@ -80,7 +80,7 @@ class RealSessionControllerTest {
 
     @Test fun `invalid form never opens a network client`() = runBlocking<Unit> {
         val engines = AtomicInteger()
-        val controller = RealSessionController(store(), engineFactory = { engines.incrementAndGet(); healthyEngine() })
+        val controller = RealSessionController(store(), engineFactory = { engines.incrementAndGet(); healthyEngine() }, realtimeEnabled = false)
         try {
             controller.initialize()
             controller.login("!", "short")
@@ -180,7 +180,7 @@ class RealSessionControllerTest {
         val cancelled = CompletableDeferred<Unit>()
         val requests = CopyOnWriteArrayList<String>()
         val engines = AtomicInteger()
-        val controller = RealSessionController(store(), engineFactory = {
+        val controller = RealSessionController(store(), realtimeEnabled = false, engineFactory = {
             val firstEngine = engines.incrementAndGet() == 1
             MockEngine { request ->
                 requests += request.url.toString()
@@ -305,7 +305,7 @@ class RealSessionControllerTest {
     }
 
     private fun store() = DesktopPreferencesStore(directory.resolve("preferences.properties"), emptyMap())
-    private fun controller(engine: MockEngine) = RealSessionController(store(), engineFactory = { engine })
+    private fun controller(engine: MockEngine) = RealSessionController(store(), engineFactory = { engine }, realtimeEnabled = false)
     private fun healthyEngine(onRequest: () -> Unit = {}) = MockEngine { request ->
         onRequest()
         when (request.url.encodedPath) {

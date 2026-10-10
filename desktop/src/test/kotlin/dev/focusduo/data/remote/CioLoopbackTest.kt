@@ -41,7 +41,7 @@ class CioLoopbackTest {
         }
         server.start()
         try {
-            val repository = RealRepository.login("http://127.0.0.1:${server.address.port}", " DANIYAR ", " парольСпробелами! ")
+            val repository = RealRepository.login("http://127.0.0.1:${server.address.port}", " DANIYAR ", " парольСпробелами! ", realtimeEnabled = false)
             try {
                 repository.bootstrap()
                 assertEquals("Данияр", repository.state.value.currentUser.displayName)

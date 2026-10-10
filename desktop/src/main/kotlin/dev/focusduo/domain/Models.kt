@@ -77,4 +77,5 @@ class RepositoryException(
     val code: String,
     override val message: String,
     val fieldErrors: Map<String, String> = emptyMap(),
+    val snapshot: RoomSnapshot? = null,
 ) : Exception(message)

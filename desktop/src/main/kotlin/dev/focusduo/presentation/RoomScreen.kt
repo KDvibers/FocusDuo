@@ -51,6 +51,7 @@ fun RoomScreen(
     onShowResult: () -> Unit,
     readOnly: Boolean = false,
     connectionLabel: String = "Локальная демокомната · без сервера",
+    waitingForServer: Boolean = false,
 ) {
     val own = room.participants.firstOrNull { it.userId == currentUserId }
     val partner = room.participants.firstOrNull { it.userId != currentUserId }
@@ -66,7 +67,7 @@ fun RoomScreen(
         BoxWithConstraints(Modifier.fillMaxWidth()) {
             val left: @Composable () -> Unit = {
                 Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
-                    TimerCard(room, currentUserId == room.ownerId, busy || readOnly, onEditSettings, onStartFocus, onStartBreak, onPause, onResume, onFinish, onShowResult)
+                    TimerCard(room, currentUserId == room.ownerId, busy, onEditSettings, onStartFocus, onStartBreak, onPause, onResume, onFinish, onShowResult, readOnly, waitingForServer)
                     Row(Modifier.fillMaxWidth().height(IntrinsicSize.Min), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                         if (own != null) ParticipantCard(own, room, true, Modifier.weight(1f).fillMaxHeight())
                         if (partner != null) ParticipantCard(partner, room, false, Modifier.weight(1f).fillMaxHeight())
@@ -137,6 +138,7 @@ private fun TimerCard(
     room: RoomSnapshot, isOwner: Boolean, busy: Boolean, onEditSettings: () -> Unit,
     onStartFocus: () -> Unit, onStartBreak: () -> Unit, onPause: () -> Unit,
     onResume: () -> Unit, onFinish: () -> Unit, onShowResult: () -> Unit,
+    readOnly: Boolean, waitingForServer: Boolean,
 ) {
     val round = room.round
     val closed = room.status == RoomStatus.CLOSED
@@ -153,13 +155,14 @@ private fun TimerCard(
         round.status == RoundStatus.CANCELLED -> "Раунд прерван"
         round.status == RoundStatus.COMPLETED && round.completionReason == CompletionReason.MANUAL -> "Завершён досрочно"
         round.status == RoundStatus.COMPLETED -> "Раунд завершён"
+        waitingForServer -> "Ждём завершения от сервера"
         else -> "До конца раунда"
     }
     FocusCard(Modifier.fillMaxWidth()) {
         Column(Modifier.padding(22.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                 Text("$kind · ${duration / 60} мин", Modifier.weight(1f), style = MaterialTheme.typography.subtitle1)
-                if (isOwner && !closed) RoomAction("Настроить длительность", RoomGlyph.Settings, !busy && !active, onEditSettings)
+                if (isOwner && !closed) RoomAction("Настроить длительность", RoomGlyph.Settings, !busy && !readOnly && !active, onEditSettings)
             }
             BoxWithConstraints(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
                 val diameter = minOf(maxWidth, 282.dp)
@@ -180,12 +183,12 @@ private fun TimerCard(
             when {
                 active -> {
                     Row(Modifier.fillMaxWidth().padding(top = 6.dp), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                        PrimaryButton(if (round?.status == RoundStatus.PAUSED) onResume else onPause, Modifier.weight(1f), enabled = isOwner && !busy && !closed) {
+                        PrimaryButton(if (round?.status == RoundStatus.PAUSED) onResume else onPause, Modifier.weight(1f), enabled = isOwner && !busy && !readOnly && !closed) {
                             RoomGlyph(if (round?.status == RoundStatus.PAUSED) RoomGlyph.Play else RoomGlyph.Pause, Modifier.size(18.dp), if (isOwner && !busy) Color.White else FocusDuoColors.Secondary)
                             Spacer(Modifier.width(8.dp))
                             Text(if (round?.status == RoundStatus.PAUSED) "Продолжить" else "Пауза")
                         }
-                        SecondaryButton(onFinish, Modifier.weight(1f), enabled = isOwner && !busy && !closed) {
+                        SecondaryButton(onFinish, Modifier.weight(1f), enabled = isOwner && !busy && !readOnly && !closed) {
                             RoomGlyph(RoomGlyph.Stop, Modifier.size(17.dp), FocusDuoColors.Secondary)
                             Spacer(Modifier.width(8.dp)); Text("Завершить")
                         }
@@ -194,7 +197,7 @@ private fun TimerCard(
                 closed -> if (terminal) SecondaryButton(onShowResult, Modifier.fillMaxWidth(), enabled = !busy) { Text("Посмотреть итог") }
                 else -> {
                     if (terminal) SecondaryButton(onShowResult, Modifier.fillMaxWidth(), enabled = !busy) { Text("Посмотреть итог") }
-                    val canStart = isOwner && !busy && room.participants.size == 2
+                    val canStart = isOwner && !busy && !readOnly && room.participants.size == 2
                     if (round?.status == RoundStatus.COMPLETED && round.kind == RoundKind.FOCUS) {
                         PrimaryButton(onStartBreak, Modifier.fillMaxWidth(), enabled = canStart) {
                             RoomGlyph(RoomGlyph.Coffee, Modifier.size(19.dp), if (canStart) Color.White else FocusDuoColors.Secondary)

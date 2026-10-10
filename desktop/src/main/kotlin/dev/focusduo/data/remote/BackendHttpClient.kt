@@ -57,16 +57,31 @@ internal class BackendHttpClient(baseUrl: String, engine: HttpClientEngine? = nu
     }
 
     fun clearToken() { accessToken = null }
+    internal fun tokenForHandshake(): String = accessToken ?: throw unauthorized()
 
     suspend fun me(): UserDto = exchange(HttpMethod.Get, "/me", 200)
     suspend fun currentRoom(): CurrentRoomDto = exchange(HttpMethod.Get, "/rooms/current", 200)
 
     suspend fun room(roomId: String): RoomSnapshotDto {
-        try { java.util.UUID.fromString(roomId) } catch (_: IllegalArgumentException) { throw protocolError() }
+        requireUuid(roomId)
         return exchange(HttpMethod.Get, "/rooms/$roomId", 200)
     }
 
     suspend fun logout() { exchange<Unit>(HttpMethod.Post, "/auth/logout", 204) }
+
+    suspend fun history(): HistoryDto = exchange(HttpMethod.Get, "/history", 200)
+    suspend fun historyItem(roundId: String): HistoryItemDto {
+        requireUuid(roundId)
+        return exchange(HttpMethod.Get, "/history/$roundId", 200)
+    }
+
+    suspend fun command(
+        method: HttpMethod,
+        path: String,
+        body: String?,
+        key: String,
+        revision: Long? = null,
+    ): RoomSnapshotDto = exchange(method, path, 200, body, idempotencyKey = key, revision = revision)
 
     private suspend inline fun <reified T> exchange(
         method: HttpMethod,
@@ -74,12 +89,16 @@ internal class BackendHttpClient(baseUrl: String, engine: HttpClientEngine? = nu
         successStatus: Int,
         jsonBody: String? = null,
         authorized: Boolean = true,
+        idempotencyKey: String? = null,
+        revision: Long? = null,
     ): T = safeRequest {
         val bearer = if (authorized) accessToken ?: throw unauthorized() else null
         client.prepareRequest("$baseUrl/api/v1$path") {
             this.method = method
             accept(ContentType.Application.Json)
             if (bearer != null) header(HttpHeaders.Authorization, "Bearer $bearer")
+            if (idempotencyKey != null) header("Idempotency-Key", idempotencyKey)
+            if (revision != null) header("X-Room-Revision", revision.toString())
             if (jsonBody != null) {
                 contentType(ContentType.Application.Json)
                 setBody(jsonBody)
@@ -148,7 +167,10 @@ internal class BackendHttpClient(baseUrl: String, engine: HttpClientEngine? = nu
         val fields = if (code == "VALIDATION_ERROR") dto?.fieldErrors?.keys.orEmpty().mapNotNull { field ->
             SAFE_FIELD_ERRORS[field]?.let { field to it }
         }.toMap() else emptyMap()
-        return RepositoryException(code, ERROR_MESSAGES[code] ?: "Сервер отклонил запрос. Повторите попытку позже.", fields)
+        val snapshot = if (code == "REVISION_CONFLICT") {
+            try { dto?.snapshot?.toDomain() } catch (_: Exception) { throw protocolError() }
+        } else null
+        return RepositoryException(code, ERROR_MESSAGES[code] ?: "Сервер отклонил запрос. Повторите попытку позже.", fields, snapshot)
     }
 
     override fun close() {
@@ -166,6 +188,12 @@ internal class BackendHttpClient(baseUrl: String, engine: HttpClientEngine? = nu
             "username" to "Проверьте логин: от 3 до 32 латинских букв, цифр или _.",
             "password" to "Пароль должен содержать от 10 до 128 символов. Пробелы учитываются.",
             "displayName" to "Имя должно содержать от 2 до 40 символов после удаления крайних пробелов.",
+            "goal" to "Цель должна содержать не более 240 символов.",
+            "title" to "Название задачи должно содержать от 1 до 160 символов.",
+            "tasks" to "У участника может быть не более 20 задач.",
+            "code" to "Проверьте код комнаты.",
+            "focusDurationSeconds" to "Фокус: от 5 до 180 минут, целое число минут.",
+            "breakDurationSeconds" to "Перерыв: от 1 до 60 минут, целое число минут.",
         )
         private val ERROR_MESSAGES = mapOf(
             "VALIDATION_ERROR" to "Проверьте заполненные поля.",
@@ -184,5 +212,9 @@ internal class BackendHttpClient(baseUrl: String, engine: HttpClientEngine? = nu
 
         internal fun protocolError() = RepositoryException("PROTOCOL_ERROR", "Ответ сервера не соответствует контракту FocusDuo v1.")
         internal fun unauthorized() = RepositoryException("UNAUTHORIZED", "Сессия недействительна. Войдите снова.")
+        internal fun requireUuid(value: String) {
+            val parsed = if (value.length == 36) runCatching { java.util.UUID.fromString(value) }.getOrNull() else null
+            if (parsed == null || !parsed.toString().equals(value, ignoreCase = true)) throw protocolError()
+        }
     }
 }
