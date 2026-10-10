@@ -1,0 +1,11 @@
+{
+  "command": "desktop/gradlew.bat -p desktop check --console=plain",
+  "result": "BUILD SUCCESSFUL",
+  "durationSeconds": 9,
+  "java": "Corretto 21.0.6",
+  "tests": 187,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "capturedAt": "2026-10-10T20:41:57.3664621+00:00"
+}

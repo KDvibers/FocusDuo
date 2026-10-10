@@ -1,0 +1,39 @@
+{
+  "phase": "FINAL_HELPER_START_INSPECT_STOP",
+  "capturedAt": "2026-10-10T20:45:06.3177315+00:00",
+  "baseUrl": "http://127.0.0.1:18091",
+  "postgresPort": 55438,
+  "serverVersion": "17.2",
+  "counts": {
+    "rooms": 0,
+    "tasks": 0,
+    "users": 0,
+    "rounds": 0,
+    "history": 0,
+    "sessions": 0,
+    "openRooms": 0,
+    "migrations": 2,
+    "activeMemberships": 0,
+    "unrevokedSessions": 0,
+    "idempotencyResults": 0,
+    "historyParticipants": 0
+  },
+  "controllerExitCode": 0,
+  "stopped": true,
+  "javaPid": null,
+  "postgresDataRemoved": true,
+  "mainPostgresDataRemoved": true,
+  "remainingTestListeners": 0,
+  "userPostgresListeners": [
+    {
+      "LocalAddress": "::",
+      "LocalPort": 5432,
+      "OwningProcess": 10172
+    },
+    {
+      "LocalAddress": "0.0.0.0",
+      "LocalPort": 5432,
+      "OwningProcess": 10172
+    }
+  ]
+}

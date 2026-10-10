@@ -52,6 +52,7 @@ class RealSessionController(
     private var settingsBusy = false
     private var activeRequest: Deferred<Unit>? = null
     private var sessionWatcher: Job? = null
+    private var signingOutRepository: RealRepository? = null
 
     suspend fun initialize() = operation { expected ->
         val loaded = preferencesStore.load()
@@ -81,7 +82,9 @@ class RealSessionController(
     }
 
     suspend fun logout() = operation { expected ->
-        val repository = synchronized(lock) { state.value.repository } ?: return@operation
+        val repository = synchronized(lock) {
+            state.value.repository?.also { signingOutRepository = it }
+        } ?: return@operation
         var failure: RepositoryException? = null
         try {
             repository.logout()
@@ -91,6 +94,9 @@ class RealSessionController(
             failure = safeFailure(exception)
         } finally {
             clearSession(expected, repository, "Ты вышел из аккаунта.")
+            synchronized(lock) {
+                if (signingOutRepository === repository) signingOutRepository = null
+            }
             repository.close()
         }
         synchronized(lock) {
@@ -217,7 +223,9 @@ class RealSessionController(
 
     private fun expire(expected: Long, repository: RealRepository) {
         synchronized(lock) {
-            if (owns(expected, repository)) {
+            // Java revokes this session's WS before its successful logout response arrives.
+            // Keep that HTTP client alive and let explicit logout publish its own outcome.
+            if (owns(expected, repository) && signingOutRepository !== repository) {
                 sessionWatcher?.cancel()
                 sessionWatcher = null
                 mutableState.value = state.value.copy(
