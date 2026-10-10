@@ -15,7 +15,6 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.sync.Mutex
 
 /** A real session never constructs FakeRepository. Leaving this workspace closes its HTTP client. */
 @Composable
@@ -53,22 +52,14 @@ fun RealWorkspace(onEnterDemo: () -> Unit, onExit: () -> Unit) {
             } else key(repository) {
                 // Retain this workspace and all mounted drafts while resynchronizing after sleep.
                 LaunchedEffect(repository) {
-                    val detector = ResumeDetector()
-                    val recovery = Mutex()
-                    var lastRecoveryNanos: Long? = null
-                    suspend fun recover() {
-                        val now = System.nanoTime()
-                        if (lastRecoveryNanos?.let { (now - it).coerceAtLeast(0L) < 2_000_000_000L } == true) return
-                        if (!recovery.tryLock()) return
-                        lastRecoveryNanos = now
+                    val recovery = ResumeRecoveryCoordinator(recover = {
                         try { repository.recoverAfterResume() }
                         catch (cancelled: CancellationException) { throw cancelled }
                         catch (_: Exception) { /* Repository publishes a safe connection error and retries. */ }
-                        finally { recovery.unlock() }
-                    }
-                    launch { AppResumeSignals.events.collect { recover() } }
+                    })
+                    launch { AppResumeSignals.events.collect { recovery.onForegroundHint() } }
                     while (isActive) {
-                        if (detector.sample()) recover()
+                        recovery.onHeartbeat()
                         delay(1_000)
                     }
                 }
