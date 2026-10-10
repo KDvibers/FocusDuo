@@ -20,8 +20,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
-private enum class RealPage { HOME, ROOM, HISTORY, RESULT, SETTINGS }
-
 /** Every room, task and result in this workspace comes from the authenticated backend. */
 @Composable
 internal fun RealApp(
@@ -40,6 +38,7 @@ internal fun RealApp(
     val pendingCommand by repository.pendingCommand.collectAsState()
     val scope = rememberCoroutineScope()
     val clipboard = LocalClipboardManager.current
+    val currentSessionBusy by rememberUpdatedState(sessionBusy)
     var page by remember { mutableStateOf(RealPage.HOME) }
     var dialog by remember { mutableStateOf<RoomDialog?>(null) }
     var selectedTask by remember { mutableStateOf<Task?>(null) }
@@ -54,9 +53,10 @@ internal fun RealApp(
     var retryCompletion by remember { mutableStateOf<(() -> Unit)?>(null) }
     var historyError by remember { mutableStateOf<String?>(null) }
     var resultError by remember { mutableStateOf<String?>(null) }
-    var failedResultId by remember { mutableStateOf<String?>(null) }
+    var failedResultRequest by remember { mutableStateOf<ResultLoadRequest?>(null) }
     var notice by remember { mutableStateOf<String?>(null) }
     var selectedResult by remember { mutableStateOf<HistoryItem?>(null) }
+    var selectedResultOpenedAutomatically by remember { mutableStateOf(false) }
     var observedTerminalId by remember { mutableStateOf(data.room?.round?.takeIf { it.isTerminal() }?.id) }
     var timerTick by remember { mutableLongStateOf(0L) }
     val busy = sessionBusy || operationBusy || resultBusy
@@ -86,32 +86,76 @@ internal fun RealApp(
         }
     }
 
-    fun openResult(roundId: String, automatic: Boolean = false) {
-        if (resultBusy || (!automatic && (sessionBusy || operationBusy))) return
+    fun automaticNavigationBlocked() = currentSessionBusy || operationBusy || dialog != null ||
+        repository.pendingCommand.value != null || conflictNeedsReview ||
+        failedResultRequest?.keepsExplicitRetryVisible(page) == true
+
+    fun automaticDestination() = liveResultDestination(
+        page, repository.state.value.room, selectedResult, selectedResultOpenedAutomatically,
+        automaticNavigationBlocked(),
+    )
+
+    fun loadResult(request: ResultLoadRequest) {
+        if (resultBusy || (!request.automatic && (sessionBusy || operationBusy))) return
+        if (!request.isRelevant(repository.state.value.room)) {
+            if (failedResultRequest == request) { failedResultRequest = null; resultError = null }
+            return
+        }
+        if (!request.automatic) selectedResultOpenedAutomatically = false
         resultBusy = true
         resultError = null
-        failedResultId = null
+        failedResultRequest = null
         scope.launch {
             try {
-                val result = repository.loadHistoryItem(roundId)
-                if (!automatic || (page in listOf(RealPage.HOME, RealPage.ROOM) && dialog == null)) {
+                val result = repository.loadHistoryItem(request.roundId)
+                val currentRoom = repository.state.value.room
+                val currentTerminal = isCurrentTerminalResult(result, currentRoom) && request.isRelevant(currentRoom)
+                if (request.destinationAfterLoad(result, page, currentRoom, selectedResult,
+                        selectedResultOpenedAutomatically, automaticNavigationBlocked()) == LiveResultDestination.RESULT) {
                     selectedResult = result
+                    selectedResultOpenedAutomatically = request.automatic
                     page = RealPage.RESULT
-                } else notice = "Раунд завершён. Сохранённый итог доступен в истории."
+                } else if (currentTerminal && !automaticNavigationBlocked()) {
+                    notice = "Раунд завершён. Сохранённый итог доступен в истории."
+                }
+                // A blocked automatic result remains unobserved until the form/replay is resolved.
+                if (currentTerminal && (!request.automatic || !automaticNavigationBlocked())) observedTerminalId = request.roundId
             } catch (cancelled: CancellationException) {
                 throw cancelled
             } catch (failure: Exception) {
-                failedResultId = roundId
-                resultError = safeRealError(failure)
+                // A late failure for the previous automatic result must not cover the new round.
+                if (request.isRelevant(repository.state.value.room)) {
+                    failedResultRequest = request
+                    resultError = safeRealError(failure)
+                    // Expose an explicit retry instead of repeatedly fetching a failing result in an effect.
+                    if (request.automatic && !automaticNavigationBlocked()) observedTerminalId = request.roundId
+                }
             } finally { resultBusy = false }
         }
     }
 
+    fun openResult(roundId: String, automatic: Boolean = false) {
+        val originRoom = if (automatic) {
+            repository.state.value.room?.takeIf { it.round?.id == roundId }?.roomId ?: return
+        } else null
+        loadResult(ResultLoadRequest(roundId, originRoom))
+    }
+
     LaunchedEffect(repository) { refreshHistory() }
-    LaunchedEffect(room?.round?.id, room?.round?.status, resultBusy) {
+    LaunchedEffect(room?.roomId, room?.round?.id, room?.round?.status, resultBusy, page,
+        selectedResult?.roundId, selectedResultOpenedAutomatically, dialog, pendingCommand,
+        conflictNeedsReview, sessionBusy, operationBusy) {
+        if (failedResultRequest?.let { it.automatic && !it.isRelevant(room) } == true) {
+            failedResultRequest = null
+            resultError = null
+        }
+        if (resultBusy || automaticNavigationBlocked()) return@LaunchedEffect
+        if (automaticDestination() == LiveResultDestination.ROOM) {
+            page = RealPage.ROOM
+            return@LaunchedEffect
+        }
         val round = room?.round
-        if (round != null && round.isTerminal() && !resultBusy && observedTerminalId != round.id) {
-            observedTerminalId = round.id
+        if (round != null && round.isTerminal() && observedTerminalId != round.id) {
             openResult(round.id, automatic = true)
         }
     }
@@ -219,7 +263,8 @@ internal fun RealApp(
             }
         }
         val scroll = rememberScrollState()
-        LaunchedEffect(page, room?.roomId) { scroll.scrollTo(0) }
+        LaunchedEffect(page, room?.roomId.takeIf { page == RealPage.ROOM },
+            room?.round?.id.takeIf { page == RealPage.ROOM }) { scroll.scrollTo(0) }
         Box(Modifier.weight(1f).fillMaxHeight()) {
             Column(Modifier.fillMaxSize().verticalScroll(scroll).padding(end = 12.dp), verticalArrangement = Arrangement.spacedBy(18.dp)) {
                 Text("Сервер · ${preferences.baseUrl}", color = FocusDuoColors.Green, style = MaterialTheme.typography.body2)
@@ -255,7 +300,7 @@ internal fun RealApp(
                     Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                         Text("Не удалось загрузить сохранённый итог", style = MaterialTheme.typography.subtitle1)
                         Text(resultError.orEmpty(), color = FocusDuoColors.Error, style = MaterialTheme.typography.body2)
-                        SecondaryButton({ failedResultId?.let { openResult(it) } }, enabled = !busy) { Text("Повторить загрузку итога") }
+                        SecondaryButton({ failedResultRequest?.let(::loadResult) }, enabled = !busy) { Text("Повторить загрузку итога") }
                     }
                 }
                 when (page) {

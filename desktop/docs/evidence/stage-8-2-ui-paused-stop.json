@@ -1,0 +1,37 @@
+{
+  "checkpoint": "manual-ui-paused-java-stopped",
+  "recordedAt": "2026-10-11T02:02:16.6893659+05:00",
+  "command": {
+    "id": "ebb66f44-32af-48ca-8afa-bdf57a3cc0b8",
+    "status": "ok"
+  },
+  "state": {
+    "kind": "focusduo-isolated-compose-stage8-v1",
+    "stopped": false,
+    "baseUrl": "http://127.0.0.1:8090",
+    "dbPort": 55438,
+    "javaPid": null,
+    "generation": 4,
+    "controllerPid": 18168,
+    "postgresData": "C:\\Users\\user\\.codex\\worktrees\\desktop-wake-recovery\\focusDuo\\desktop\\build\\stage8-2-20261011\\postgres-data",
+    "runDirectory": "C:\\Users\\user\\.codex\\worktrees\\desktop-wake-recovery\\focusDuo\\desktop\\build\\stage8-2-20261011"
+  },
+  "listeners": [
+    {
+      "LocalAddress": "::",
+      "LocalPort": 5432,
+      "OwningProcess": 10172
+    },
+    {
+      "LocalAddress": "127.0.0.1",
+      "LocalPort": 55438,
+      "OwningProcess": 6124
+    },
+    {
+      "LocalAddress": "0.0.0.0",
+      "LocalPort": 5432,
+      "OwningProcess": 10172
+    }
+  ],
+  "uiOfflineObservation": "AWAITING_USER_REPORT"
+}

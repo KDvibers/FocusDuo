@@ -1,0 +1,217 @@
+{
+  "kind": "focusduo-stage8-2-screenshots-v1",
+  "count": 21,
+  "formatNote": "Clipboard PNG originals copied unchanged. Six native sky JPEG screenshots were renamed from .png to .jpg without changing bytes; SHA-256 equality checked before and after rename.",
+  "screenshots": [
+    {
+      "path": "desktop/docs/screenshots/stage-8-2-break-history-peer.jpg",
+      "mimeType": "image/jpeg",
+      "width": 1267,
+      "height": 794,
+      "bytes": 69097,
+      "sha256": "97E14EFFF938DDD4C97AAAE98BC0FE72306C71E513292DEAC22A9363EB99426A",
+      "source": "NATIVE_SKY_SCREENSHOT",
+      "pixelEditing": "none"
+    },
+    {
+      "path": "desktop/docs/screenshots/stage-8-2-break-peer-stale-focus.jpg",
+      "mimeType": "image/jpeg",
+      "width": 1267,
+      "height": 794,
+      "bytes": 82465,
+      "sha256": "E3D5F1D4DCB29C1294180BF8A873E12D005AAEC5ECE01E51E96424FAEEF62B57",
+      "source": "NATIVE_SKY_SCREENSHOT",
+      "pixelEditing": "none"
+    },
+    {
+      "path": "desktop/docs/screenshots/stage-8-2-break-recovery-peer-initial.jpg",
+      "mimeType": "image/jpeg",
+      "width": 1267,
+      "height": 794,
+      "bytes": 74290,
+      "sha256": "822DE66A881D529E9B478DACBF983E5EA927AF5998CE7057E3889E3E4CF8DE91",
+      "source": "NATIVE_SKY_SCREENSHOT",
+      "pixelEditing": "none"
+    },
+    {
+      "path": "desktop/docs/screenshots/stage-8-2-break-summary-owner.jpg",
+      "mimeType": "image/jpeg",
+      "width": 1267,
+      "height": 794,
+      "bytes": 79447,
+      "sha256": "5DB640D71B8B0DD81176DB98E0116740094E1E1B0376E810BEF5E1583D20C185",
+      "source": "NATIVE_SKY_SCREENSHOT",
+      "pixelEditing": "none"
+    },
+    {
+      "path": "desktop/docs/screenshots/stage-8-2-break-summary-peer-manual.jpg",
+      "mimeType": "image/jpeg",
+      "width": 1267,
+      "height": 794,
+      "bytes": 81131,
+      "sha256": "A25E349DD5B1C27106A377EAB1BCAA2F81FEA3CC4CD1442FF22E0955BAA7E218",
+      "source": "NATIVE_SKY_SCREENSHOT",
+      "pixelEditing": "none"
+    },
+    {
+      "path": "desktop/docs/screenshots/stage-8-2-break-zero-waiting-owner.jpg",
+      "mimeType": "image/jpeg",
+      "width": 1267,
+      "height": 794,
+      "bytes": 95343,
+      "sha256": "A94CA712BC1273B80929A418B406FE8ED47D73DEB510B00FDE8E715F73220FBC",
+      "source": "NATIVE_SKY_SCREENSHOT",
+      "pixelEditing": "none"
+    },
+    {
+      "path": "desktop/docs/screenshots/stage-8-2-fixed-break-running-owner.jpg",
+      "mimeType": "image/jpeg",
+      "width": 1267,
+      "height": 794,
+      "bytes": 81786,
+      "sha256": "17F8D85E3D6891F08F0FDE412D50FDDD1FE6750D6701A61D84EB1C398FF7BDA8",
+      "source": "NATIVE_SKY_SCREENSHOT",
+      "pixelEditing": "none"
+    },
+    {
+      "path": "desktop/docs/screenshots/stage-8-2-fixed-break-running-peer.jpg",
+      "mimeType": "image/jpeg",
+      "width": 1267,
+      "height": 794,
+      "bytes": 82373,
+      "sha256": "D2493CD273B0DDE5D344701B619BAAAB8D400C0B2E866E38773A9397A691FB26",
+      "source": "NATIVE_SKY_SCREENSHOT",
+      "pixelEditing": "none"
+    },
+    {
+      "path": "desktop/docs/screenshots/stage-8-2-fixed-break-summary-owner.jpg",
+      "mimeType": "image/jpeg",
+      "width": 1267,
+      "height": 794,
+      "bytes": 79912,
+      "sha256": "E988658E5737B151E9F0B36A1FDF45054942546528D54921801BA81A8A5B5DD9",
+      "source": "NATIVE_SKY_SCREENSHOT",
+      "pixelEditing": "none"
+    },
+    {
+      "path": "desktop/docs/screenshots/stage-8-2-fixed-break-summary-peer.jpg",
+      "mimeType": "image/jpeg",
+      "width": 1267,
+      "height": 794,
+      "bytes": 78714,
+      "sha256": "20DB53EB51A53613D3747712280B8FAB3D00FC7B3F9C0946FEAD7556904EB672",
+      "source": "NATIVE_SKY_SCREENSHOT",
+      "pixelEditing": "none"
+    },
+    {
+      "path": "desktop/docs/screenshots/stage-8-2-fixed-break-zero-owner.jpg",
+      "mimeType": "image/jpeg",
+      "width": 1267,
+      "height": 794,
+      "bytes": 86269,
+      "sha256": "529A98ED46697BA040EB3893EFE614FBABAE0022CC08528C2C0CBE9C8C0A9439",
+      "source": "NATIVE_SKY_SCREENSHOT",
+      "pixelEditing": "none"
+    },
+    {
+      "path": "desktop/docs/screenshots/stage-8-2-fixed-break-zero-peer.jpg",
+      "mimeType": "image/jpeg",
+      "width": 1267,
+      "height": 794,
+      "bytes": 86883,
+      "sha256": "5CEFE96399B69ABCAD2F640D81F81C0488FB0B16964880A654EA54CE3C98AC8B",
+      "source": "NATIVE_SKY_SCREENSHOT",
+      "pixelEditing": "none"
+    },
+    {
+      "path": "desktop/docs/screenshots/stage-8-2-fixed-focus-running-peer.jpg",
+      "mimeType": "image/jpeg",
+      "width": 1267,
+      "height": 794,
+      "bytes": 80760,
+      "sha256": "FA8EC60CD91DD212146039DACBF794793C3A2549ABC1F5D2C984042DED048D99",
+      "source": "NATIVE_SKY_SCREENSHOT",
+      "pixelEditing": "none"
+    },
+    {
+      "path": "desktop/docs/screenshots/stage-8-2-fixed-focus-summary-peer.jpg",
+      "mimeType": "image/jpeg",
+      "width": 1267,
+      "height": 794,
+      "bytes": 79477,
+      "sha256": "ED9378144CEE02475E07667A530BE34C71A8DA871046233372D6F7715563913E",
+      "source": "NATIVE_SKY_SCREENSHOT",
+      "pixelEditing": "none"
+    },
+    {
+      "path": "desktop/docs/screenshots/stage-8-2-fixed-initial-break-peer.jpg",
+      "mimeType": "image/jpeg",
+      "width": 1267,
+      "height": 794,
+      "bytes": 79063,
+      "sha256": "1AE2FD784E56D80E89BDA2690520FAAC899128B430B54E5C3722834F3F7C2CFB",
+      "source": "NATIVE_SKY_SCREENSHOT",
+      "pixelEditing": "none"
+    },
+    {
+      "path": "desktop/docs/screenshots/stage-8-2-focus-summary-owner.png",
+      "mimeType": "image/png",
+      "width": 1919,
+      "height": 1199,
+      "bytes": 228249,
+      "sha256": "7F271D67E1F3654E1503C21AD15220BB4B023598A986CE6273983E8B4A900FE4",
+      "source": "USER_CLIPBOARD_ORIGINAL",
+      "pixelEditing": "none"
+    },
+    {
+      "path": "desktop/docs/screenshots/stage-8-2-paused-offline-peer.png",
+      "mimeType": "image/png",
+      "width": 1919,
+      "height": 1189,
+      "bytes": 253822,
+      "sha256": "328ACCC00ADAF88DCCE185131A1B01C7F98E2BC11071E967102ADDB758199605",
+      "source": "USER_CLIPBOARD_ORIGINAL",
+      "pixelEditing": "none"
+    },
+    {
+      "path": "desktop/docs/screenshots/stage-8-2-paused-recovered-peer.png",
+      "mimeType": "image/png",
+      "width": 1919,
+      "height": 1192,
+      "bytes": 262178,
+      "sha256": "C80C67907DF2E85B19F17F46A3B88D2F135810897DA9CE440B94A0401182B086",
+      "source": "USER_CLIPBOARD_ORIGINAL",
+      "pixelEditing": "none"
+    },
+    {
+      "path": "desktop/docs/screenshots/stage-8-2-running-recovered-owner.png",
+      "mimeType": "image/png",
+      "width": 1919,
+      "height": 1193,
+      "bytes": 261086,
+      "sha256": "E1BF4ACE84C11140D4293BFEB429F13F5165943AED6D0FDACC9F49BB04AB50A8",
+      "source": "USER_CLIPBOARD_ORIGINAL",
+      "pixelEditing": "none"
+    },
+    {
+      "path": "desktop/docs/screenshots/stage-8-2-ttl-connected.jpg",
+      "mimeType": "image/jpeg",
+      "width": 1267,
+      "height": 794,
+      "bytes": 81210,
+      "sha256": "A4520C113951008495006E144525175CBB12F6BA5B5DCA64A011BEF8D0192228",
+      "source": "NATIVE_SKY_SCREENSHOT",
+      "pixelEditing": "none"
+    },
+    {
+      "path": "desktop/docs/screenshots/stage-8-2-ttl-expired.jpg",
+      "mimeType": "image/jpeg",
+      "width": 1267,
+      "height": 794,
+      "bytes": 52845,
+      "sha256": "AFA33BBD43537FB67DC0B53B59781056D4EE6D95D8AF5D8A134A055694033079",
+      "source": "NATIVE_SKY_SCREENSHOT",
+      "pixelEditing": "none"
+    }
+  ]
+}

@@ -1,0 +1,124 @@
+{
+  "checkpoint": "manual-ui-running-java-started",
+  "inspectedAt": "2026-10-11T02:20:39.12393+05:00",
+  "state": {
+    "kind": "focusduo-isolated-compose-stage8-v1",
+    "stopped": false,
+    "baseUrl": "http://127.0.0.1:8090",
+    "dbPort": 55438,
+    "javaPid": 4552,
+    "generation": 6,
+    "controllerPid": 18168,
+    "postgresData": "C:\\Users\\user\\.codex\\worktrees\\desktop-wake-recovery\\focusDuo\\desktop\\build\\stage8-2-20261011\\postgres-data",
+    "runDirectory": "C:\\Users\\user\\.codex\\worktrees\\desktop-wake-recovery\\focusDuo\\desktop\\build\\stage8-2-20261011"
+  },
+  "listeners": [
+    {
+      "LocalAddress": "::",
+      "LocalPort": 5432,
+      "OwningProcess": 10172
+    },
+    {
+      "LocalAddress": "127.0.0.1",
+      "LocalPort": 55438,
+      "OwningProcess": 6124
+    },
+    {
+      "LocalAddress": "127.0.0.1",
+      "LocalPort": 8090,
+      "OwningProcess": 4552
+    },
+    {
+      "LocalAddress": "0.0.0.0",
+      "LocalPort": 5432,
+      "OwningProcess": 10172
+    }
+  ],
+  "invariants": {
+    "sameRoom": true,
+    "sameRevision": true,
+    "sameRound": true,
+    "stillRunning": true,
+    "sameEndsAt": true,
+    "sameStartedAt": true,
+    "sameActiveElapsed": true,
+    "sameHistoryCount": true,
+    "sameTasks": true,
+    "sameSessionCount": true,
+    "twoUnrevokedSessions": true
+  },
+  "counts": {
+    "rooms": 6,
+    "tasks": 6,
+    "users": 13,
+    "rounds": 4,
+    "history": 3,
+    "sessions": 19,
+    "openRooms": 1,
+    "migrations": 2,
+    "activeMemberships": 2,
+    "unrevokedSessions": 2,
+    "idempotencyResults": 49,
+    "historyParticipants": 6
+  },
+  "room": {
+    "id": "2bee0ae1-cce4-4422-a503-3a7e0c60c754",
+    "code": "FD-MHYWYU",
+    "status": "OPEN",
+    "revision": 10,
+    "breakDurationSeconds": 60,
+    "focusDurationSeconds": 900
+  },
+  "round": {
+    "id": "d8f043e0-4807-4657-ac0b-2bde0eff27c9",
+    "kind": "FOCUS",
+    "endsAt": "2026-10-11T02:33:18.373+05:00",
+    "status": "RUNNING",
+    "endedAt": null,
+    "startedAt": "2026-10-11T01:56:20.739+05:00",
+    "activeElapsedMs": 14,
+    "durationSeconds": 900,
+    "completionReason": null
+  },
+  "serverRemainingMs": 759249,
+  "remainingReductionSinceBaselineMs": 101686,
+  "tasks": [
+    {
+      "id": "1c6232f2-b322-4cc8-8190-0a8cc3728633",
+      "title": "Проверить восстановление паузы и длинной русской задачи после двух перезапусков сервера",
+      "userId": "7c9aec54-fbf5-4f00-9904-0806d13410ea",
+      "completed": true
+    },
+    {
+      "id": "f98f3f79-031c-489f-a303-0748c21b31aa",
+      "title": "Убедиться, что общий таймер продолжает работу по исходному серверному сроку завершения",
+      "userId": "be8e9bc7-457a-48a4-82c0-177ae091268f",
+      "completed": false
+    }
+  ],
+  "members": [
+    {
+      "goal": "Сохранить комнату, задачи и паузу после рестарта Java без ручного обновления",
+      "slot": 1,
+      "active": true,
+      "userId": "7c9aec54-fbf5-4f00-9904-0806d13410ea",
+      "displayName": "Владелец — восстановление"
+    },
+    {
+      "goal": "Проверить восстановление второго Compose-клиента и согласованный итог",
+      "slot": 2,
+      "active": true,
+      "userId": "be8e9bc7-457a-48a4-82c0-177ae091268f",
+      "displayName": "Участник — восстановление"
+    }
+  ],
+  "historyForRound": [],
+  "uiRecoveryObservation": {
+    "status": "PASS",
+    "bothWindows": "USER_REPORTED: automatic recovery; timers continue with the same displayed remaining time; owner Pause and Finish enabled",
+    "ownerWindow": "SCREENSHOT: stage-8-2-running-recovered-owner.png; connected, FD-MHYWYU 2/2, RUNNING 11:13, own task 1/1, peer task 0/1, Pause and Finish enabled",
+    "recordedAt": "2026-10-11T02:22:48.3855259+05:00",
+    "focusFinish": "NOT_RUN",
+    "offlineBreakElapsed": "NOT_RUN"
+  }
+}

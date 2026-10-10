@@ -1,0 +1,39 @@
+{
+  "checkpoint": "patched-two-compose-break-java-stopped",
+  "recordedAt": "2026-10-11T02:47:10.5056234+05:00",
+  "command": {
+    "id": "ec8a3743-9e0e-45ff-b8ba-f75d4fe8e017",
+    "status": "ok"
+  },
+  "state": {
+    "kind": "focusduo-isolated-compose-stage8-v1",
+    "stopped": false,
+    "baseUrl": "http://127.0.0.1:8090",
+    "dbPort": 55438,
+    "javaPid": null,
+    "generation": 7,
+    "controllerPid": 18168,
+    "postgresData": "C:\\Users\\user\\.codex\\worktrees\\desktop-wake-recovery\\focusDuo\\desktop\\build\\stage8-2-20261011\\postgres-data",
+    "runDirectory": "C:\\Users\\user\\.codex\\worktrees\\desktop-wake-recovery\\focusDuo\\desktop\\build\\stage8-2-20261011"
+  },
+  "listeners": [
+    {
+      "LocalAddress": "::",
+      "LocalPort": 5432,
+      "OwningProcess": 10172
+    },
+    {
+      "LocalAddress": "127.0.0.1",
+      "LocalPort": 55438,
+      "OwningProcess": 6124
+    },
+    {
+      "LocalAddress": "0.0.0.0",
+      "LocalPort": 5432,
+      "OwningProcess": 10172
+    }
+  ],
+  "savedEndsAt": "2026-10-11T02:47:33.375+05:00",
+  "roundId": "681d704e-74ac-4dbc-8087-d1b1cd9b31be",
+  "uiZeroObservation": "AWAITING_ROOT_OBSERVATION"
+}

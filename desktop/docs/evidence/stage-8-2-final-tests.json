@@ -1,0 +1,56 @@
+{
+  "checkpoint": "final-navigation-fix-full-tests",
+  "recordedAt": "2026-10-11T02:43:16.7932694+05:00",
+  "desktopBaseCommit": "0da9c6c",
+  "command": "desktop/gradlew.bat test check backendAuthSmoke backendRoomSmoke --rerun-tasks --console=plain",
+  "gradleOutcome": "BUILD SUCCESSFUL",
+  "gradleSeconds": 24,
+  "exitCode": 0,
+  "java": "21.0.6",
+  "results": [
+    {
+      "task": "test",
+      "tests": 199,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "task": "backendAuthSmoke",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "task": "backendRoomSmoke",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  ],
+  "newNavigationTests": 12,
+  "targetedTests": 44,
+  "targetedGradleSeconds": 8,
+  "sourceHashes": [
+    {
+      "sha256": "5D96689A85A44A4EDA20B698F27221FBF734D8D871E253EC8774F02E0C440A68",
+      "path": "desktop/src/main/kotlin/dev/focusduo/presentation/RealApp.kt"
+    },
+    {
+      "sha256": "BFE967935A0B4BBB8E1DCB425AC600A62EE8BDA77738577B09CF59FC9FA24DFA",
+      "path": "desktop/src/main/kotlin/dev/focusduo/presentation/LiveResultNavigation.kt"
+    },
+    {
+      "sha256": "8A743F6776314E3FDAE00188E72AF26CAE22A53651A09F28CCEB925ADAC36212",
+      "path": "desktop/src/test/kotlin/dev/focusduo/presentation/LiveResultNavigationTest.kt"
+    }
+  ],
+  "freshGuiVerification": "PASS_ROOT_OBSERVED_TWO_FRESH_COMPOSE_JVMS",
+  "freshGuiEvidence": [
+    "stage-8-2-fixed-break-before.json",
+    "stage-8-2-fixed-break-expired-offline.json",
+    "stage-8-2-fixed-break-start.json"
+  ]
+}

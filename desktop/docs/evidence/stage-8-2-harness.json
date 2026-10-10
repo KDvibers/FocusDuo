@@ -1,0 +1,225 @@
+{
+  "kind": "focusduo-stage8-2-client-harness-v1",
+  "recordedAt": "2026-10-11T01:56:07.029146+05:00",
+  "desktopBaseCommit": "0da9c6c6713a625c05ccf4d3ffff99986470e6da",
+  "runtime": {
+    "os": "native Windows",
+    "jdk": "Amazon Corretto 21.0.6",
+    "gradle": "8.13",
+    "kotlin": "2.2.20",
+    "ktorCio": "3.3.1",
+    "springBoot": "3.5.16",
+    "postgresql": "17.2",
+    "baseUrl": "http://127.0.0.1:8090",
+    "dbPort": 55438,
+    "backendJarSha256": "a01fe560a161e6b89e7e653e8d034662dc8a205315a145f5f4cdbfb47e148a11",
+    "javaGenerationBeforeHarness": 2,
+    "javaGenerationAfterHarness": 4
+  },
+  "ordinaryAndLiveCheck": {
+    "command": ".\\desktop\\gradlew.bat -p desktop test check backendAuthSmoke backendRoomSmoke -Dfocusduo.smoke.baseUrl=http://127.0.0.1:8090 --rerun-tasks --console=plain",
+    "exitCode": 0,
+    "elapsedSeconds": 24.748,
+    "gradleSeconds": 24,
+    "junit": [
+      {
+        "task": "test",
+        "tests": 187,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "task": "backendAuthSmoke",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "task": "backendRoomSmoke",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    ],
+    "logPath": "desktop/build/stage8-2-20261011/client-check.log"
+  },
+  "harnessCommandTemplate": ".\\desktop\\gradlew.bat -p desktop -I <absolute desktop/scripts/stage8-2-smoke.gradle> <task> -Dfocusduo.smoke.baseUrl=http://127.0.0.1:8090 -Dfocusduo.smoke.controlDir=<absolute desktop/build/stage8-2-20261011> --console=plain",
+  "harnessEnvironment": {
+    "JAVA_HOME": "C:/Users/user/.jdks/corretto-21.0.6",
+    "JAVA_TOOL_OPTIONS": "-Djdk.net.unixdomain.tmpdir=<absolute desktop/build/ipc>"
+  },
+  "harnesses": [
+    {
+      "task": "realRepositorySmoke",
+      "exitCode": 0,
+      "elapsedSeconds": 8.952,
+      "checkpoints": [
+        "PASS auth: normalization, wrong password and duplicate username through real CIO",
+        "PASS current room: two participants, goal, task and known-room DTO mapped by RealRepository",
+        "PASS 401: external token revocation expires and clears the repository; peer remains authorized",
+        "PASS relogin/logout: room restored, local state cleared, token revoked, room remains open",
+        "PASS cleanup: own room closed and peer session logged out"
+      ],
+      "finalPass": "PASS FocusDuo RealRepository live auth integration",
+      "gradleSeconds": 8,
+      "logPath": "desktop/build/stage8-2-20261011/realRepositorySmoke.log"
+    },
+    {
+      "task": "realRoomLifecycleSmoke",
+      "exitCode": 0,
+      "elapsedSeconds": 9.313,
+      "checkpoints": [
+        "PASS reconnect: manual resubscription receives a full snapshot and the partner's next change",
+        "PASS relogin: bootstrap restores the same two-member room and missed edit without joining again",
+        "PASS revoke: active WebSocket expires the repository without REST refresh; token receives 401 and peer stays connected",
+        "PASS closed: final snapshot retained, membership released, reconnect stays NONE and mutations are rejected",
+        "PASS cleanup: own room closed and active sessions logged out"
+      ],
+      "finalPass": "PASS FocusDuo RealRepository live room lifecycle",
+      "gradleSeconds": 9,
+      "logPath": "desktop/build/stage8-2-20261011/realRoomLifecycleSmoke.log"
+    },
+    {
+      "task": "realRecoverySmoke",
+      "exitCode": 0,
+      "elapsedSeconds": 10.254,
+      "checkpoints": [
+        "PASS lost create: real 200 discarded, membership recovered, identical manual replay creates no second room",
+        "PASS lost task: pending gates new commands; replay keeps method/path/body/key/revision, one effect and newer peer snapshot",
+        "PASS conflict: delayed send gets real 409 and authoritative snapshot; new explicit action uses a new key and fresh revision",
+        "PASS cleanup: own room closed and active sessions logged out"
+      ],
+      "finalPass": "PASS FocusDuo RealRepository live safe retry",
+      "gradleSeconds": 10,
+      "logPath": "desktop/build/stage8-2-20261011/realRecoverySmoke.log"
+    },
+    {
+      "task": "realRestartSmoke",
+      "exitCode": 0,
+      "elapsedSeconds": 24.376,
+      "checkpoints": [
+        "PASS paused restart: both clients recover automatically with the same round, task, revision and frozen time",
+        "PASS running restart: both clients recover automatically with the original deadline and membership",
+        "PASS resume signal: explicit recoverAfterResume performs fresh REST/WS synchronization without a mutation",
+        "PASS history: one equal persisted result for both clients after both server restarts",
+        "PASS cleanup: own room closed and both sessions logged out"
+      ],
+      "finalPass": "PASS FocusDuo RealRepository live restart integration",
+      "gradleSeconds": 24,
+      "logPath": "desktop/build/stage8-2-20261011/realRestartSmoke.log"
+    }
+  ],
+  "checkpointCount": 19,
+  "finalPassCount": 4,
+  "fixtures": [
+    {
+      "name": "auth-session.json",
+      "workingBytesEqual": false,
+      "commonWorkingEol": "CRLF",
+      "desktopWorkingEol": "LF",
+      "normalizedLfBytesEqual": true,
+      "jsonEqual": true,
+      "gitBlobBytesEqual": true,
+      "gitBlobSha256": "0a6aaeff199076753007cad860093f91e4d58192fb08d26fd1ca69e0a9e83185"
+    },
+    {
+      "name": "history-item.json",
+      "workingBytesEqual": false,
+      "commonWorkingEol": "CRLF",
+      "desktopWorkingEol": "LF",
+      "normalizedLfBytesEqual": true,
+      "jsonEqual": true,
+      "gitBlobBytesEqual": true,
+      "gitBlobSha256": "ffd9ce8baf6ffc2189703a91d1c44edd133d7b013ac2d78ac37ec327fd4db18f"
+    },
+    {
+      "name": "history.json",
+      "workingBytesEqual": false,
+      "commonWorkingEol": "CRLF",
+      "desktopWorkingEol": "LF",
+      "normalizedLfBytesEqual": true,
+      "jsonEqual": true,
+      "gitBlobBytesEqual": true,
+      "gitBlobSha256": "5b7c7e4ca4741409ec16d4344e413ad21096d26e8afa7280772176b89e2b79d9"
+    },
+    {
+      "name": "revision-conflict.json",
+      "workingBytesEqual": false,
+      "commonWorkingEol": "CRLF",
+      "desktopWorkingEol": "LF",
+      "normalizedLfBytesEqual": true,
+      "jsonEqual": true,
+      "gitBlobBytesEqual": true,
+      "gitBlobSha256": "195ce18dcd6f857cf490d1e88ce5639dbed73e01e9404d4213a00ea874766cd0"
+    },
+    {
+      "name": "room-completed.json",
+      "workingBytesEqual": false,
+      "commonWorkingEol": "CRLF",
+      "desktopWorkingEol": "LF",
+      "normalizedLfBytesEqual": true,
+      "jsonEqual": true,
+      "gitBlobBytesEqual": true,
+      "gitBlobSha256": "fc36f2a2ce9989c9ad39f0b5f5198a0e37d6714e53da37b59031502311789b88"
+    },
+    {
+      "name": "room-current.json",
+      "workingBytesEqual": false,
+      "commonWorkingEol": "CRLF",
+      "desktopWorkingEol": "LF",
+      "normalizedLfBytesEqual": true,
+      "jsonEqual": true,
+      "gitBlobBytesEqual": true,
+      "gitBlobSha256": "110c562ae61e2a2a67d8a7eac746b0229dd39e15fa3f10ca17671e9fc88d1755"
+    },
+    {
+      "name": "room-event.json",
+      "workingBytesEqual": false,
+      "commonWorkingEol": "CRLF",
+      "desktopWorkingEol": "LF",
+      "normalizedLfBytesEqual": true,
+      "jsonEqual": true,
+      "gitBlobBytesEqual": true,
+      "gitBlobSha256": "b909b9dc5cb8201a212bc621cf82949d02ce7e508c5c9ffcbc8780702c9b4ffd"
+    },
+    {
+      "name": "room-paused.json",
+      "workingBytesEqual": false,
+      "commonWorkingEol": "CRLF",
+      "desktopWorkingEol": "LF",
+      "normalizedLfBytesEqual": true,
+      "jsonEqual": true,
+      "gitBlobBytesEqual": true,
+      "gitBlobSha256": "02cb363c4b2ae7dd6a7f9b029fb1bca3b5bc598ef7e69c71141cb474615708c7"
+    },
+    {
+      "name": "room-resumed.json",
+      "workingBytesEqual": false,
+      "commonWorkingEol": "CRLF",
+      "desktopWorkingEol": "LF",
+      "normalizedLfBytesEqual": true,
+      "jsonEqual": true,
+      "gitBlobBytesEqual": true,
+      "gitBlobSha256": "a8bd994ed4fb56aa67b5bd889a982b42989d7a04bfd55a17f8289e7da5390ec3"
+    },
+    {
+      "name": "room-running.json",
+      "workingBytesEqual": false,
+      "commonWorkingEol": "CRLF",
+      "desktopWorkingEol": "LF",
+      "normalizedLfBytesEqual": true,
+      "jsonEqual": true,
+      "gitBlobBytesEqual": true,
+      "gitBlobSha256": "4d1d83ac14e9e87b744472946b967965ee3be331d5e0e61986b966d180071e21"
+    }
+  ],
+  "limits": [
+    "Repository/CIO harness results are separate from Compose UI and physical sleep acceptance.",
+    "No physical Windows sleep, adapter disable, LAN, actual TTL expiry or overdue ELAPSED is claimed by these harnesses.",
+    "Production reconnect backoff and jitter are unchanged.",
+    "Backend Maven verify was not repeated by this client check."
+  ]
+}

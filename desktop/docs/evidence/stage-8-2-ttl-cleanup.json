@@ -1,0 +1,113 @@
+{
+  "checkpoint": "short-ttl-owned-controller-cleanup",
+  "checkedAtUtc": "2026-10-10T21:44:16.106093+00:00",
+  "method": "Created only TTL runDirectory shutdown file; owned controller normal finally cleanup",
+  "controllerExitCode": 0,
+  "before": {
+    "runtime": {
+      "kind": "focusduo-isolated-compose-stage8-v1",
+      "stopped": false,
+      "baseUrl": "http://127.0.0.1:8091",
+      "dbPort": 55439,
+      "javaPid": 3652,
+      "generation": 1,
+      "controllerPid": 31716,
+      "postgresData": "C:\\Users\\user\\.codex\\worktrees\\desktop-wake-recovery\\focusDuo\\desktop\\build\\stage8-2-ttl-20261011\\postgres-data",
+      "runDirectory": "C:\\Users\\user\\.codex\\worktrees\\desktop-wake-recovery\\focusDuo\\desktop\\build\\stage8-2-ttl-20261011"
+    },
+    "listeners": [
+      {
+        "LocalAddress": "::",
+        "LocalPort": 5432,
+        "OwningProcess": 10172
+      },
+      {
+        "LocalAddress": "127.0.0.1",
+        "LocalPort": 55439,
+        "OwningProcess": 24952
+      },
+      {
+        "LocalAddress": "127.0.0.1",
+        "LocalPort": 55438,
+        "OwningProcess": 6124
+      },
+      {
+        "LocalAddress": "127.0.0.1",
+        "LocalPort": 8091,
+        "OwningProcess": 3652
+      },
+      {
+        "LocalAddress": "127.0.0.1",
+        "LocalPort": 8090,
+        "OwningProcess": 17132
+      },
+      {
+        "LocalAddress": "0.0.0.0",
+        "LocalPort": 5432,
+        "OwningProcess": 10172
+      }
+    ]
+  },
+  "after": {
+    "runtime": {
+      "kind": "focusduo-isolated-compose-stage8-v1",
+      "stopped": true,
+      "baseUrl": "http://127.0.0.1:8091",
+      "dbPort": 55439,
+      "javaPid": null,
+      "generation": 1,
+      "controllerPid": 31716,
+      "postgresData": "C:\\Users\\user\\.codex\\worktrees\\desktop-wake-recovery\\focusDuo\\desktop\\build\\stage8-2-ttl-20261011\\postgres-data",
+      "runDirectory": "C:\\Users\\user\\.codex\\worktrees\\desktop-wake-recovery\\focusDuo\\desktop\\build\\stage8-2-ttl-20261011"
+    },
+    "listeners": [
+      {
+        "LocalAddress": "::",
+        "LocalPort": 5432,
+        "OwningProcess": 10172
+      },
+      {
+        "LocalAddress": "127.0.0.1",
+        "LocalPort": 55438,
+        "OwningProcess": 6124
+      },
+      {
+        "LocalAddress": "127.0.0.1",
+        "LocalPort": 8090,
+        "OwningProcess": 17132
+      },
+      {
+        "LocalAddress": "0.0.0.0",
+        "LocalPort": 5432,
+        "OwningProcess": 10172
+      }
+    ]
+  },
+  "checks": {
+    "ttlJavaPort8091Absent": true,
+    "ttlPostgresPort55439Absent": true,
+    "ownedDisposablePostgresDataRemoved": true,
+    "stoppedMarkerWritten": true,
+    "mainAndUserListenersPreserved": {
+      "8090": {
+        "listenersUnchanged": true,
+        "processIds": [
+          17132
+        ]
+      },
+      "55438": {
+        "listenersUnchanged": true,
+        "processIds": [
+          6124
+        ]
+      },
+      "5432": {
+        "listenersUnchanged": true,
+        "processIds": [
+          10172
+        ]
+      }
+    }
+  },
+  "remainingMainRuntime": "ALIVE_FOR_PATCHED_COMPOSE_ACCEPTANCE"
+}

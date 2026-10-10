@@ -1,0 +1,65 @@
+{
+  "checkpoint": "final-native-stage8-2-stand-left-alive-for-user-review",
+  "checkedAtUtc": "2026-10-10T21:51:19.691500+00:00",
+  "runtime": {
+    "kind": "focusduo-isolated-compose-stage8-v1",
+    "stopped": false,
+    "baseUrl": "http://127.0.0.1:8090",
+    "dbPort": 55438,
+    "javaPid": 32440,
+    "generation": 8,
+    "controllerPid": 18168,
+    "postgresData": "C:\\Users\\user\\.codex\\worktrees\\desktop-wake-recovery\\focusDuo\\desktop\\build\\stage8-2-20261011\\postgres-data",
+    "runDirectory": "C:\\Users\\user\\.codex\\worktrees\\desktop-wake-recovery\\focusDuo\\desktop\\build\\stage8-2-20261011"
+  },
+  "readiness": {
+    "status": 401,
+    "code": "UNAUTHORIZED"
+  },
+  "listeners": [
+    {
+      "LocalAddress": "::",
+      "LocalPort": 5432,
+      "OwningProcess": 10172
+    },
+    {
+      "LocalAddress": "127.0.0.1",
+      "LocalPort": 55438,
+      "OwningProcess": 6124
+    },
+    {
+      "LocalAddress": "127.0.0.1",
+      "LocalPort": 8090,
+      "OwningProcess": 32440
+    },
+    {
+      "LocalAddress": "0.0.0.0",
+      "LocalPort": 5432,
+      "OwningProcess": 10172
+    }
+  ],
+  "counts": {
+    "rooms": 7,
+    "tasks": 7,
+    "users": 16,
+    "rounds": 9,
+    "history": 9,
+    "sessions": 25,
+    "openRooms": 1,
+    "migrations": 2,
+    "activeMemberships": 2,
+    "unrevokedSessions": 2,
+    "idempotencyResults": 67,
+    "historyParticipants": 18
+  },
+  "checks": {
+    "mainJavaReady": true,
+    "mainDisposablePostgresPreserved": true,
+    "userPostgresPreservedSamePid": true,
+    "ttlPortsAbsent": true,
+    "mainLeftAliveIntentionally": true
+  },
+  "uiSource": "Fresh patched Compose recovery and summary verified by root, see stage-8-2-fixed-break-start.json",
+  "sqlEvidence": "stage-8-2-final-db.json",
+  "cleanup": "NOT_REQUESTED_MAIN_LEFT_ALIVE"
+}

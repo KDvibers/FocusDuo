@@ -1,0 +1,141 @@
+{
+  "checkpoint": "short-ttl-isolated-native-runtime-setup",
+  "configuredSessionTtl": "PT30S",
+  "verifiedSeedSessionLifetimeSeconds": [
+    30.0,
+    30.0
+  ],
+  "versions": {
+    "java": "21.0.6",
+    "postgresql": "17.2",
+    "springBoot": "3.5.16"
+  },
+  "jarSha256": "A01FE560A161E6B89E7E653E8D034662DC8A205315A145F5F4CDBFB47E148A11",
+  "ports": {
+    "java": 8091,
+    "postgresql": 55439
+  },
+  "processes": {
+    "java": 3652,
+    "postgresql": 24952,
+    "controller": 31716
+  },
+  "readiness": {
+    "status": 401,
+    "code": "UNAUTHORIZED"
+  },
+  "seed": {
+    "usernames": [
+      "gui82_a_95cdd6055f59",
+      "gui82_b_95cdd6055f59"
+    ],
+    "code": "FD-VP26SM",
+    "roomId": "eef511ba-1d88-4a90-bedd-932947bd794e",
+    "roundId": "f33e1395-8b86-44b3-a0c7-866edc728487",
+    "status": "PAUSED",
+    "revision": 9,
+    "sessionsLoggedOut": true
+  },
+  "isolatedSqlBaseline": {
+    "rooms": [
+      {
+        "id": "eef511ba-1d88-4a90-bedd-932947bd794e",
+        "code": "FD-VP26SM",
+        "status": "OPEN",
+        "revision": 9,
+        "breakDurationSeconds": 60,
+        "focusDurationSeconds": 900
+      }
+    ],
+    "tasks": [
+      {
+        "id": "f05ed946-ce78-4309-94fc-f8791ac50eb5",
+        "title": "Проверить восстановление паузы и длинной русской задачи после двух перезапусков сервера",
+        "userId": "180a69ce-ac33-4839-93bf-c53b874966a9",
+        "completed": true
+      },
+      {
+        "id": "f97abcb2-7ac0-4eee-ae62-a5f2a04c6958",
+        "title": "Убедиться, что общий таймер продолжает работу по исходному серверному сроку завершения",
+        "userId": "5d30f864-37fd-4324-8d10-375f1341d041",
+        "completed": false
+      }
+    ],
+    "users": [
+      {
+        "id": "180a69ce-ac33-4839-93bf-c53b874966a9",
+        "username": "gui82_a_95cdd6055f59",
+        "displayName": "Владелец — восстановление"
+      },
+      {
+        "id": "5d30f864-37fd-4324-8d10-375f1341d041",
+        "username": "gui82_b_95cdd6055f59",
+        "displayName": "Участник — восстановление"
+      }
+    ],
+    "counts": {
+      "rooms": 1,
+      "tasks": 2,
+      "users": 2,
+      "rounds": 1,
+      "history": 0,
+      "sessions": 2,
+      "openRooms": 1,
+      "migrations": 2,
+      "activeMemberships": 2,
+      "unrevokedSessions": 0,
+      "idempotencyResults": 9,
+      "historyParticipants": 0
+    },
+    "rounds": [
+      {
+        "id": "f33e1395-8b86-44b3-a0c7-866edc728487",
+        "kind": "FOCUS",
+        "endsAt": null,
+        "status": "PAUSED",
+        "endedAt": null,
+        "startedAt": "2026-10-11T02:35:27.211+05:00",
+        "activeElapsedMs": 46,
+        "durationSeconds": 900,
+        "completionReason": null
+      }
+    ],
+    "history": [],
+    "members": [
+      {
+        "goal": "Сохранить комнату, задачи и паузу после рестарта Java без ручного обновления",
+        "slot": 1,
+        "active": true,
+        "userId": "180a69ce-ac33-4839-93bf-c53b874966a9",
+        "displayName": "Владелец — восстановление"
+      },
+      {
+        "goal": "Проверить восстановление второго Compose-клиента и согласованный итог",
+        "slot": 2,
+        "active": true,
+        "userId": "5d30f864-37fd-4324-8d10-375f1341d041",
+        "displayName": "Участник — восстановление"
+      }
+    ],
+    "sessions": [
+      {
+        "userId": "180a69ce-ac33-4839-93bf-c53b874966a9",
+        "expired": true,
+        "revoked": true,
+        "createdAt": "2026-10-11T02:35:26.742013+05:00",
+        "expiresAt": "2026-10-11T02:35:56.742013+05:00"
+      },
+      {
+        "userId": "5d30f864-37fd-4324-8d10-375f1341d041",
+        "expired": true,
+        "revoked": true,
+        "createdAt": "2026-10-11T02:35:26.810673+05:00",
+        "expiresAt": "2026-10-11T02:35:56.810673+05:00"
+      }
+    ],
+    "inspectedAt": "2026-10-11T02:36:00.864449+05:00",
+    "serverVersion": "17.2"
+  },
+  "uiExpiry": "AWAITING_ROOT_OBSERVATION",
+  "runtimeLeftAlive": true
+}
