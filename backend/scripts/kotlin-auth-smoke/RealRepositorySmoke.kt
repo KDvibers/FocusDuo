@@ -57,7 +57,8 @@ private class Smoke(private val baseUrl: String) : AutoCloseable {
         val username = "kotauth_" + UUID.randomUUID().toString().replace("-", "").take(20)
         val password = UUID.randomUUID().toString() + "Я!"
         val ownerEngine = observe()
-        val owner = keep(RealRepository.register(baseUrl, "  ${username.uppercase()}  ", "  Kotlin owner  ", password, ownerEngine))
+        val owner = keep(RealRepository.register(baseUrl, "  ${username.uppercase()}  ", "  Kotlin owner  ", password,
+            ownerEngine, realtimeEnabled = false))
         owner.bootstrap()
         check(owner.state.value.currentUser.username == username) { "Username normalization differs" }
         check(owner.state.value.currentUser.displayName == "Kotlin owner") { "Display name normalization differs" }
@@ -65,12 +66,12 @@ private class Smoke(private val baseUrl: String) : AutoCloseable {
         val ownerId = owner.state.value.currentUser.id
         roomOwnerId = ownerId
 
-        expectCode("UNAUTHORIZED") { keep(RealRepository.login(baseUrl, username, password + "wrong")) }
-        expectCode("USERNAME_TAKEN") { keep(RealRepository.register(baseUrl, username, "Duplicate", password)) }
+        expectCode("UNAUTHORIZED") { keep(RealRepository.login(baseUrl, username, password + "wrong", realtimeEnabled = false)) }
+        expectCode("USERNAME_TAKEN") { keep(RealRepository.register(baseUrl, username, "Duplicate", password, realtimeEnabled = false)) }
         println("PASS auth: normalization, wrong password and duplicate username through real CIO")
 
         val peerEngine = observe()
-        val peer = keep(RealRepository.register(baseUrl, username + "b", "Kotlin peer", password, peerEngine))
+        val peer = keep(RealRepository.register(baseUrl, username + "b", "Kotlin peer", password, peerEngine, realtimeEnabled = false))
         peer.bootstrap()
         cleanupToken = ownerEngine.token()
         roomCreationAttempted = true
@@ -90,6 +91,7 @@ private class Smoke(private val baseUrl: String) : AutoCloseable {
         println("PASS current room: two participants, goal, task and known-room DTO mapped by RealRepository")
 
         request("POST", "/auth/logout", ownerEngine.token(), expectedStatus = 204)
+        check(owner.sessionStatus.value == RealSessionStatus.ACTIVE) { "Session expired before the HTTP 401 check" }
         expectCode("UNAUTHORIZED") { owner.refreshCurrentRoom() }
         check(owner.sessionStatus.value == RealSessionStatus.EXPIRED) { "Server 401 did not expire session" }
         check(owner.state.value.room == null && owner.state.value.history.isEmpty()) { "Server 401 retained room/history" }
@@ -98,7 +100,7 @@ private class Smoke(private val baseUrl: String) : AutoCloseable {
         println("PASS 401: external token revocation expires and clears the repository; peer remains authorized")
 
         val loginEngine = observe()
-        val login = keep(RealRepository.login(baseUrl, username, password, loginEngine))
+        val login = keep(RealRepository.login(baseUrl, username, password, loginEngine, realtimeEnabled = false))
         login.bootstrap()
         check(login.state.value.currentUser.id == ownerId) { "Login changed identity" }
         sameRoom(login, expected)
@@ -115,7 +117,13 @@ private class Smoke(private val baseUrl: String) : AutoCloseable {
         check(closed.status == RoomStatus.CLOSED) { "Room did not close" }
         roomId = null
         roomCreationAttempted = false
-        check(peer.refreshCurrentRoom() == null) { "Closed room is still current" }
+        check(request("GET", "/rooms/current", peerEngine.token()).jsonObject["room"] == JsonNull) {
+            "Closed room still has active server membership"
+        }
+        val retained = checkNotNull(peer.refreshCurrentRoom()) { "Known closed room was not retained" }
+        check(retained.copy(serverNow = closed.serverNow) == closed && peer.state.value.room?.status == RoomStatus.CLOSED) {
+            "Repository did not preserve the final closed snapshot"
+        }
         peer.logout()
         println("PASS cleanup: own room closed and peer session logged out")
     }
