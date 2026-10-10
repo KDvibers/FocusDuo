@@ -1,0 +1,63 @@
+{
+  "roomId": "20000000-0000-4000-8000-000000000001",
+  "code": "FD-7K9M2Q",
+  "ownerId": "10000000-0000-4000-8000-000000000001",
+  "status": "OPEN",
+  "revision": 17,
+  "serverNow": "2026-10-08T16:06:18Z",
+  "focusDurationSeconds": 1500,
+  "breakDurationSeconds": 300,
+  "participants": [
+    {
+      "userId": "10000000-0000-4000-8000-000000000001",
+      "displayName": "Данияр",
+      "goal": "Закончить API",
+      "tasks": [
+        {
+          "id": "40000000-0000-4000-8000-000000000001",
+          "title": "Создать комнату",
+          "completed": true
+        },
+        {
+          "id": "40000000-0000-4000-8000-000000000002",
+          "title": "Добавить подключение",
+          "completed": false
+        },
+        {
+          "id": "40000000-0000-4000-8000-000000000003",
+          "title": "Проверить ошибки",
+          "completed": false
+        }
+      ]
+    },
+    {
+      "userId": "10000000-0000-4000-8000-000000000002",
+      "displayName": "Друг",
+      "goal": "Собрать интерфейс",
+      "tasks": [
+        {
+          "id": "40000000-0000-4000-8000-000000000004",
+          "title": "Сделать экран комнаты",
+          "completed": true
+        },
+        {
+          "id": "40000000-0000-4000-8000-000000000005",
+          "title": "Добавить таймер",
+          "completed": false
+        }
+      ]
+    }
+  ],
+  "round": {
+    "id": "30000000-0000-4000-8000-000000000001",
+    "kind": "FOCUS",
+    "status": "RUNNING",
+    "durationSeconds": 1500,
+    "startedAt": "2026-10-08T16:00:00Z",
+    "endsAt": "2026-10-08T16:25:00Z",
+    "remainingMs": 1122000,
+    "activeElapsedMs": 378000,
+    "endedAt": null,
+    "completionReason": null
+  }
+}
