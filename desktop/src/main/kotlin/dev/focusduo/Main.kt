@@ -13,7 +13,7 @@ fun main(args: Array<String>) {
     val options = LaunchOptions.parse(args)
     if (options.help) {
         println("FocusDuo Desktop: --demo [--width=1280] [--height=800]")
-        println("Без --demo открывается стартовый экран с явным выбором деморежима.")
+        println("Без --demo открывается вход на сервер; адрес задаётся в настройках или FOCUSDUO_BASE_URL.")
         return
     }
     application {

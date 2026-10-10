@@ -2,7 +2,7 @@ package dev.focusduo.domain
 
 import java.time.Instant
 
-/** Domain names and units follow the shared v1 contract; transport DTOs come later. */
+/** Domain names and units follow the shared v1 contract, independently of transport DTOs. */
 data class User(val id: String, val username: String, val displayName: String)
 
 data class Task(val id: String, val title: String, val completed: Boolean)

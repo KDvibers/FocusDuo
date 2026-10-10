@@ -2,7 +2,7 @@ package dev.focusduo.domain
 
 import kotlinx.coroutines.flow.StateFlow
 
-/** Room and round operations shared by the explicit demo and future network implementation. */
+/** Room and round operations shared by demo and network implementations. */
 interface FocusDuoRepository {
     val state: StateFlow<RepositoryState>
 

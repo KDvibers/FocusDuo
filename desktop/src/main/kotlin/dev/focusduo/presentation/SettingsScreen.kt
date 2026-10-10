@@ -29,6 +29,8 @@ fun SettingsScreen(
     onSave: (DesktopPreferences) -> Unit,
     onLogout: () -> Unit,
     onEditRoomSettings: () -> Unit,
+    demo: Boolean = true,
+    roomCommandsAvailable: Boolean = true,
 ) {
     var baseUrl by remember { mutableStateOf(preferences.baseUrl) }
     var rememberedUsername by remember { mutableStateOf(preferences.rememberedUsername) }
@@ -39,7 +41,7 @@ fun SettingsScreen(
     val dirty = baseUrl != preferences.baseUrl || rememberedUsername != preferences.rememberedUsername
     val visibleError = validationError ?: error.takeIf { showRepositoryError }
     val activeRound = room?.round?.status in listOf(RoundStatus.RUNNING, RoundStatus.PAUSED)
-    val canEditRoom = room?.status == RoomStatus.OPEN && room.ownerId == currentUser.id && !activeRound
+    val canEditRoom = roomCommandsAvailable && room?.status == RoomStatus.OPEN && room.ownerId == currentUser.id && !activeRound
 
     fun edited() {
         validationError = null
@@ -79,7 +81,7 @@ fun SettingsScreen(
         FocusCard(Modifier.fillMaxWidth()) {
             Column(Modifier.padding(26.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
                 Text("Подключение и вход", style = MaterialTheme.typography.h3)
-                Text("Сейчас открыт деморежим. Адрес сохраняется для будущего подключения к серверу; соединение здесь не создаётся.", style = MaterialTheme.typography.body2, color = FocusDuoColors.Secondary)
+                Text(if (demo) "Сейчас открыт деморежим. Адрес сохраняется для подключения к серверу; соединение здесь не создаётся." else "Вход выполнен на сервер. После изменения адреса потребуется заново войти на выбранный сервер.", style = MaterialTheme.typography.body2, color = FocusDuoColors.Secondary)
                 SettingsInput(
                     label = "Адрес сервера", value = baseUrl, onChange = { baseUrl = it; edited() },
                     hint = "Например, http://127.0.0.1:8090 · без /api/v1",
@@ -91,7 +93,7 @@ fun SettingsScreen(
                     hint = "Необязательно. Оставь пустым, чтобы не запоминать имя.",
                     error = visibleError?.fieldErrors?.get("rememberedUsername"), enabled = !busy, onSubmit = ::submit,
                 )
-                Text("Пароль не сохраняется. После перезапуска потребуется повторный вход. Изменение адреса завершит текущий вход; следующий вход останется в деморежиме.", style = MaterialTheme.typography.body2, color = FocusDuoColors.Secondary)
+                Text(if (demo) "Пароль не сохраняется. После перезапуска потребуется повторный вход. Изменение адреса завершит текущий вход; следующий вход останется в деморежиме." else "Пароль и токен не сохраняются на диск. Смена адреса очищает текущую сессию и данные комнаты в клиенте. Комната на сервере остаётся открытой.", style = MaterialTheme.typography.body2, color = FocusDuoColors.Secondary)
                 if (visibleError != null) Surface(color = FocusDuoColors.ErrorSurface, shape = MaterialTheme.shapes.small) {
                     Text(visibleError.message, Modifier.fillMaxWidth().padding(12.dp), color = FocusDuoColors.Error, style = MaterialTheme.typography.body2)
                 }
@@ -116,7 +118,7 @@ fun SettingsScreen(
                 Text(currentUser.displayName, style = MaterialTheme.typography.subtitle1)
                 Text("@${currentUser.username}", color = FocusDuoColors.Secondary)
                 Text("Для продолжения после выхода потребуется снова войти.", style = MaterialTheme.typography.body2, color = FocusDuoColors.Secondary)
-                SecondaryButton(onLogout, enabled = !busy) { Text("Выйти из демоаккаунта") }
+                SecondaryButton(onLogout, enabled = !busy) { Text(if (demo) "Выйти из демоаккаунта" else "Выйти из аккаунта") }
             }
         }
         FocusCard(Modifier.fillMaxWidth()) {
@@ -124,6 +126,7 @@ fun SettingsScreen(
                 Text("Раунды в комнате", style = MaterialTheme.typography.h3)
                 Text(
                     when {
+                        !roomCommandsAvailable -> "Изменение комнаты и длительностей будет подключено на этапе 6."
                         room == null -> "Создай комнату, чтобы задать длительность фокуса и перерыва."
                         room.status == RoomStatus.CLOSED -> "Эта комната закрыта. Длительности можно задать при создании новой."
                         room.ownerId != currentUser.id -> "Длительности меняет создатель комнаты."

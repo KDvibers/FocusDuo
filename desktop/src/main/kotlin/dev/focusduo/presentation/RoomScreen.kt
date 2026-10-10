@@ -49,6 +49,8 @@ fun RoomScreen(
     onFinish: () -> Unit,
     onCloseRoom: () -> Unit,
     onShowResult: () -> Unit,
+    readOnly: Boolean = false,
+    connectionLabel: String = "Локальная демокомната · без сервера",
 ) {
     val own = room.participants.firstOrNull { it.userId == currentUserId }
     val partner = room.participants.firstOrNull { it.userId != currentUserId }
@@ -64,7 +66,7 @@ fun RoomScreen(
         BoxWithConstraints(Modifier.fillMaxWidth()) {
             val left: @Composable () -> Unit = {
                 Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
-                    TimerCard(room, currentUserId == room.ownerId, busy, onEditSettings, onStartFocus, onStartBreak, onPause, onResume, onFinish, onShowResult)
+                    TimerCard(room, currentUserId == room.ownerId, busy || readOnly, onEditSettings, onStartFocus, onStartBreak, onPause, onResume, onFinish, onShowResult)
                     Row(Modifier.fillMaxWidth().height(IntrinsicSize.Min), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                         if (own != null) ParticipantCard(own, room, true, Modifier.weight(1f).fillMaxHeight())
                         if (partner != null) ParticipantCard(partner, room, false, Modifier.weight(1f).fillMaxHeight())
@@ -72,13 +74,13 @@ fun RoomScreen(
                     }
                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
                         FocusIcon(FocusIcon.Leaf, Modifier.size(17.dp))
-                        Text("Локальная демокомната · без сервера", style = MaterialTheme.typography.caption, color = FocusDuoColors.Secondary)
+                        Text(connectionLabel, style = MaterialTheme.typography.caption, color = FocusDuoColors.Secondary)
                     }
                 }
             }
             val right: @Composable () -> Unit = {
                 Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                    if (own != null) TasksCard(own, true, busy || closed, onEditGoal, onAddTask, onEditTask, onDeleteTask, onToggleTask)
+                    if (own != null) TasksCard(own, true, busy || closed || readOnly, onEditGoal, onAddTask, onEditTask, onDeleteTask, onToggleTask)
                     if (partner != null) TasksCard(partner, false, busy, {}, {}, {}, {}, {})
                     else WaitingTasks(onInvite, !closed && !busy)
                 }
@@ -92,7 +94,7 @@ fun RoomScreen(
         }
         if (!closed) Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             Text("Закрыть комнату для обоих участников может любой из вас.", Modifier.weight(1f), style = MaterialTheme.typography.caption, color = FocusDuoColors.Secondary)
-            TextButton(onCloseRoom, enabled = !busy) { Text("Закрыть комнату", color = FocusDuoColors.Secondary) }
+            TextButton(onCloseRoom, enabled = !busy && !readOnly) { Text("Закрыть комнату", color = FocusDuoColors.Secondary) }
         }
     }
 }

@@ -24,7 +24,7 @@ import dev.focusduo.designsystem.*
 import dev.focusduo.domain.AuthValidation
 import dev.focusduo.domain.RepositoryException
 
-/** Explicit local authentication demo; passwords are held only by this mounted form. */
+/** Both modes share validation and form layout; passwords exist only in this mounted form. */
 @Composable
 fun AuthScreen(
     initialUsername: String,
@@ -33,6 +33,8 @@ fun AuthScreen(
     onLogin: (String, String) -> Unit,
     onRegister: (String, String, String) -> Unit,
     onUseSample: () -> Unit,
+    demo: Boolean = true,
+    serverAddress: String? = null,
 ) {
     var registration by remember { mutableStateOf(false) }
     // A new server snapshot or saved username must not replace an unfinished draft.
@@ -83,13 +85,13 @@ fun AuthScreen(
         ) {
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                 FocusDuoLogo()
-                DemoBadge()
+                if (demo) DemoBadge() else Text("Сервер", color = FocusDuoColors.Green, style = MaterialTheme.typography.caption)
             }
             Spacer(Modifier.height(28.dp))
             FocusCard(Modifier.widthIn(max = 560.dp).fillMaxWidth()) {
                 Column(Modifier.padding(30.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                    Text(if (registration) "Создать демоаккаунт" else "Войти в FocusDuo", style = MaterialTheme.typography.h2)
-                    Text("Это явный деморежим. Аккаунты и комнаты работают локально, без подключения к серверу.", color = FocusDuoColors.Secondary, style = MaterialTheme.typography.body2)
+                    Text(if (registration) { if (demo) "Создать демоаккаунт" else "Создать аккаунт" } else "Войти в FocusDuo", style = MaterialTheme.typography.h2)
+                    Text(if (demo) "Это явный деморежим. Аккаунты и комнаты работают локально, без подключения к серверу." else "Вход на сервер ${serverAddress.orEmpty()}. Пароль и токен остаются только в памяти приложения.", color = FocusDuoColors.Secondary, style = MaterialTheme.typography.body2)
                     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                         AuthModeButton("Вход", !registration, !busy, Modifier.weight(1f)) { selectMode(false) }
                         AuthModeButton("Регистрация", registration, !busy, Modifier.weight(1f)) { selectMode(true) }
@@ -128,6 +130,7 @@ fun AuthScreen(
                         }
                         Text(if (busy) "Подождите…" else if (registration) "Создать аккаунт" else "Войти")
                     }
+                    if (demo) {
                     Divider(color = FocusDuoColors.Border)
                     Text("Хочешь сразу посмотреть приложение?", style = MaterialTheme.typography.subtitle1)
                     Text("Демоаккаунт: demo_user\nПароль: FocusDuoDemo1!", style = MaterialTheme.typography.body2, color = FocusDuoColors.Secondary)
@@ -135,6 +138,7 @@ fun AuthScreen(
                         onClick = { password = ""; validationError = null; showRepositoryError = false; onUseSample() },
                         modifier = Modifier.fillMaxWidth(), enabled = !busy,
                     ) { Text("Войти демоаккаунтом") }
+                    }
                 }
             }
             Spacer(Modifier.height(20.dp))
