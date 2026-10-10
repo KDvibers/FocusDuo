@@ -12,6 +12,7 @@ import io.ktor.websocket.CloseReason
 import io.ktor.websocket.Frame
 import io.ktor.websocket.close
 import io.ktor.websocket.readText
+import dev.focusduo.domain.RepositoryException
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.withTimeout
@@ -27,10 +28,13 @@ internal class RoomRealtimeClient(
     private val client = HttpClient(engine) {
         followRedirects = false
         install(HttpTimeout) { connectTimeoutMillis = 5_000; requestTimeoutMillis = 15_000 }
-        install(WebSockets) { maxFrameSize = 4L * 1024 * 1024 }
+        install(WebSockets) { maxFrameSize = 4L * 1024 * 1024; pingIntervalMillis = 15_000 }
         HttpResponseValidator {
             validateResponse { response ->
                 if (response.status.value == 401) throw BackendHttpClient.unauthorized()
+                if (response.status.value == 403) throw RepositoryException("FORBIDDEN", "Недостаточно прав для подключения к комнате.")
+                if (response.status.value == 404) throw RepositoryException("NOT_FOUND", "Комната недоступна.")
+                if (response.status.value in 500..599) throw RepositoryException("INTERNAL_ERROR", "Сервер временно недоступен.")
             }
         }
     }
@@ -45,6 +49,7 @@ internal class RoomRealtimeClient(
         val session = client.webSocketSession("$socketOrigin/ws/rooms/$roomId") {
             header(HttpHeaders.Authorization, "Bearer ${token()}")
         }
+        session.timeoutMillis = 15_000
         try {
             onHandshake()
             var synchronized = false

@@ -60,6 +60,16 @@ tasks.register<Test>("backendRoomSmoke") {
     outputs.upToDateWhen { false }
 }
 
+// Explicit local test utility for real Compose UI checks; never runs with application or test tasks.
+tasks.register<JavaExec>("contractUiServer") {
+    description = "Starts a synthetic loopback-only REST/WS UI fixture server on 127.0.0.1:18090 (not Java backend)."
+    group = "verification"
+    dependsOn(tasks.testClasses)
+    classpath = sourceSets.test.get().runtimeClasspath
+    mainClass.set("dev.focusduo.qa.ContractUiServer")
+    javaLauncher.set(javaToolchains.launcherFor { languageVersion.set(JavaLanguageVersion.of(21)) })
+}
+
 compose.desktop {
     application {
         mainClass = "dev.focusduo.MainKt"

@@ -7,7 +7,11 @@ import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import dev.focusduo.designsystem.FocusDuoTheme
 import dev.focusduo.presentation.StartupScreen
+import dev.focusduo.presentation.AppResumeSignals
+import dev.focusduo.presentation.ResumeDetector
 import java.awt.Dimension
+import java.awt.event.WindowAdapter
+import java.awt.event.WindowEvent
 
 fun main(args: Array<String>) {
     val options = LaunchOptions.parse(args)
@@ -25,6 +29,24 @@ fun main(args: Array<String>) {
             state = windowState,
         ) {
             SideEffect { window.minimumSize = Dimension(840, 600) }
+            DisposableEffect(window) {
+                val detector = ResumeDetector()
+                val listener = object : WindowAdapter() {
+                    override fun windowLostFocus(event: WindowEvent) = detector.backgrounded()
+                    override fun windowIconified(event: WindowEvent) = detector.backgrounded()
+                    override fun windowGainedFocus(event: WindowEvent) = foregrounded()
+                    override fun windowDeiconified(event: WindowEvent) = foregrounded()
+                    private fun foregrounded() {
+                        if (detector.foregrounded()) AppResumeSignals.notifyForegrounded()
+                    }
+                }
+                window.addWindowFocusListener(listener)
+                window.addWindowListener(listener)
+                onDispose {
+                    window.removeWindowFocusListener(listener)
+                    window.removeWindowListener(listener)
+                }
+            }
             FocusDuoTheme {
                 StartupScreen(demo = demo, onEnterDemo = { demo = true }, onExit = ::exitApplication)
             }

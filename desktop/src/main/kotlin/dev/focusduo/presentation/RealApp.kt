@@ -11,6 +11,7 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import dev.focusduo.data.DesktopPreferences
 import dev.focusduo.data.RealConnectionStatus
+import dev.focusduo.data.PendingCommandInfo
 import dev.focusduo.data.RealRepository
 import dev.focusduo.designsystem.*
 import dev.focusduo.domain.*
@@ -36,6 +37,7 @@ internal fun RealApp(
 ) {
     val data by repository.state.collectAsState()
     val connection by repository.connectionState.collectAsState()
+    val pendingCommand by repository.pendingCommand.collectAsState()
     val scope = rememberCoroutineScope()
     val clipboard = LocalClipboardManager.current
     var page by remember { mutableStateOf(RealPage.HOME) }
@@ -48,6 +50,8 @@ internal fun RealApp(
     var resultBusy by remember { mutableStateOf(false) }
     var error by remember { mutableStateOf<String?>(null) }
     var operationFailure by remember { mutableStateOf<RepositoryException?>(null) }
+    var conflictNeedsReview by remember { mutableStateOf(false) }
+    var retryCompletion by remember { mutableStateOf<(() -> Unit)?>(null) }
     var historyError by remember { mutableStateOf<String?>(null) }
     var resultError by remember { mutableStateOf<String?>(null) }
     var failedResultId by remember { mutableStateOf<String?>(null) }
@@ -57,8 +61,14 @@ internal fun RealApp(
     var timerTick by remember { mutableLongStateOf(0L) }
     val busy = sessionBusy || operationBusy || resultBusy
     val room = data.room
-    val commandsAvailable = repository.canMutate
+    val commandsAvailable = repository.canMutate && !conflictNeedsReview
     val displayRoom = remember(room, timerTick) { repository.projectedRoom() }
+    val retryDelayStartedAt = remember(connection.status, connection.retryAttempt, connection.retryInMillis) { System.nanoTime() }
+    val retryRemainingMillis = remember(connection, timerTick) {
+        connection.retryInMillis?.let { delay ->
+            (delay - (System.nanoTime() - retryDelayStartedAt).coerceAtLeast(0L) / 1_000_000L).coerceAtLeast(0L)
+        }
+    }
 
     LaunchedEffect(repository) {
         while (isActive) { delay(200); timerTick++ }
@@ -77,7 +87,7 @@ internal fun RealApp(
     }
 
     fun openResult(roundId: String, automatic: Boolean = false) {
-        if (resultBusy || (!automatic && busy)) return
+        if (resultBusy || (!automatic && (sessionBusy || operationBusy))) return
         resultBusy = true
         resultError = null
         failedResultId = null
@@ -107,7 +117,7 @@ internal fun RealApp(
     }
 
     fun openDialog(kind: RoomDialog, task: Task? = null) {
-        if (busy) return
+        if (sessionBusy || operationBusy || resultBusy) return
         error = null
         operationFailure = null
         selectedTask = task
@@ -116,11 +126,15 @@ internal fun RealApp(
         dialog = kind
     }
 
-    fun perform(requireReady: Boolean = true, action: suspend () -> Unit) {
-        if (busy) return
+    fun perform(requireReady: Boolean = true, onRecovered: (() -> Unit)? = null, action: suspend () -> Unit) {
+        if (sessionBusy || operationBusy || resultBusy) return
         operationFailure = null
-        if (requireReady && !repository.canMutate) {
-            error = "Нет актуального соединения с комнатой. Восстанови его и отправь действие снова."
+        if (requireReady && !commandsAvailable) {
+            error = when {
+                pendingCommand != null -> "Результат предыдущего действия ещё не подтверждён. Используй повтор исходного запроса."
+                conflictNeedsReview -> "Сначала проверь актуальные данные после конфликта."
+                else -> "Нет актуального соединения с комнатой. Дождись восстановления и отправь действие снова."
+            }
             return
         }
         operationBusy = true
@@ -128,9 +142,14 @@ internal fun RealApp(
         notice = null
         scope.launch {
             try { action() }
-            catch (cancelled: CancellationException) { throw cancelled }
+            catch (cancelled: CancellationException) {
+                if (repository.pendingCommand.value != null && (requireReady || onRecovered != null)) retryCompletion = onRecovered
+                throw cancelled
+            }
             catch (failure: Exception) {
                 operationFailure = failure as? RepositoryException
+                if (operationFailure?.code == "REVISION_CONFLICT") conflictNeedsReview = true
+                if (repository.pendingCommand.value != null && (requireReady || onRecovered != null)) retryCompletion = onRecovered
                 error = safeRealError(failure)
             }
             finally { operationBusy = false }
@@ -139,6 +158,35 @@ internal fun RealApp(
 
     fun reconnect() {
         perform(requireReady = false) { repository.reconnect() }
+    }
+
+    fun retryPending() {
+        if (sessionBusy || operationBusy || resultBusy || repository.pendingCommand.value?.retryAvailable != true) return
+        operationBusy = true
+        operationFailure = null
+        error = null
+        scope.launch {
+            try {
+                repository.retryPendingCommand()
+                retryCompletion?.invoke()
+                retryCompletion = null
+                notice = "Сервер подтвердил исходное действие. Повторное изменение не создаётся."
+            } catch (cancelled: CancellationException) {
+                throw cancelled
+            } catch (failure: Exception) {
+                operationFailure = failure as? RepositoryException
+                if (operationFailure?.code == "REVISION_CONFLICT") conflictNeedsReview = true
+                error = safeRealError(failure)
+                if (repository.pendingCommand.value == null) retryCompletion = null
+            } finally { operationBusy = false }
+        }
+    }
+
+    fun acknowledgeConflict() {
+        conflictNeedsReview = false
+        operationFailure = null
+        error = null
+        notice = "Теперь можно отправить новое действие. Оно будет использовать актуальную версию комнаты."
     }
 
     fun copyCode(): Boolean = repository.state.value.room?.let {
@@ -153,7 +201,7 @@ internal fun RealApp(
         }
     } ?: false
 
-    val reconnecting = connection.status in listOf(RealConnectionStatus.CONNECTING, RealConnectionStatus.SYNCHRONIZING)
+    val reconnecting = connection.status in listOf(RealConnectionStatus.CONNECTING, RealConnectionStatus.SYNCHRONIZING, RealConnectionStatus.RECONNECTING)
     Row(modifier.fillMaxWidth().padding(20.dp), horizontalArrangement = Arrangement.spacedBy(20.dp)) {
         FocusCard(Modifier.width(190.dp).fillMaxHeight()) {
             Column(Modifier.fillMaxSize().padding(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
@@ -180,16 +228,22 @@ internal fun RealApp(
                 Row(horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.CenterVertically) {
                     SecondaryButton(onRefresh, enabled = !busy) { Text(if (restoreError == null) "Обновить с сервера" else "Повторить загрузку") }
                 }
-                if (room?.status == RoomStatus.OPEN) FocusCard(Modifier.fillMaxWidth()) {
+                if (room?.status == RoomStatus.OPEN || connection.status in listOf(RealConnectionStatus.CONNECTING, RealConnectionStatus.SYNCHRONIZING, RealConnectionStatus.DISCONNECTED, RealConnectionStatus.RECONNECTING)) FocusCard(Modifier.fillMaxWidth()) {
                     Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                         Text(connectionLabel(connection.status), style = MaterialTheme.typography.subtitle1)
                         connection.message?.let { Text(it, style = MaterialTheme.typography.body2, color = FocusDuoColors.Secondary) }
-                        if (!commandsAvailable) {
-                            Text("Изменения доступны после первого актуального снимка WebSocket. Данные комнаты остаются на экране.", style = MaterialTheme.typography.body2, color = FocusDuoColors.Secondary)
-                            SecondaryButton(::reconnect, enabled = !busy && !reconnecting) { Text(if (reconnecting) "Подключение…" else "Восстановить соединение") }
+                        if (connection.retryAttempt > 0) Text(
+                            "Попытка ${connection.retryAttempt}" + (retryRemainingMillis?.let { " · следующая через ${(it + 999) / 1000} с" } ?: ""),
+                            style = MaterialTheme.typography.body2, color = FocusDuoColors.Secondary,
+                        )
+                        if (!repository.canMutate) {
+                            Text("Соединение восстанавливается автоматически. Данные остаются на экране; изменения доступны после актуального снимка и подтверждения незавершённого запроса.", style = MaterialTheme.typography.body2, color = FocusDuoColors.Secondary)
+                            SecondaryButton(::reconnect, enabled = !busy && connection.status != RealConnectionStatus.SYNCHRONIZING) { Text(if (reconnecting) "Попробовать сейчас" else "Восстановить соединение") }
                         }
                     }
                 }
+                pendingCommand?.let { PendingRequestCard(it, busy, ::retryPending, ::reconnect) }
+                if (conflictNeedsReview) ConflictReviewCard(onReviewed = ::acknowledgeConflict, enabled = !busy)
                 val banner = if (dialog == null) error ?: notice else notice
                 if (banner != null) RealMessage(banner, error != null && dialog == null)
                 if (resultError != null) FocusCard(Modifier.fillMaxWidth()) {
@@ -202,7 +256,7 @@ internal fun RealApp(
                 when (page) {
                     RealPage.HOME -> {
                         HomeScreen(
-                            room, data.history.firstOrNull(), busy || restoreError != null,
+                            room, data.history.firstOrNull(), busy || restoreError != null || (room?.status != RoomStatus.OPEN && !repository.canEnterRoom),
                             onCreate = { openDialog(RoomDialog.CREATE) }, onJoin = { openDialog(RoomDialog.JOIN) },
                             onRoom = { page = RealPage.ROOM }, onHistory = { page = RealPage.HISTORY },
                             onLatestResult = { data.history.firstOrNull()?.let { openResult(it.roundId) } },
@@ -239,8 +293,8 @@ internal fun RealApp(
                         SessionResultScreen(
                             result, data.currentUser.id, room, busy,
                             onBackToRoom = { page = RealPage.ROOM },
-                            onStartBreak = { perform { repository.startRound(RoundKind.BREAK); page = RealPage.ROOM } },
-                            onStartFocus = { perform { repository.startRound(RoundKind.FOCUS); page = RealPage.ROOM } },
+                            onStartBreak = { perform(onRecovered = { page = RealPage.ROOM }) { repository.startRound(RoundKind.BREAK); page = RealPage.ROOM } },
+                            onStartFocus = { perform(onRecovered = { page = RealPage.ROOM }) { repository.startRound(RoundKind.FOCUS); page = RealPage.ROOM } },
                             onHome = { page = RealPage.HOME }, onBackToHistory = { page = RealPage.HISTORY },
                             commandsAvailable = commandsAvailable,
                         )
@@ -259,16 +313,18 @@ internal fun RealApp(
         key(active, selectedTask?.id, data.currentUser.id) {
             val targetsCurrentRoom = dialogRoomId == room?.roomId
             val membershipCommand = active in listOf(RoomDialog.CREATE, RoomDialog.JOIN)
-            val membershipNeedsRestore = membershipCommand && connection.status == RealConnectionStatus.DISCONNECTED
+            val membershipNeedsRestore = membershipCommand && !repository.canEnterRoom
             val membershipAlreadyExists = membershipCommand && room?.status == RoomStatus.OPEN
             val targetsCurrentRound = active != RoomDialog.FINISH_ROUND ||
                 (confirmationRoundId == room?.round?.id && room?.round?.status in listOf(RoundStatus.RUNNING, RoundStatus.PAUSED))
             val canEditSettings = active != RoomDialog.SETTINGS || room?.round?.status !in listOf(RoundStatus.RUNNING, RoundStatus.PAUSED)
-            val ready = if (membershipCommand) restoreError == null && !membershipNeedsRestore && !membershipAlreadyExists
+            val ready = if (membershipCommand) restoreError == null && !membershipNeedsRestore && !membershipAlreadyExists && pendingCommand == null && !conflictNeedsReview
                 else targetsCurrentRoom && targetsCurrentRound && canEditSettings && commandsAvailable
             val disabledReason = when {
+                pendingCommand != null -> "Сначала подтверди результат исходного запроса. Новые изменения заблокированы; черновик сохранён."
+                conflictNeedsReview -> "Комната изменилась. Сравни черновик с актуальными данными ниже и подтверди проверку перед новым действием."
                 membershipCommand && restoreError != null -> "Сначала восстанови данные с сервера. Черновик формы сохранён."
-                membershipNeedsRestore -> "Результат создания комнаты или входа неизвестен. Сначала обнови текущую комнату, чтобы не отправить действие повторно. Черновик сохранён."
+                membershipNeedsRestore -> "Ожидаем актуальные данные о текущей комнате. После восстановления можно отправить форму; черновик сохранён."
                 membershipAlreadyExists -> "Сервер подтвердил открытую комнату. Закрой форму и открой её через главную; повторно создавать комнату или входить не требуется."
                 !membershipCommand && !targetsCurrentRoom -> "Текущая комната изменилась. Черновик сохранён; закрой форму и проверь новую комнату."
                 !membershipCommand && room?.status == RoomStatus.CLOSED -> "Комната уже закрыта сервером. Черновик сохранён, но отправить изменения в эту комнату нельзя."
@@ -278,7 +334,7 @@ internal fun RealApp(
             }
             DemoRoomDialog(
                 active, data, selectedTask, busy, operationFailure?.let(::safeRealError) ?: error,
-                onDismiss = { if (!busy) { dialog = null; error = null; operationFailure = null } }, onCopyCode = ::copyCode,
+                onDismiss = { if (!sessionBusy && !operationBusy && !resultBusy) { dialog = null; error = null; operationFailure = null } }, onCopyCode = ::copyCode,
                 demo = false, serverAddress = preferences.baseUrl, mutationsEnabled = ready || active == RoomDialog.INVITE,
                 onReconnect = when {
                     membershipCommand && (membershipNeedsRestore || restoreError != null) -> onRefresh
@@ -286,8 +342,25 @@ internal fun RealApp(
                     else -> null
                 },
                 mutationsDisabledReason = disabledReason,
+                dismissLabel = if (pendingCommand != null) "Закрыть форму" else null,
+                inputsEnabled = pendingCommand == null,
+                recoveryContent = {
+                    pendingCommand?.let {
+                        PendingRequestCard(it, busy, ::retryPending, ::reconnect,
+                            draftVisible = active in listOf(RoomDialog.CREATE, RoomDialog.JOIN, RoomDialog.GOAL, RoomDialog.ADD_TASK, RoomDialog.EDIT_TASK, RoomDialog.SETTINGS))
+                    }
+                    if (conflictNeedsReview) ConflictReviewCard(
+                        serverValue = conflictServerValue(active, room, data.currentUser.id, selectedTask?.id),
+                        onReviewed = ::acknowledgeConflict, enabled = !busy,
+                    )
+                },
                 onSubmit = { first, second ->
-                    perform(requireReady = !membershipCommand) {
+                    val originRoomId = dialogRoomId
+                    val originTaskId = selectedTask?.id
+                    perform(requireReady = !membershipCommand, onRecovered = {
+                        if (active in listOf(RoomDialog.CREATE, RoomDialog.JOIN, RoomDialog.CLOSE_ROOM)) page = RealPage.ROOM
+                        if (dialog == active && dialogRoomId == originRoomId && selectedTask?.id == originTaskId) dialog = null
+                    }) {
                         if (!membershipCommand && repository.state.value.room?.roomId != dialogRoomId) {
                             throw RepositoryException("ROOM_CHANGED", "Текущая комната изменилась. Закрой форму и открой её заново.")
                         }
@@ -319,6 +392,7 @@ private fun safeRealError(failure: Exception): String {
     val message = when (error.code) {
         "REVISION_CONFLICT" -> "Комната изменилась. Проверь актуальные данные и форму перед новым действием."
         "ROOM_RESTORE_REQUIRED" -> "Результат предыдущего запроса неизвестен. Сначала обнови текущую комнату, чтобы не отправить действие повторно."
+        "PENDING_COMMAND" -> "Исходный запрос ещё не подтверждён. Дождись синхронизации и используй его безопасный повтор."
         else -> error.message
     }
     // Transport has already replaced server-supplied text with safe messages for known fields.
@@ -336,6 +410,65 @@ private fun connectionLabel(status: RealConnectionStatus): String = when (status
     RealConnectionStatus.SYNCHRONIZING -> "Получаем актуальный снимок…"
     RealConnectionStatus.CONNECTED -> "Соединение установлено"
     RealConnectionStatus.DISCONNECTED -> "Соединение с комнатой потеряно"
+    RealConnectionStatus.RECONNECTING -> "Восстанавливаем соединение…"
+}
+
+@Composable
+private fun PendingRequestCard(
+    pending: PendingCommandInfo,
+    busy: Boolean,
+    onRetry: () -> Unit,
+    onReconnect: () -> Unit,
+    draftVisible: Boolean = false,
+) {
+    FocusCard(Modifier.fillMaxWidth()) {
+        Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+            Text("Нужно подтвердить результат действия", style = MaterialTheme.typography.subtitle1)
+            Text(pending.description, style = MaterialTheme.typography.body2, color = FocusDuoColors.Green)
+            Text(
+                "Ответ сервера не получен. Сначала клиент восстанавливает состояние, затем можно повторить именно исходный запрос без второго изменения." +
+                    if (draftVisible) " Черновик сохранён. Поля временно недоступны: повтор использует первоначально отправленные значения." else "",
+                style = MaterialTheme.typography.body2, color = FocusDuoColors.Secondary,
+            )
+            if (!pending.retryAvailable) Text(
+                "Ожидаем актуальные данные. Повтор запроса станет доступен после синхронизации.",
+                style = MaterialTheme.typography.caption, color = FocusDuoColors.Secondary,
+            )
+            PrimaryButton(onRetry, Modifier.fillMaxWidth(), enabled = !busy && pending.retryAvailable) {
+                Text(if (busy) "Подтверждаем…" else "Повторить исходный запрос")
+            }
+            if (!pending.retryAvailable) SecondaryButton(onReconnect, Modifier.fillMaxWidth(), enabled = !busy) {
+                Text("Попробовать подключиться сейчас")
+            }
+        }
+    }
+}
+
+@Composable
+private fun ConflictReviewCard(serverValue: String? = null, onReviewed: () -> Unit, enabled: Boolean) {
+    Surface(color = FocusDuoColors.ErrorSurface, shape = MaterialTheme.shapes.small) {
+        Column(Modifier.fillMaxWidth().padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+            Text("Комната изменилась", style = MaterialTheme.typography.subtitle1, color = FocusDuoColors.Error)
+            Text("Сервер отклонил действие из-за новой версии комнаты. Проверь актуальные данные и сохранившийся черновик; отправка нового действия требует отдельного нажатия.", style = MaterialTheme.typography.body2)
+            serverValue?.let { Text(it, style = MaterialTheme.typography.body2) }
+            SecondaryButton(onReviewed, Modifier.fillMaxWidth(), enabled = enabled) {
+                Text("Данные проверены — разрешить новое действие")
+            }
+        }
+    }
+}
+
+private fun conflictServerValue(kind: RoomDialog, room: RoomSnapshot?, userId: String, taskId: String?): String {
+    if (room == null) return "Открытой комнаты на сервере нет."
+    val own = room.participants.find { it.userId == userId }
+    return when (kind) {
+        RoomDialog.GOAL -> "Цель на сервере: ${own?.goal?.ifEmpty { "не задана" }.orEmpty()}"
+        RoomDialog.EDIT_TASK, RoomDialog.DELETE_TASK -> own?.tasks?.find { it.id == taskId }?.let {
+            "Задача на сервере: ${it.title}\n${if (it.completed) "Отмечена выполненной" else "Ещё не выполнена"}"
+        } ?: "Этой задачи уже нет в актуальном списке."
+        RoomDialog.SETTINGS -> "Сейчас на сервере: фокус ${room.focusDurationSeconds / 60} мин, перерыв ${room.breakDurationSeconds / 60} мин."
+        else -> "Актуальная версия комнаты: ${room.revision}. Состояние и списки задач обновлены."
+    }
 }
 
 @Composable

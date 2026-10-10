@@ -11,7 +11,11 @@ import androidx.compose.ui.unit.dp
 import dev.focusduo.data.DesktopPreferences
 import dev.focusduo.designsystem.*
 import dev.focusduo.domain.RepositoryException
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
 
 /** A real session never constructs FakeRepository. Leaving this workspace closes its HTTP client. */
 @Composable
@@ -47,6 +51,27 @@ fun RealWorkspace(onEnterDemo: () -> Unit, onExit: () -> Unit) {
                     TextButton(onExit) { Text("Закрыть приложение") }
                 }
             } else key(repository) {
+                // Retain this workspace and all mounted drafts while resynchronizing after sleep.
+                LaunchedEffect(repository) {
+                    val detector = ResumeDetector()
+                    val recovery = Mutex()
+                    var lastRecoveryNanos: Long? = null
+                    suspend fun recover() {
+                        val now = System.nanoTime()
+                        if (lastRecoveryNanos?.let { (now - it).coerceAtLeast(0L) < 2_000_000_000L } == true) return
+                        if (!recovery.tryLock()) return
+                        lastRecoveryNanos = now
+                        try { repository.recoverAfterResume() }
+                        catch (cancelled: CancellationException) { throw cancelled }
+                        catch (_: Exception) { /* Repository publishes a safe connection error and retries. */ }
+                        finally { recovery.unlock() }
+                    }
+                    launch { AppResumeSignals.events.collect { recover() } }
+                    while (isActive) {
+                        if (detector.sample()) recover()
+                        delay(1_000)
+                    }
+                }
                 RealApp(
                     repository = repository,
                     preferences = session.preferences,
