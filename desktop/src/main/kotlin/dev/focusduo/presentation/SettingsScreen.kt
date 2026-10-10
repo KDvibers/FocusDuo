@@ -126,11 +126,11 @@ fun SettingsScreen(
                 Text("Раунды в комнате", style = MaterialTheme.typography.h3)
                 Text(
                     when {
-                        !roomCommandsAvailable -> "Изменение комнаты и длительностей будет подключено на этапе 6."
                         room == null -> "Создай комнату, чтобы задать длительность фокуса и перерыва."
                         room.status == RoomStatus.CLOSED -> "Эта комната закрыта. Длительности можно задать при создании новой."
                         room.ownerId != currentUser.id -> "Длительности меняет создатель комнаты."
                         activeRound -> "Изменить длительности можно после завершения текущего раунда."
+                        !roomCommandsAvailable -> "Для изменения длительностей восстанови соединение с комнатой."
                         else -> "Фокус: ${room.focusDurationSeconds / 60} мин · Перерыв: ${room.breakDurationSeconds / 60} мин"
                     },
                     style = MaterialTheme.typography.body2, color = FocusDuoColors.Secondary,

@@ -26,6 +26,9 @@ import dev.focusduo.domain.AuthValidation.characterCount
 internal fun DemoRoomDialog(
     kind: RoomDialog, state: RepositoryState, task: Task?, busy: Boolean, error: String?,
     onDismiss: () -> Unit, onCopyCode: () -> Boolean, onSubmit: (String, String) -> Unit,
+    demo: Boolean = true, serverAddress: String? = null, mutationsEnabled: Boolean = true,
+    onReconnect: (() -> Unit)? = null,
+    mutationsDisabledReason: String? = null,
 ) {
     val room = state.room
     val own = room?.participants?.find { it.userId == state.currentUser.id }
@@ -82,13 +85,13 @@ internal fun DemoRoomDialog(
                     kind == RoomDialog.GOAL -> RoomInput("Цель", first, { first = it }, "${characterCount(first)} / 240 · можно оставить пустой", if (attempted) firstError else null, false, !busy, inputFocus)
                     kind == RoomDialog.PROFILE -> RoomInput("Имя", first, { first = it }, "2–40 символов · только в деморежиме", if (attempted) firstError else null, true, !busy, inputFocus)
                     kind == RoomDialog.JOIN -> {
-                        Text("В деморежиме можно войти в подготовленный пример с участником и задачами.", style = MaterialTheme.typography.body2, color = FocusDuoColors.Secondary)
+                        Text(if (demo) "В деморежиме можно войти в подготовленный пример с участником и задачами." else "Введи код, полученный от друга. Оба клиента должны подключаться к одному серверу.", style = MaterialTheme.typography.body2, color = FocusDuoColors.Secondary)
                         RoomInput("Код комнаты", first, { first = it }, "Код нечувствителен к регистру", if (attempted) firstError else null, true, !busy, inputFocus)
-                        TextButton(onClick = { first = FakeRepository.SAMPLE_ROOM_CODE }, enabled = !busy) { Text("Использовать ${FakeRepository.SAMPLE_ROOM_CODE}") }
+                        if (demo) TextButton(onClick = { first = FakeRepository.SAMPLE_ROOM_CODE }, enabled = !busy) { Text("Использовать ${FakeRepository.SAMPLE_ROOM_CODE}") }
                     }
                     kind == RoomDialog.DELETE_TASK -> {
                         Text(task?.title.orEmpty())
-                        Text("Задача исчезнет из твоего списка в этой демокомнате.", style = MaterialTheme.typography.body2, color = FocusDuoColors.Secondary)
+                        Text(if (demo) "Задача исчезнет из твоего списка в этой демокомнате." else "Задача будет удалена из твоего списка в комнате. Уже сохранённые итоги не изменятся.", style = MaterialTheme.typography.body2, color = FocusDuoColors.Secondary)
                     }
                     kind == RoomDialog.RESET -> Text("Локальная комната, цели и задачи будут сброшены. Ты вернёшься на главную. Это инструмент демо, данные сервера не затрагиваются.")
                     kind == RoomDialog.FINISH_ROUND -> Text("Текущий раунд завершится для обоих участников. В итог попадут фактическое время работы без пауз и задачи на момент завершения. Перерыв запускается отдельно.")
@@ -97,7 +100,8 @@ internal fun DemoRoomDialog(
                         Text("Код комнаты", style = MaterialTheme.typography.body2, color = FocusDuoColors.Secondary)
                         SelectionContainer { Text(room?.code.orEmpty(), style = MaterialTheme.typography.h2) }
                         SecondaryButton(onClick = { copied = onCopyCode() }) { Text(if (copied) "Скопировано" else "Копировать код") }
-                        Text(if ((room?.participants?.size ?: 0) < 2)
+                        Text(if (!demo) "Передай другу этот код и адрес ${serverAddress.orEmpty()}. Оба клиента должны использовать один сервер."
+                        else if ((room?.participants?.size ?: 0) < 2)
                             "Это локальная демокомната. Второго участника можно добавить кнопкой «Добавить демоучастника» под комнатой. Приглашения никому не отправляются."
                         else "В комнате уже два участника. Для проверки их задач используй «Сменить участника» под комнатой. Приглашения никому не отправляются.",
                             style = MaterialTheme.typography.body2, color = FocusDuoColors.Secondary)
@@ -106,6 +110,8 @@ internal fun DemoRoomDialog(
                 if (error != null) Surface(color = FocusDuoColors.ErrorSurface, shape = MaterialTheme.shapes.small) {
                     Text(error, Modifier.fillMaxWidth().padding(12.dp), color = FocusDuoColors.Error, style = MaterialTheme.typography.body2)
                 }
+                if (!mutationsEnabled && kind != RoomDialog.INVITE) Text(mutationsDisabledReason ?: "Изменения станут доступны после получения актуального снимка комнаты. Черновик сохранён; восстанови соединение и отправь форму снова.", color = FocusDuoColors.Secondary, style = MaterialTheme.typography.body2)
+                if (!mutationsEnabled && onReconnect != null) SecondaryButton(onReconnect, enabled = !busy) { Text("Восстановить соединение") }
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
                     TextButton(onDismiss, enabled = !busy) { Text(if (kind == RoomDialog.INVITE) "Готово" else "Отмена") }
                     if (kind != RoomDialog.INVITE) {
@@ -113,7 +119,7 @@ internal fun DemoRoomDialog(
                         PrimaryButton(onClick = {
                             attempted = true
                             if (firstError == null && secondError == null) onSubmit(first, second)
-                        }, enabled = !busy) {
+                        }, enabled = !busy && mutationsEnabled) {
                             Text(if (busy) "Сохранение…" else when (kind) {
                                 RoomDialog.CREATE -> "Создать"
                                 RoomDialog.JOIN -> "Войти"

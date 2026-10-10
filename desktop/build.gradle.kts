@@ -19,9 +19,12 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
     implementation("io.ktor:ktor-client-core:3.3.1")
     implementation("io.ktor:ktor-client-cio:3.3.1")
+    implementation("io.ktor:ktor-client-websockets:3.3.1")
     implementation("io.ktor:ktor-client-content-negotiation:3.3.1")
     implementation("io.ktor:ktor-serialization-kotlinx-json:3.3.1")
     testImplementation("io.ktor:ktor-client-mock:3.3.1")
+    testImplementation("io.ktor:ktor-server-cio:3.3.1")
+    testImplementation("io.ktor:ktor-server-websockets:3.3.1")
     testImplementation(kotlin("test-junit5"))
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.13.3")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.13.3")
@@ -30,6 +33,7 @@ dependencies {
 tasks.test {
     useJUnitPlatform()
     exclude("**/LiveBackendAuthTest.class")
+    exclude("**/LiveBackendRoomTest.class")
 }
 
 // Explicit, opt-in check: creates a temporary-named account on the selected real backend.
@@ -40,6 +44,18 @@ tasks.register<Test>("backendAuthSmoke") {
     classpath = sourceSets.test.get().runtimeClasspath
     useJUnitPlatform()
     include("**/LiveBackendAuthTest.class")
+    systemProperty("focusduo.smoke.baseUrl", System.getProperty("focusduo.smoke.baseUrl") ?: "http://127.0.0.1:8090")
+    outputs.upToDateWhen { false }
+}
+
+// Requires one running development backend; exercises two independent real repositories and WS.
+tasks.register<Test>("backendRoomSmoke") {
+    description = "Checks two Kotlin clients, rooms/tasks/rounds/history and WebSocket against the Java backend."
+    group = "verification"
+    testClassesDirs = sourceSets.test.get().output.classesDirs
+    classpath = sourceSets.test.get().runtimeClasspath
+    useJUnitPlatform()
+    include("**/LiveBackendRoomTest.class")
     systemProperty("focusduo.smoke.baseUrl", System.getProperty("focusduo.smoke.baseUrl") ?: "http://127.0.0.1:8090")
     outputs.upToDateWhen { false }
 }

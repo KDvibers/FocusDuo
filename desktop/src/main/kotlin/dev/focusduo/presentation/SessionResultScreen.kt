@@ -36,6 +36,7 @@ fun SessionResultScreen(
     onStartFocus: () -> Unit,
     onHome: () -> Unit,
     onBackToHistory: (() -> Unit)? = null,
+    commandsAvailable: Boolean = true,
 ) {
     val cancelled = item.status == RoundStatus.CANCELLED || item.completionReason == CompletionReason.ROOM_CLOSED
     val manual = item.completionReason == CompletionReason.MANUAL
@@ -44,8 +45,8 @@ fun SessionResultScreen(
     val open = sameRoom && room?.status == RoomStatus.OPEN
     val currentRound = room?.round
     val owner = room?.ownerId == currentUserId
-    val canStartBreak = open && owner && !busy && currentRound?.id == item.roundId && currentRound.status == RoundStatus.COMPLETED && currentRound.kind == RoundKind.FOCUS
-    val canStartFocus = open && owner && !busy && room?.participants?.size == 2 && currentRound?.status !in listOf(RoundStatus.RUNNING, RoundStatus.PAUSED)
+    val canStartBreak = open && owner && !busy && commandsAvailable && currentRound?.id == item.roundId && currentRound.status == RoundStatus.COMPLETED && currentRound.kind == RoundKind.FOCUS
+    val canStartFocus = open && owner && !busy && commandsAvailable && room?.participants?.size == 2 && currentRound?.status !in listOf(RoundStatus.RUNNING, RoundStatus.PAUSED)
     val title = when {
         cancelled -> if (focus) "Сессия прервана" else "Перерыв прерван"
         manual -> if (focus) "Фокус завершён досрочно" else "Перерыв завершён досрочно"
@@ -85,6 +86,7 @@ fun SessionResultScreen(
                     canStartFocus -> PrimaryButton(onStartFocus, Modifier.fillMaxWidth()) { Text("Начать новый фокус") }
                 }
                 if (open && !owner) Text("Следующий раунд запускает создатель комнаты.", Modifier.fillMaxWidth(), style = MaterialTheme.typography.caption, color = FocusDuoColors.Secondary, textAlign = TextAlign.Center)
+                if (open && owner && !commandsAvailable) Text("Для нового раунда восстанови соединение с комнатой.", Modifier.fillMaxWidth(), style = MaterialTheme.typography.caption, color = FocusDuoColors.Secondary, textAlign = TextAlign.Center)
                 if (sameRoom && room?.status == RoomStatus.CLOSED) Text("Комната закрыта. На главной можно создать новую.", Modifier.fillMaxWidth(), style = MaterialTheme.typography.caption, color = FocusDuoColors.Secondary, textAlign = TextAlign.Center)
                 if (sameRoom) SecondaryButton(onBackToRoom, Modifier.fillMaxWidth(), enabled = !busy) { Text(if (room?.status == RoomStatus.CLOSED) "Посмотреть закрытую комнату" else "Вернуться в комнату") }
                 if (onBackToHistory != null) SecondaryButton(onBackToHistory, Modifier.fillMaxWidth(), enabled = !busy) { Text("К истории") }

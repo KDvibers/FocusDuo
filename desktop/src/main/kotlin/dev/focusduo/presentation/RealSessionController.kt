@@ -38,6 +38,7 @@ class RealSessionController(
     private val preferencesStore: DesktopPreferencesStore = DesktopPreferencesStore(),
     private val engineFactory: () -> HttpClientEngine? = { null },
     coroutineContext: CoroutineContext = Dispatchers.Default,
+    private val realtimeEnabled: Boolean = true,
 ) : AutoCloseable {
     private val scope = CoroutineScope(coroutineContext + SupervisorJob())
     private val mutableState = MutableStateFlow(RealSessionState())
@@ -64,13 +65,13 @@ class RealSessionController(
     suspend fun login(username: String, password: String) = operation { expected ->
         val credentials = AuthValidation.login(username, password)
         val baseUrl = synchronized(lock) { state.value.preferences.baseUrl }
-        enter(expected, RealRepository.login(baseUrl, credentials.username, credentials.password, engineFactory()))
+        enter(expected, RealRepository.login(baseUrl, credentials.username, credentials.password, engineFactory(), realtimeEnabled = realtimeEnabled))
     }
 
     suspend fun register(username: String, displayName: String, password: String) = operation { expected ->
         val credentials = AuthValidation.registration(username, displayName, password)
         val baseUrl = synchronized(lock) { state.value.preferences.baseUrl }
-        enter(expected, RealRepository.register(baseUrl, credentials.username, credentials.displayName, credentials.password, engineFactory()))
+        enter(expected, RealRepository.register(baseUrl, credentials.username, credentials.displayName, credentials.password, engineFactory(), realtimeEnabled = realtimeEnabled))
     }
 
     /** A successful auth response is kept if restoring /me or /rooms/current has a transport error. */
