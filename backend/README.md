@@ -156,6 +156,8 @@ py -3 backend/scripts/smoke.py --base-url http://127.0.0.1:8090 --wait-seconds 6
 
 После desktop-этапа 7 повторный `test check backendAuthSmoke backendRoomSmoke` прошёл **171 обычный тест + 2 живых**, без ошибок и пропусков. Новые opt-in проверки подтвердили потерянные ответы после настоящего commit, точный ручной replay без повторного эффекта, реальный 409 и автоматическое восстановление двух Kotlin repository после двух принудительных остановок Java с той же БД (PAUSED и RUNNING). UI, физический сон и LAN этим не проверяются. Точные команды изолированного стенда, результаты и замечание Kotlin-разработчику — в [RECOVERY_INTEGRATION](../docs/backend/RECOVERY_INTEGRATION.md).
 
+После исправления wake в desktop PR #14 повтор на базе `a1e557f` прошёл **185 обычных тестов + 2 живых smoke** и все четыре расширенных auth/lifecycle/recovery/restart harness. Два принудительных рестарта Java вновь подтвердили автоматическое восстановление, безопасные повторы не создали дублей. Замечание к coordinator закрыто; результаты и команды — в [WAKE_ACCEPTANCE](../docs/backend/WAKE_ACCEPTANCE.md). Следующий шаг — [два Compose-окна с Java и физический сон Windows](../docs/backend/MANUAL_ACCEPTANCE.md), пока NOT_RUN. Полный Maven `verify` в этом повторе не запускался, серверная реализация не менялась.
+
 Дополнительный локальный режим допускает выделенный PostgreSQL 17 без Docker:
 
 ```powershell
