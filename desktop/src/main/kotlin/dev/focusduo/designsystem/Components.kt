@@ -71,7 +71,7 @@ fun DemoBadge(modifier: Modifier = Modifier) {
     }
 }
 
-enum class FocusIcon { Home, Check, Arrow, Leaf, People }
+enum class FocusIcon { Home, Check, Arrow, Leaf, People, History, Settings }
 
 /** Small consistent outline icons, drawn as Compose primitives rather than platform glyphs. */
 @Composable
@@ -90,6 +90,20 @@ fun FocusIcon(icon: FocusIcon, modifier: Modifier = Modifier, color: Color = Foc
                 drawPath(path, color, style = Stroke(width = 1.7f * scale, cap = StrokeCap.Round))
             }
             FocusIcon.Check -> { line(5f, 12f, 10f, 17f); line(10f, 17f, 20f, 7f) }
+            FocusIcon.History -> {
+                drawCircle(color, 9f * scale, point(12f, 12f), style = Stroke(1.7f * scale))
+                line(12f, 6f, 12f, 12f); line(12f, 12f, 16f, 14f)
+            }
+            FocusIcon.Settings -> {
+                drawCircle(color, 7f * scale, point(12f, 12f), style = Stroke(1.7f * scale))
+                drawCircle(color, 2.6f * scale, point(12f, 12f), style = Stroke(1.7f * scale))
+                for (i in 0..7) {
+                    val angle = i * Math.PI / 4
+                    val x = kotlin.math.cos(angle).toFloat()
+                    val y = kotlin.math.sin(angle).toFloat()
+                    line(12f + 7f * x, 12f + 7f * y, 12f + 10f * x, 12f + 10f * y)
+                }
+            }
             FocusIcon.Arrow -> { line(4f, 12f, 20f, 12f); line(14f, 6f, 20f, 12f); line(14f, 18f, 20f, 12f) }
             FocusIcon.Leaf -> {
                 val path = Path().apply {
