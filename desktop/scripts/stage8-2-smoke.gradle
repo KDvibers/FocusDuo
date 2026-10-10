@@ -1,0 +1,51 @@
+// Opt-in acceptance tasks using the existing backend harness sources unchanged.
+// Keep generated classes in desktop/build; no production dependency is added.
+gradle.projectsEvaluated {
+    def project = gradle.rootProject
+    def repositoryRoot = project.projectDir.parentFile
+    def main = project.extensions.getByType(org.gradle.api.tasks.SourceSetContainer).getByName('main')
+    def harnesses = [
+        [task: 'realRepositorySmoke', source: 'kotlin-auth-smoke/RealRepositorySmoke.kt',
+         entry: 'dev.focusduo.smoke.RealRepositorySmokeKt', minutes: 3,
+         description: 'Real CIO authentication, revocation and logout (no UI).'],
+        [task: 'realRoomLifecycleSmoke', source: 'kotlin-room-smoke/RealRoomLifecycleSmoke.kt',
+         entry: 'dev.focusduo.smoke.rooms.RealRoomLifecycleSmokeKt', minutes: 3,
+         description: 'Real CIO room lifecycle, reconnect, membership recovery and CLOSED state (no UI).'],
+        [task: 'realRecoverySmoke', source: 'kotlin-recovery-smoke/RealRecoverySmoke.kt',
+         entry: 'dev.focusduo.smoke.recovery.RealRecoverySmokeKt', minutes: 3,
+         description: 'Real CIO lost committed replies, exact replay and revision conflict (no UI).'],
+        [task: 'realRestartSmoke', source: 'kotlin-restart-smoke/RealRestartSmoke.kt',
+         entry: 'dev.focusduo.smoke.restart.RealRestartSmokeKt', minutes: 12,
+         description: 'Real CIO automatic recovery across isolated Java process restarts (no UI).']
+    ]
+    harnesses.each { harness ->
+        def smokeSource = new File(repositoryRoot, 'backend/scripts/' + harness.source)
+        def output = project.layout.buildDirectory.dir('stage8-2-smoke/' + harness.task + '/classes').get().asFile
+        def compileTask = 'compile' + harness.task.capitalize()
+        def compileSmoke = project.tasks.register(compileTask, JavaExec) {
+            classpath = project.configurations.getByName('kotlinCompilerClasspath')
+            mainClass.set('org.jetbrains.kotlin.cli.jvm.K2JVMCompiler')
+            inputs.file(smokeSource)
+            inputs.files(main.compileClasspath, main.output)
+            outputs.dir(output)
+            dependsOn(project.tasks.named('classes'))
+            doFirst {
+                args = ['-no-stdlib', '-no-reflect', '-jvm-target', '21',
+                        '-classpath', main.runtimeClasspath.filter { it.exists() }.asPath,
+                        '-d', output.absolutePath, smokeSource.absolutePath]
+            }
+        }
+        project.tasks.register(harness.task, JavaExec) {
+            group = 'verification'
+            description = harness.description
+            dependsOn(compileSmoke)
+            classpath = project.files(output, main.runtimeClasspath)
+            mainClass.set(harness.entry)
+            systemProperty('focusduo.smoke.baseUrl', System.getProperty('focusduo.smoke.baseUrl', 'http://127.0.0.1:8090'))
+            if (harness.task == 'realRestartSmoke') {
+                systemProperty('focusduo.smoke.controlDir', System.getProperty('focusduo.smoke.controlDir', ''))
+            }
+            timeout.set(java.time.Duration.ofMinutes(harness.minutes))
+        }
+    }
+}

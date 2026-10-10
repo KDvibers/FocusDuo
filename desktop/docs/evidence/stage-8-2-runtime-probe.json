@@ -1,0 +1,29 @@
+{
+  "kind": "focusduo-native-runtime-probe-v1",
+  "results": [
+    "start while ready preserves PID and generation",
+    "unknown action rejected without stopping runtime",
+    "hard stop removes only tracked Java process",
+    "repeated stop is idempotent",
+    "read-only PostgreSQL inspect works while Java is stopped",
+    "restart reaches authenticated readiness and advances generation",
+    "repeated ready start does not create a process",
+    "same empty database and two migrations preserved across Java restart"
+  ],
+  "generationBefore": 1,
+  "generationAfter": 2,
+  "counts": {
+    "rooms": 0,
+    "tasks": 0,
+    "users": 0,
+    "rounds": 0,
+    "history": 0,
+    "sessions": 0,
+    "openRooms": 0,
+    "migrations": 2,
+    "activeMemberships": 0,
+    "unrevokedSessions": 0,
+    "idempotencyResults": 0,
+    "historyParticipants": 0
+  }
+}

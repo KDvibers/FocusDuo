@@ -1,0 +1,25 @@
+{
+  "rooms": [],
+  "tasks": [],
+  "users": [],
+  "counts": {
+    "rooms": 0,
+    "tasks": 0,
+    "users": 0,
+    "rounds": 0,
+    "history": 0,
+    "sessions": 0,
+    "openRooms": 0,
+    "migrations": 2,
+    "activeMemberships": 0,
+    "unrevokedSessions": 0,
+    "idempotencyResults": 0,
+    "historyParticipants": 0
+  },
+  "rounds": [],
+  "history": [],
+  "members": [],
+  "sessions": [],
+  "inspectedAt": "2026-10-11T01:52:37.782531+05:00",
+  "serverVersion": "17.2"
+}

@@ -1,0 +1,921 @@
+{
+  "rooms": [
+    {
+      "id": "437d1d85-75a8-4d31-bb6b-b9792dae961c",
+      "code": "FD-K8H7XK",
+      "status": "CLOSED",
+      "revision": 12,
+      "breakDurationSeconds": 60,
+      "focusDurationSeconds": 300
+    },
+    {
+      "id": "f407eba5-0a8b-4e74-9b94-50fd33a93de4",
+      "code": "FD-G2B9JT",
+      "status": "CLOSED",
+      "revision": 5,
+      "breakDurationSeconds": 60,
+      "focusDurationSeconds": 300
+    },
+    {
+      "id": "9bdb3e4f-59fe-41d9-b04b-33e810f92b94",
+      "code": "FD-4AJCNP",
+      "status": "CLOSED",
+      "revision": 5,
+      "breakDurationSeconds": 60,
+      "focusDurationSeconds": 300
+    },
+    {
+      "id": "05765d60-3160-47fe-b895-90917fdec5a7",
+      "code": "FD-WNYPNV",
+      "status": "CLOSED",
+      "revision": 7,
+      "breakDurationSeconds": 60,
+      "focusDurationSeconds": 300
+    },
+    {
+      "id": "29cf5d63-882b-4808-9f7e-67886f799b1b",
+      "code": "FD-ZQ4UTY",
+      "status": "CLOSED",
+      "revision": 9,
+      "breakDurationSeconds": 60,
+      "focusDurationSeconds": 900
+    },
+    {
+      "id": "2bee0ae1-cce4-4422-a503-3a7e0c60c754",
+      "code": "FD-MHYWYU",
+      "status": "OPEN",
+      "revision": 17,
+      "breakDurationSeconds": 60,
+      "focusDurationSeconds": 900
+    },
+    {
+      "id": "4846aa76-8b75-479f-9fd4-1280e8157644",
+      "code": "FD-FFD79G",
+      "status": "CLOSED",
+      "revision": 12,
+      "breakDurationSeconds": 60,
+      "focusDurationSeconds": 300
+    }
+  ],
+  "tasks": [
+    {
+      "id": "16236bf3-4c6d-43b9-a47d-c27009d8e65c",
+      "title": "Правка после завершения",
+      "userId": "bde10b8f-3e5c-4f05-bb2d-74569febb362",
+      "completed": false
+    },
+    {
+      "id": "2c60f8f2-4fe1-4d3f-8862-212d26d7f911",
+      "title": "Прочитать полный snapshot",
+      "userId": "b77a62ea-d17c-4d85-84d7-3ab2672ed68b",
+      "completed": false
+    },
+    {
+      "id": "61385340-17b1-4f6b-9ba9-bbf5691fa5a1",
+      "title": "Единственная задача после потерянного ответа",
+      "userId": "f3cb456f-317d-4ff9-b108-c83f051e5ca8",
+      "completed": false
+    },
+    {
+      "id": "e69da13e-49e0-4df8-acd0-dd4ada82dcac",
+      "title": "Сохранить задачу после перезапуска",
+      "userId": "050130c8-f51c-4fe0-81d0-1b775c0a7571",
+      "completed": true
+    },
+    {
+      "id": "1c6232f2-b322-4cc8-8190-0a8cc3728633",
+      "title": "Проверить восстановление паузы и длинной русской задачи после двух перезапусков сервера",
+      "userId": "7c9aec54-fbf5-4f00-9904-0806d13410ea",
+      "completed": true
+    },
+    {
+      "id": "f98f3f79-031c-489f-a303-0748c21b31aa",
+      "title": "Убедиться, что общий таймер продолжает работу по исходному серверному сроку завершения",
+      "userId": "be8e9bc7-457a-48a4-82c0-177ae091268f",
+      "completed": false
+    },
+    {
+      "id": "0a805866-314e-4d7d-9995-ab0345e74a50",
+      "title": "Правка после завершения",
+      "userId": "d2427f9b-d99f-4856-a261-61f70c7a8696",
+      "completed": false
+    }
+  ],
+  "users": [
+    {
+      "id": "d2427f9b-d99f-4856-a261-61f70c7a8696",
+      "username": "desk_a_596568657c4d4578b3b9",
+      "displayName": "Клиент А"
+    },
+    {
+      "id": "bde10b8f-3e5c-4f05-bb2d-74569febb362",
+      "username": "desk_a_e784154b95d242c6adb0",
+      "displayName": "Клиент А"
+    },
+    {
+      "id": "97f9388b-d663-4855-b5d5-795f9f7fcd67",
+      "username": "desk_b_596568657c4d4578b3b9",
+      "displayName": "Клиент Б"
+    },
+    {
+      "id": "db45d6f6-0337-4d45-a40c-12881672f338",
+      "username": "desk_b_e784154b95d242c6adb0",
+      "displayName": "Клиент Б"
+    },
+    {
+      "id": "dc0f6c63-91b5-41a5-8a24-98d3e0ab0801",
+      "username": "desktop_a458081bf6014244b565",
+      "displayName": "Проверка Kotlin"
+    },
+    {
+      "id": "2f3e3504-b77c-41b8-9cc3-f242cfe08be2",
+      "username": "desktop_ddaed1a7e3f44f81b572",
+      "displayName": "Проверка Kotlin"
+    },
+    {
+      "id": "7c9aec54-fbf5-4f00-9904-0806d13410ea",
+      "username": "gui82_a_877ea4a7b3de",
+      "displayName": "Владелец — восстановление"
+    },
+    {
+      "id": "be8e9bc7-457a-48a4-82c0-177ae091268f",
+      "username": "gui82_b_877ea4a7b3de",
+      "displayName": "Участник — восстановление"
+    },
+    {
+      "id": "29ff5c5b-d16a-49bb-950b-c2138ea50516",
+      "username": "kotauth_eda6b4b6134d4a5da9d5",
+      "displayName": "Kotlin owner"
+    },
+    {
+      "id": "b77a62ea-d17c-4d85-84d7-3ab2672ed68b",
+      "username": "kotauth_eda6b4b6134d4a5da9d5b",
+      "displayName": "Kotlin peer"
+    },
+    {
+      "id": "5c4eff5d-b072-4b31-b08e-976932780680",
+      "username": "kotlife_9e66754aabf14f97a4d7",
+      "displayName": "Lifecycle owner"
+    },
+    {
+      "id": "cc2abc4b-3d92-47d4-b78b-e331c9684f34",
+      "username": "kotlife_9e66754aabf14f97a4d7b",
+      "displayName": "Lifecycle peer"
+    },
+    {
+      "id": "f3cb456f-317d-4ff9-b108-c83f051e5ca8",
+      "username": "kotretry_140983b08b65452f8fa",
+      "displayName": "Recovery owner"
+    },
+    {
+      "id": "75ee7d3c-155d-4785-ae30-a21a2db06701",
+      "username": "kotretry_140983b08b65452f8fab",
+      "displayName": "Recovery peer"
+    },
+    {
+      "id": "050130c8-f51c-4fe0-81d0-1b775c0a7571",
+      "username": "restart_a_94378258214445d3b2eb",
+      "displayName": "Restart owner"
+    },
+    {
+      "id": "ace49e89-2961-4674-99f0-c0a50cc2af78",
+      "username": "restart_b_94378258214445d3b2eb",
+      "displayName": "Restart peer"
+    }
+  ],
+  "counts": {
+    "rooms": 7,
+    "tasks": 7,
+    "users": 16,
+    "rounds": 9,
+    "history": 9,
+    "sessions": 25,
+    "openRooms": 1,
+    "migrations": 2,
+    "activeMemberships": 2,
+    "unrevokedSessions": 2,
+    "idempotencyResults": 67,
+    "historyParticipants": 18
+  },
+  "rounds": [
+    {
+      "id": "5697fd1f-30c6-4871-886a-dc3ea7e497e6",
+      "kind": "FOCUS",
+      "endsAt": null,
+      "status": "COMPLETED",
+      "endedAt": "2026-10-11T01:53:38.88+05:00",
+      "startedAt": "2026-10-11T01:53:38.767+05:00",
+      "activeElapsedMs": 74,
+      "durationSeconds": 300,
+      "completionReason": "MANUAL"
+    },
+    {
+      "id": "c6269a4e-1a5a-4b61-9c88-ca9979ba1b0b",
+      "kind": "BREAK",
+      "endsAt": null,
+      "status": "CANCELLED",
+      "endedAt": "2026-10-11T01:53:39.116+05:00",
+      "startedAt": "2026-10-11T01:53:39.078+05:00",
+      "activeElapsedMs": 38,
+      "durationSeconds": 60,
+      "completionReason": "ROOM_CLOSED"
+    },
+    {
+      "id": "3d04cf97-473a-4441-877e-6fa745a5cf89",
+      "kind": "FOCUS",
+      "endsAt": null,
+      "status": "COMPLETED",
+      "endedAt": "2026-10-11T01:55:15.466+05:00",
+      "startedAt": "2026-10-11T01:55:00.649+05:00",
+      "activeElapsedMs": 7022,
+      "durationSeconds": 900,
+      "completionReason": "MANUAL"
+    },
+    {
+      "id": "d8f043e0-4807-4657-ac0b-2bde0eff27c9",
+      "kind": "FOCUS",
+      "endsAt": null,
+      "status": "COMPLETED",
+      "endedAt": "2026-10-11T02:23:16.273+05:00",
+      "startedAt": "2026-10-11T01:56:20.739+05:00",
+      "activeElapsedMs": 297900,
+      "durationSeconds": 900,
+      "completionReason": "MANUAL"
+    },
+    {
+      "id": "74076061-2a74-4b20-b162-a3576074c218",
+      "kind": "BREAK",
+      "endsAt": null,
+      "status": "COMPLETED",
+      "endedAt": "2026-10-11T02:27:06.549+05:00",
+      "startedAt": "2026-10-11T02:26:06.549+05:00",
+      "activeElapsedMs": 60000,
+      "durationSeconds": 60,
+      "completionReason": "ELAPSED"
+    },
+    {
+      "id": "2974f1e2-9631-452f-9303-1f2fcdfb375d",
+      "kind": "FOCUS",
+      "endsAt": null,
+      "status": "COMPLETED",
+      "endedAt": "2026-10-11T02:42:53.2+05:00",
+      "startedAt": "2026-10-11T02:42:53.13+05:00",
+      "activeElapsedMs": 45,
+      "durationSeconds": 300,
+      "completionReason": "MANUAL"
+    },
+    {
+      "id": "2dd4bfe8-a72c-4df4-9bb5-bd1ae4075177",
+      "kind": "BREAK",
+      "endsAt": null,
+      "status": "CANCELLED",
+      "endedAt": "2026-10-11T02:42:53.384+05:00",
+      "startedAt": "2026-10-11T02:42:53.361+05:00",
+      "activeElapsedMs": 23,
+      "durationSeconds": 60,
+      "completionReason": "ROOM_CLOSED"
+    },
+    {
+      "id": "28378ebb-1d0d-4128-9a05-d527d74538a6",
+      "kind": "FOCUS",
+      "endsAt": null,
+      "status": "COMPLETED",
+      "endedAt": "2026-10-11T02:46:06.93+05:00",
+      "startedAt": "2026-10-11T02:45:41.065+05:00",
+      "activeElapsedMs": 25865,
+      "durationSeconds": 900,
+      "completionReason": "MANUAL"
+    },
+    {
+      "id": "681d704e-74ac-4dbc-8087-d1b1cd9b31be",
+      "kind": "BREAK",
+      "endsAt": null,
+      "status": "COMPLETED",
+      "endedAt": "2026-10-11T02:47:33.375+05:00",
+      "startedAt": "2026-10-11T02:46:33.375+05:00",
+      "activeElapsedMs": 60000,
+      "durationSeconds": 60,
+      "completionReason": "ELAPSED"
+    }
+  ],
+  "history": [
+    {
+      "kind": "FOCUS",
+      "roomId": "437d1d85-75a8-4d31-bb6b-b9792dae961c",
+      "status": "COMPLETED",
+      "endedAt": "2026-10-10T20:53:38.880Z",
+      "roundId": "5697fd1f-30c6-4871-886a-dc3ea7e497e6",
+      "startedAt": "2026-10-10T20:53:38.767Z",
+      "participants": [
+        {
+          "goal": "Проверить настоящий Kotlin-клиент",
+          "tasks": [
+            {
+              "id": "16236bf3-4c6d-43b9-a47d-c27009d8e65c",
+              "title": "Задача для совместной проверки",
+              "completed": true
+            }
+          ],
+          "userId": "bde10b8f-3e5c-4f05-bb2d-74569febb362",
+          "displayName": "Клиент А",
+          "totalTaskCount": 1,
+          "completedTaskCount": 1
+        },
+        {
+          "goal": "",
+          "tasks": [],
+          "userId": "db45d6f6-0337-4d45-a40c-12881672f338",
+          "displayName": "Клиент Б",
+          "totalTaskCount": 0,
+          "completedTaskCount": 0
+        }
+      ],
+      "activeElapsedMs": 74,
+      "durationSeconds": 300,
+      "completionReason": "MANUAL"
+    },
+    {
+      "kind": "BREAK",
+      "roomId": "437d1d85-75a8-4d31-bb6b-b9792dae961c",
+      "status": "CANCELLED",
+      "endedAt": "2026-10-10T20:53:39.116Z",
+      "roundId": "c6269a4e-1a5a-4b61-9c88-ca9979ba1b0b",
+      "startedAt": "2026-10-10T20:53:39.078Z",
+      "participants": [
+        {
+          "goal": "Проверить настоящий Kotlin-клиент",
+          "tasks": [
+            {
+              "id": "16236bf3-4c6d-43b9-a47d-c27009d8e65c",
+              "title": "Правка после завершения",
+              "completed": false
+            }
+          ],
+          "userId": "bde10b8f-3e5c-4f05-bb2d-74569febb362",
+          "displayName": "Клиент А",
+          "totalTaskCount": 1,
+          "completedTaskCount": 0
+        },
+        {
+          "goal": "",
+          "tasks": [],
+          "userId": "db45d6f6-0337-4d45-a40c-12881672f338",
+          "displayName": "Клиент Б",
+          "totalTaskCount": 0,
+          "completedTaskCount": 0
+        }
+      ],
+      "activeElapsedMs": 38,
+      "durationSeconds": 60,
+      "completionReason": "ROOM_CLOSED"
+    },
+    {
+      "kind": "FOCUS",
+      "roomId": "29cf5d63-882b-4808-9f7e-67886f799b1b",
+      "status": "COMPLETED",
+      "endedAt": "2026-10-10T20:55:15.466Z",
+      "roundId": "3d04cf97-473a-4441-877e-6fa745a5cf89",
+      "startedAt": "2026-10-10T20:55:00.649Z",
+      "participants": [
+        {
+          "goal": "",
+          "tasks": [
+            {
+              "id": "e69da13e-49e0-4df8-acd0-dd4ada82dcac",
+              "title": "Сохранить задачу после перезапуска",
+              "completed": true
+            }
+          ],
+          "userId": "050130c8-f51c-4fe0-81d0-1b775c0a7571",
+          "displayName": "Restart owner",
+          "totalTaskCount": 1,
+          "completedTaskCount": 1
+        },
+        {
+          "goal": "",
+          "tasks": [],
+          "userId": "ace49e89-2961-4674-99f0-c0a50cc2af78",
+          "displayName": "Restart peer",
+          "totalTaskCount": 0,
+          "completedTaskCount": 0
+        }
+      ],
+      "activeElapsedMs": 7022,
+      "durationSeconds": 900,
+      "completionReason": "MANUAL"
+    },
+    {
+      "kind": "FOCUS",
+      "roomId": "2bee0ae1-cce4-4422-a503-3a7e0c60c754",
+      "status": "COMPLETED",
+      "endedAt": "2026-10-10T21:23:16.273Z",
+      "roundId": "d8f043e0-4807-4657-ac0b-2bde0eff27c9",
+      "startedAt": "2026-10-10T20:56:20.739Z",
+      "participants": [
+        {
+          "goal": "Сохранить комнату, задачи и паузу после рестарта Java без ручного обновления",
+          "tasks": [
+            {
+              "id": "1c6232f2-b322-4cc8-8190-0a8cc3728633",
+              "title": "Проверить восстановление паузы и длинной русской задачи после двух перезапусков сервера",
+              "completed": true
+            }
+          ],
+          "userId": "7c9aec54-fbf5-4f00-9904-0806d13410ea",
+          "displayName": "Владелец — восстановление",
+          "totalTaskCount": 1,
+          "completedTaskCount": 1
+        },
+        {
+          "goal": "Проверить восстановление второго Compose-клиента и согласованный итог",
+          "tasks": [
+            {
+              "id": "f98f3f79-031c-489f-a303-0748c21b31aa",
+              "title": "Убедиться, что общий таймер продолжает работу по исходному серверному сроку завершения",
+              "completed": false
+            }
+          ],
+          "userId": "be8e9bc7-457a-48a4-82c0-177ae091268f",
+          "displayName": "Участник — восстановление",
+          "totalTaskCount": 1,
+          "completedTaskCount": 0
+        }
+      ],
+      "activeElapsedMs": 297900,
+      "durationSeconds": 900,
+      "completionReason": "MANUAL"
+    },
+    {
+      "kind": "BREAK",
+      "roomId": "2bee0ae1-cce4-4422-a503-3a7e0c60c754",
+      "status": "COMPLETED",
+      "endedAt": "2026-10-10T21:27:06.549Z",
+      "roundId": "74076061-2a74-4b20-b162-a3576074c218",
+      "startedAt": "2026-10-10T21:26:06.549Z",
+      "participants": [
+        {
+          "goal": "Сохранить комнату, задачи и паузу после рестарта Java без ручного обновления",
+          "tasks": [
+            {
+              "id": "1c6232f2-b322-4cc8-8190-0a8cc3728633",
+              "title": "Проверить восстановление паузы и длинной русской задачи после двух перезапусков сервера",
+              "completed": true
+            }
+          ],
+          "userId": "7c9aec54-fbf5-4f00-9904-0806d13410ea",
+          "displayName": "Владелец — восстановление",
+          "totalTaskCount": 1,
+          "completedTaskCount": 1
+        },
+        {
+          "goal": "Проверить восстановление второго Compose-клиента и согласованный итог",
+          "tasks": [
+            {
+              "id": "f98f3f79-031c-489f-a303-0748c21b31aa",
+              "title": "Убедиться, что общий таймер продолжает работу по исходному серверному сроку завершения",
+              "completed": false
+            }
+          ],
+          "userId": "be8e9bc7-457a-48a4-82c0-177ae091268f",
+          "displayName": "Участник — восстановление",
+          "totalTaskCount": 1,
+          "completedTaskCount": 0
+        }
+      ],
+      "activeElapsedMs": 60000,
+      "durationSeconds": 60,
+      "completionReason": "ELAPSED"
+    },
+    {
+      "kind": "FOCUS",
+      "roomId": "4846aa76-8b75-479f-9fd4-1280e8157644",
+      "status": "COMPLETED",
+      "endedAt": "2026-10-10T21:42:53.200Z",
+      "roundId": "2974f1e2-9631-452f-9303-1f2fcdfb375d",
+      "startedAt": "2026-10-10T21:42:53.130Z",
+      "participants": [
+        {
+          "goal": "Проверить настоящий Kotlin-клиент",
+          "tasks": [
+            {
+              "id": "0a805866-314e-4d7d-9995-ab0345e74a50",
+              "title": "Задача для совместной проверки",
+              "completed": true
+            }
+          ],
+          "userId": "d2427f9b-d99f-4856-a261-61f70c7a8696",
+          "displayName": "Клиент А",
+          "totalTaskCount": 1,
+          "completedTaskCount": 1
+        },
+        {
+          "goal": "",
+          "tasks": [],
+          "userId": "97f9388b-d663-4855-b5d5-795f9f7fcd67",
+          "displayName": "Клиент Б",
+          "totalTaskCount": 0,
+          "completedTaskCount": 0
+        }
+      ],
+      "activeElapsedMs": 45,
+      "durationSeconds": 300,
+      "completionReason": "MANUAL"
+    },
+    {
+      "kind": "BREAK",
+      "roomId": "4846aa76-8b75-479f-9fd4-1280e8157644",
+      "status": "CANCELLED",
+      "endedAt": "2026-10-10T21:42:53.384Z",
+      "roundId": "2dd4bfe8-a72c-4df4-9bb5-bd1ae4075177",
+      "startedAt": "2026-10-10T21:42:53.361Z",
+      "participants": [
+        {
+          "goal": "Проверить настоящий Kotlin-клиент",
+          "tasks": [
+            {
+              "id": "0a805866-314e-4d7d-9995-ab0345e74a50",
+              "title": "Правка после завершения",
+              "completed": false
+            }
+          ],
+          "userId": "d2427f9b-d99f-4856-a261-61f70c7a8696",
+          "displayName": "Клиент А",
+          "totalTaskCount": 1,
+          "completedTaskCount": 0
+        },
+        {
+          "goal": "",
+          "tasks": [],
+          "userId": "97f9388b-d663-4855-b5d5-795f9f7fcd67",
+          "displayName": "Клиент Б",
+          "totalTaskCount": 0,
+          "completedTaskCount": 0
+        }
+      ],
+      "activeElapsedMs": 23,
+      "durationSeconds": 60,
+      "completionReason": "ROOM_CLOSED"
+    },
+    {
+      "kind": "FOCUS",
+      "roomId": "2bee0ae1-cce4-4422-a503-3a7e0c60c754",
+      "status": "COMPLETED",
+      "endedAt": "2026-10-10T21:46:06.930Z",
+      "roundId": "28378ebb-1d0d-4128-9a05-d527d74538a6",
+      "startedAt": "2026-10-10T21:45:41.065Z",
+      "participants": [
+        {
+          "goal": "Сохранить комнату, задачи и паузу после рестарта Java без ручного обновления",
+          "tasks": [
+            {
+              "id": "1c6232f2-b322-4cc8-8190-0a8cc3728633",
+              "title": "Проверить восстановление паузы и длинной русской задачи после двух перезапусков сервера",
+              "completed": true
+            }
+          ],
+          "userId": "7c9aec54-fbf5-4f00-9904-0806d13410ea",
+          "displayName": "Владелец — восстановление",
+          "totalTaskCount": 1,
+          "completedTaskCount": 1
+        },
+        {
+          "goal": "Проверить восстановление второго Compose-клиента и согласованный итог",
+          "tasks": [
+            {
+              "id": "f98f3f79-031c-489f-a303-0748c21b31aa",
+              "title": "Убедиться, что общий таймер продолжает работу по исходному серверному сроку завершения",
+              "completed": false
+            }
+          ],
+          "userId": "be8e9bc7-457a-48a4-82c0-177ae091268f",
+          "displayName": "Участник — восстановление",
+          "totalTaskCount": 1,
+          "completedTaskCount": 0
+        }
+      ],
+      "activeElapsedMs": 25865,
+      "durationSeconds": 900,
+      "completionReason": "MANUAL"
+    },
+    {
+      "kind": "BREAK",
+      "roomId": "2bee0ae1-cce4-4422-a503-3a7e0c60c754",
+      "status": "COMPLETED",
+      "endedAt": "2026-10-10T21:47:33.375Z",
+      "roundId": "681d704e-74ac-4dbc-8087-d1b1cd9b31be",
+      "startedAt": "2026-10-10T21:46:33.375Z",
+      "participants": [
+        {
+          "goal": "Сохранить комнату, задачи и паузу после рестарта Java без ручного обновления",
+          "tasks": [
+            {
+              "id": "1c6232f2-b322-4cc8-8190-0a8cc3728633",
+              "title": "Проверить восстановление паузы и длинной русской задачи после двух перезапусков сервера",
+              "completed": true
+            }
+          ],
+          "userId": "7c9aec54-fbf5-4f00-9904-0806d13410ea",
+          "displayName": "Владелец — восстановление",
+          "totalTaskCount": 1,
+          "completedTaskCount": 1
+        },
+        {
+          "goal": "Проверить восстановление второго Compose-клиента и согласованный итог",
+          "tasks": [
+            {
+              "id": "f98f3f79-031c-489f-a303-0748c21b31aa",
+              "title": "Убедиться, что общий таймер продолжает работу по исходному серверному сроку завершения",
+              "completed": false
+            }
+          ],
+          "userId": "be8e9bc7-457a-48a4-82c0-177ae091268f",
+          "displayName": "Участник — восстановление",
+          "totalTaskCount": 1,
+          "completedTaskCount": 0
+        }
+      ],
+      "activeElapsedMs": 60000,
+      "durationSeconds": 60,
+      "completionReason": "ELAPSED"
+    }
+  ],
+  "members": [
+    {
+      "goal": "Проверить настоящий Kotlin-клиент",
+      "slot": 1,
+      "active": false,
+      "userId": "d2427f9b-d99f-4856-a261-61f70c7a8696",
+      "displayName": "Клиент А"
+    },
+    {
+      "goal": "Проверить настоящий Kotlin-клиент",
+      "slot": 1,
+      "active": false,
+      "userId": "bde10b8f-3e5c-4f05-bb2d-74569febb362",
+      "displayName": "Клиент А"
+    },
+    {
+      "goal": "Живая проверка Kotlin",
+      "slot": 1,
+      "active": false,
+      "userId": "29ff5c5b-d16a-49bb-950b-c2138ea50516",
+      "displayName": "Kotlin owner"
+    },
+    {
+      "goal": "",
+      "slot": 1,
+      "active": false,
+      "userId": "5c4eff5d-b072-4b31-b08e-976932780680",
+      "displayName": "Lifecycle owner"
+    },
+    {
+      "goal": "Новое явное действие после конфликта",
+      "slot": 1,
+      "active": false,
+      "userId": "f3cb456f-317d-4ff9-b108-c83f051e5ca8",
+      "displayName": "Recovery owner"
+    },
+    {
+      "goal": "",
+      "slot": 1,
+      "active": false,
+      "userId": "050130c8-f51c-4fe0-81d0-1b775c0a7571",
+      "displayName": "Restart owner"
+    },
+    {
+      "goal": "Сохранить комнату, задачи и паузу после рестарта Java без ручного обновления",
+      "slot": 1,
+      "active": true,
+      "userId": "7c9aec54-fbf5-4f00-9904-0806d13410ea",
+      "displayName": "Владелец — восстановление"
+    },
+    {
+      "goal": "Проверить восстановление второго Compose-клиента и согласованный итог",
+      "slot": 2,
+      "active": true,
+      "userId": "be8e9bc7-457a-48a4-82c0-177ae091268f",
+      "displayName": "Участник — восстановление"
+    },
+    {
+      "goal": "",
+      "slot": 2,
+      "active": false,
+      "userId": "ace49e89-2961-4674-99f0-c0a50cc2af78",
+      "displayName": "Restart peer"
+    },
+    {
+      "goal": "",
+      "slot": 2,
+      "active": false,
+      "userId": "b77a62ea-d17c-4d85-84d7-3ab2672ed68b",
+      "displayName": "Kotlin peer"
+    },
+    {
+      "goal": "",
+      "slot": 2,
+      "active": false,
+      "userId": "97f9388b-d663-4855-b5d5-795f9f7fcd67",
+      "displayName": "Клиент Б"
+    },
+    {
+      "goal": "Изменение, пока партнёр вышел",
+      "slot": 2,
+      "active": false,
+      "userId": "cc2abc4b-3d92-47d4-b78b-e331c9684f34",
+      "displayName": "Lifecycle peer"
+    },
+    {
+      "goal": "",
+      "slot": 2,
+      "active": false,
+      "userId": "db45d6f6-0337-4d45-a40c-12881672f338",
+      "displayName": "Клиент Б"
+    },
+    {
+      "goal": "Правка между подготовкой и отправкой команды",
+      "slot": 2,
+      "active": false,
+      "userId": "75ee7d3c-155d-4785-ae30-a21a2db06701",
+      "displayName": "Recovery peer"
+    }
+  ],
+  "sessions": [
+    {
+      "userId": "dc0f6c63-91b5-41a5-8a24-98d3e0ab0801",
+      "expired": false,
+      "revoked": true,
+      "createdAt": "2026-10-11T01:53:36.156723+05:00",
+      "expiresAt": "2026-10-12T01:53:36.156723+05:00"
+    },
+    {
+      "userId": "dc0f6c63-91b5-41a5-8a24-98d3e0ab0801",
+      "expired": false,
+      "revoked": true,
+      "createdAt": "2026-10-11T01:53:36.42501+05:00",
+      "expiresAt": "2026-10-12T01:53:36.42501+05:00"
+    },
+    {
+      "userId": "bde10b8f-3e5c-4f05-bb2d-74569febb362",
+      "expired": false,
+      "revoked": true,
+      "createdAt": "2026-10-11T01:53:37.927336+05:00",
+      "expiresAt": "2026-10-12T01:53:37.927336+05:00"
+    },
+    {
+      "userId": "db45d6f6-0337-4d45-a40c-12881672f338",
+      "expired": false,
+      "revoked": true,
+      "createdAt": "2026-10-11T01:53:38.05727+05:00",
+      "expiresAt": "2026-10-12T01:53:38.05727+05:00"
+    },
+    {
+      "userId": "29ff5c5b-d16a-49bb-950b-c2138ea50516",
+      "expired": false,
+      "revoked": true,
+      "createdAt": "2026-10-11T01:54:31.328309+05:00",
+      "expiresAt": "2026-10-12T01:54:31.328309+05:00"
+    },
+    {
+      "userId": "b77a62ea-d17c-4d85-84d7-3ab2672ed68b",
+      "expired": false,
+      "revoked": true,
+      "createdAt": "2026-10-11T01:54:31.472608+05:00",
+      "expiresAt": "2026-10-12T01:54:31.472608+05:00"
+    },
+    {
+      "userId": "29ff5c5b-d16a-49bb-950b-c2138ea50516",
+      "expired": false,
+      "revoked": true,
+      "createdAt": "2026-10-11T01:54:31.674928+05:00",
+      "expiresAt": "2026-10-12T01:54:31.674928+05:00"
+    },
+    {
+      "userId": "5c4eff5d-b072-4b31-b08e-976932780680",
+      "expired": false,
+      "revoked": true,
+      "createdAt": "2026-10-11T01:54:40.546472+05:00",
+      "expiresAt": "2026-10-12T01:54:40.546472+05:00"
+    },
+    {
+      "userId": "cc2abc4b-3d92-47d4-b78b-e331c9684f34",
+      "expired": false,
+      "revoked": true,
+      "createdAt": "2026-10-11T01:54:40.636604+05:00",
+      "expiresAt": "2026-10-12T01:54:40.636604+05:00"
+    },
+    {
+      "userId": "5c4eff5d-b072-4b31-b08e-976932780680",
+      "expired": false,
+      "revoked": true,
+      "createdAt": "2026-10-11T01:54:40.846497+05:00",
+      "expiresAt": "2026-10-12T01:54:40.846497+05:00"
+    },
+    {
+      "userId": "5c4eff5d-b072-4b31-b08e-976932780680",
+      "expired": false,
+      "revoked": true,
+      "createdAt": "2026-10-11T01:54:40.96654+05:00",
+      "expiresAt": "2026-10-12T01:54:40.96654+05:00"
+    },
+    {
+      "userId": "f3cb456f-317d-4ff9-b108-c83f051e5ca8",
+      "expired": false,
+      "revoked": true,
+      "createdAt": "2026-10-11T01:54:50.701454+05:00",
+      "expiresAt": "2026-10-12T01:54:50.701454+05:00"
+    },
+    {
+      "userId": "75ee7d3c-155d-4785-ae30-a21a2db06701",
+      "expired": false,
+      "revoked": true,
+      "createdAt": "2026-10-11T01:54:50.783656+05:00",
+      "expiresAt": "2026-10-12T01:54:50.783656+05:00"
+    },
+    {
+      "userId": "050130c8-f51c-4fe0-81d0-1b775c0a7571",
+      "expired": false,
+      "revoked": true,
+      "createdAt": "2026-10-11T01:55:00.450536+05:00",
+      "expiresAt": "2026-10-12T01:55:00.450536+05:00"
+    },
+    {
+      "userId": "ace49e89-2961-4674-99f0-c0a50cc2af78",
+      "expired": false,
+      "revoked": true,
+      "createdAt": "2026-10-11T01:55:00.525165+05:00",
+      "expiresAt": "2026-10-12T01:55:00.525165+05:00"
+    },
+    {
+      "userId": "7c9aec54-fbf5-4f00-9904-0806d13410ea",
+      "expired": false,
+      "revoked": true,
+      "createdAt": "2026-10-11T01:56:20.441625+05:00",
+      "expiresAt": "2026-10-12T01:56:20.441625+05:00"
+    },
+    {
+      "userId": "be8e9bc7-457a-48a4-82c0-177ae091268f",
+      "expired": false,
+      "revoked": true,
+      "createdAt": "2026-10-11T01:56:20.495205+05:00",
+      "expiresAt": "2026-10-12T01:56:20.495205+05:00"
+    },
+    {
+      "userId": "7c9aec54-fbf5-4f00-9904-0806d13410ea",
+      "expired": false,
+      "revoked": true,
+      "createdAt": "2026-10-11T01:58:13.573193+05:00",
+      "expiresAt": "2026-10-12T01:58:13.573193+05:00"
+    },
+    {
+      "userId": "be8e9bc7-457a-48a4-82c0-177ae091268f",
+      "expired": false,
+      "revoked": true,
+      "createdAt": "2026-10-11T01:58:45.963437+05:00",
+      "expiresAt": "2026-10-12T01:58:45.963437+05:00"
+    },
+    {
+      "userId": "2f3e3504-b77c-41b8-9cc3-f242cfe08be2",
+      "expired": false,
+      "revoked": true,
+      "createdAt": "2026-10-11T02:42:50.866877+05:00",
+      "expiresAt": "2026-10-12T02:42:50.866877+05:00"
+    },
+    {
+      "userId": "2f3e3504-b77c-41b8-9cc3-f242cfe08be2",
+      "expired": false,
+      "revoked": true,
+      "createdAt": "2026-10-11T02:42:51.036887+05:00",
+      "expiresAt": "2026-10-12T02:42:51.036887+05:00"
+    },
+    {
+      "userId": "d2427f9b-d99f-4856-a261-61f70c7a8696",
+      "expired": false,
+      "revoked": true,
+      "createdAt": "2026-10-11T02:42:52.569745+05:00",
+      "expiresAt": "2026-10-12T02:42:52.569745+05:00"
+    },
+    {
+      "userId": "97f9388b-d663-4855-b5d5-795f9f7fcd67",
+      "expired": false,
+      "revoked": true,
+      "createdAt": "2026-10-11T02:42:52.701153+05:00",
+      "expiresAt": "2026-10-12T02:42:52.701153+05:00"
+    },
+    {
+      "userId": "7c9aec54-fbf5-4f00-9904-0806d13410ea",
+      "expired": false,
+      "revoked": false,
+      "createdAt": "2026-10-11T02:44:15.199085+05:00",
+      "expiresAt": "2026-10-12T02:44:15.199085+05:00"
+    },
+    {
+      "userId": "be8e9bc7-457a-48a4-82c0-177ae091268f",
+      "expired": false,
+      "revoked": false,
+      "createdAt": "2026-10-11T02:45:02.745304+05:00",
+      "expiresAt": "2026-10-12T02:45:02.745304+05:00"
+    }
+  ],
+  "inspectedAt": "2026-10-11T02:51:06.501824+05:00",
+  "serverVersion": "17.2"
+}

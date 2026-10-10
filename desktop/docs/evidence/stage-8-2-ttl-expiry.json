@@ -1,0 +1,120 @@
+{
+  "checkpoint": "short-ttl-ui-session-expiry",
+  "configuredSessionTtl": "PT30S",
+  "uiObservation": {
+    "status": "PASS",
+    "source": "ROOT_OBSERVED_NATIVE_COMPOSE",
+    "desktopVersion": "0da9c6c immutable JAR; authentication/session code unchanged by pending navigation fix",
+    "windowId": 21891318,
+    "loginRequestedAt": "2026-10-10T21:41:11.600Z",
+    "connectedObservedAt": "2026-10-10T21:41:27.117Z",
+    "expiryObservedAt": "2026-10-10T21:41:59.638Z",
+    "stillAtLoginAt": "2026-10-10T21:42:43.510Z",
+    "observation": "Connected ROOM with PAUSED 15:00, then automatic return to Login with session expired/revoked message; password cleared; no reconnect loop visible during subsequent 44 seconds",
+    "inputsAfterBaseline": "None: no logout, refresh, reconnect, clock or network changes",
+    "screenshots": [
+      "stage-8-2-ttl-connected.jpg",
+      "stage-8-2-ttl-expired.jpg"
+    ],
+    "preferencesKeys": [
+      "baseUrl",
+      "rememberedUsername"
+    ]
+  },
+  "activeCheckpoint": {
+    "inspectedAt": "2026-10-11T02:41:39.389245+05:00",
+    "uiSession": {
+      "userId": "180a69ce-ac33-4839-93bf-c53b874966a9",
+      "expired": false,
+      "revoked": false,
+      "createdAt": "2026-10-11T02:41:11.978172+05:00",
+      "expiresAt": "2026-10-11T02:41:41.978172+05:00"
+    },
+    "verifiedLifetimeSeconds": 30.0,
+    "counts": {
+      "rooms": 1,
+      "tasks": 2,
+      "users": 2,
+      "rounds": 1,
+      "history": 0,
+      "sessions": 3,
+      "openRooms": 1,
+      "migrations": 2,
+      "activeMemberships": 2,
+      "unrevokedSessions": 1,
+      "idempotencyResults": 9,
+      "historyParticipants": 0
+    },
+    "room": {
+      "id": "eef511ba-1d88-4a90-bedd-932947bd794e",
+      "code": "FD-VP26SM",
+      "status": "OPEN",
+      "revision": 9,
+      "breakDurationSeconds": 60,
+      "focusDurationSeconds": 900
+    },
+    "round": {
+      "id": "f33e1395-8b86-44b3-a0c7-866edc728487",
+      "kind": "FOCUS",
+      "endsAt": null,
+      "status": "PAUSED",
+      "endedAt": null,
+      "startedAt": "2026-10-11T02:35:27.211+05:00",
+      "activeElapsedMs": 46,
+      "durationSeconds": 900,
+      "completionReason": null
+    }
+  },
+  "expiredCheckpoint": {
+    "inspectedAt": "2026-10-11T02:41:42.517654+05:00",
+    "uiSession": {
+      "userId": "180a69ce-ac33-4839-93bf-c53b874966a9",
+      "expired": true,
+      "revoked": false,
+      "createdAt": "2026-10-11T02:41:11.978172+05:00",
+      "expiresAt": "2026-10-11T02:41:41.978172+05:00"
+    },
+    "counts": {
+      "rooms": 1,
+      "tasks": 2,
+      "users": 2,
+      "rounds": 1,
+      "history": 0,
+      "sessions": 3,
+      "openRooms": 1,
+      "migrations": 2,
+      "activeMemberships": 2,
+      "unrevokedSessions": 1,
+      "idempotencyResults": 9,
+      "historyParticipants": 0
+    },
+    "room": {
+      "id": "eef511ba-1d88-4a90-bedd-932947bd794e",
+      "code": "FD-VP26SM",
+      "status": "OPEN",
+      "revision": 9,
+      "breakDurationSeconds": 60,
+      "focusDurationSeconds": 900
+    },
+    "round": {
+      "id": "f33e1395-8b86-44b3-a0c7-866edc728487",
+      "kind": "FOCUS",
+      "endsAt": null,
+      "status": "PAUSED",
+      "endedAt": null,
+      "startedAt": "2026-10-11T02:35:27.211+05:00",
+      "activeElapsedMs": 46,
+      "durationSeconds": 900,
+      "completionReason": null
+    },
+    "history": []
+  },
+  "checks": {
+    "uiSessionExpired": true,
+    "sessionLifetime30Seconds": true,
+    "roomUnchanged": true,
+    "pausedRoundUnchanged": true,
+    "historyStillEmpty": true
+  },
+  "result": "SQL_EXPIRY_CONFIRMED_UI_PENDING"
+}

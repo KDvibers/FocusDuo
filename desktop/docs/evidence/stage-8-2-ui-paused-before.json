@@ -1,0 +1,85 @@
+{
+  "checkpoint": "manual-ui-paused-before-java-stop",
+  "uiEvidence": "USER_REPORTED: both Compose windows ready; no screenshot captured",
+  "inspectedAt": "2026-10-11T02:01:53.69048+05:00",
+  "counts": {
+    "rooms": 6,
+    "tasks": 6,
+    "users": 13,
+    "rounds": 4,
+    "history": 3,
+    "sessions": 19,
+    "openRooms": 1,
+    "migrations": 2,
+    "activeMemberships": 2,
+    "unrevokedSessions": 2,
+    "idempotencyResults": 48,
+    "historyParticipants": 6
+  },
+  "room": {
+    "id": "2bee0ae1-cce4-4422-a503-3a7e0c60c754",
+    "code": "FD-MHYWYU",
+    "status": "OPEN",
+    "revision": 9,
+    "breakDurationSeconds": 60,
+    "focusDurationSeconds": 900
+  },
+  "round": {
+    "id": "d8f043e0-4807-4657-ac0b-2bde0eff27c9",
+    "kind": "FOCUS",
+    "endsAt": null,
+    "status": "PAUSED",
+    "endedAt": null,
+    "startedAt": "2026-10-11T01:56:20.739+05:00",
+    "activeElapsedMs": 14,
+    "durationSeconds": 900,
+    "completionReason": null
+  },
+  "tasks": [
+    {
+      "id": "1c6232f2-b322-4cc8-8190-0a8cc3728633",
+      "title": "Проверить восстановление паузы и длинной русской задачи после двух перезапусков сервера",
+      "userId": "7c9aec54-fbf5-4f00-9904-0806d13410ea",
+      "completed": true
+    },
+    {
+      "id": "f98f3f79-031c-489f-a303-0748c21b31aa",
+      "title": "Убедиться, что общий таймер продолжает работу по исходному серверному сроку завершения",
+      "userId": "be8e9bc7-457a-48a4-82c0-177ae091268f",
+      "completed": false
+    }
+  ],
+  "members": [
+    {
+      "goal": "Сохранить комнату, задачи и паузу после рестарта Java без ручного обновления",
+      "slot": 1,
+      "active": true,
+      "userId": "7c9aec54-fbf5-4f00-9904-0806d13410ea",
+      "displayName": "Владелец — восстановление"
+    },
+    {
+      "goal": "Проверить восстановление второго Compose-клиента и согласованный итог",
+      "slot": 2,
+      "active": true,
+      "userId": "be8e9bc7-457a-48a4-82c0-177ae091268f",
+      "displayName": "Участник — восстановление"
+    }
+  ],
+  "sessions": [
+    {
+      "userId": "7c9aec54-fbf5-4f00-9904-0806d13410ea",
+      "expired": false,
+      "revoked": false,
+      "createdAt": "2026-10-11T01:58:13.573193+05:00",
+      "expiresAt": "2026-10-12T01:58:13.573193+05:00"
+    },
+    {
+      "userId": "be8e9bc7-457a-48a4-82c0-177ae091268f",
+      "expired": false,
+      "revoked": false,
+      "createdAt": "2026-10-11T01:58:45.963437+05:00",
+      "expiresAt": "2026-10-12T01:58:45.963437+05:00"
+    }
+  ],
+  "historyForRound": []
+}

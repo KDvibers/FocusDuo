@@ -1,0 +1,43 @@
+{
+  "checkpoint": "manual-ui-running-java-stopped",
+  "recordedAt": "2026-10-11T02:19:09.6710895+05:00",
+  "command": {
+    "id": "35712ddc-9d47-4476-b742-150bd3e1973b",
+    "status": "ok"
+  },
+  "state": {
+    "kind": "focusduo-isolated-compose-stage8-v1",
+    "stopped": false,
+    "baseUrl": "http://127.0.0.1:8090",
+    "dbPort": 55438,
+    "javaPid": null,
+    "generation": 5,
+    "controllerPid": 18168,
+    "postgresData": "C:\\Users\\user\\.codex\\worktrees\\desktop-wake-recovery\\focusDuo\\desktop\\build\\stage8-2-20261011\\postgres-data",
+    "runDirectory": "C:\\Users\\user\\.codex\\worktrees\\desktop-wake-recovery\\focusDuo\\desktop\\build\\stage8-2-20261011"
+  },
+  "listeners": [
+    {
+      "LocalAddress": "::",
+      "LocalPort": 5432,
+      "OwningProcess": 10172
+    },
+    {
+      "LocalAddress": "127.0.0.1",
+      "LocalPort": 55438,
+      "OwningProcess": 6124
+    },
+    {
+      "LocalAddress": "0.0.0.0",
+      "LocalPort": 5432,
+      "OwningProcess": 10172
+    }
+  ],
+  "savedEndsAt": "2026-10-11T02:33:18.373+05:00",
+  "uiOfflineObservation": {
+    "status": "PASS",
+    "source": "USER_REPORTED",
+    "observation": "Both windows reconnecting; tasks preserved; buttons disabled; timers continue counting down and show the same time",
+    "recordedAt": "2026-10-11T02:20:15.4035640+05:00"
+  }
+}
