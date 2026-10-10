@@ -77,3 +77,15 @@ java --class-path "$(cat target/ws-smoke-classpath.txt)" \
 После desktop-этапа 5 доступна его отдельная задача `backendAuthSmoke` против запущенного Java backend: регистрация, профиль, пустой current, logout и login. Дополнительный [kotlin-auth-smoke](kotlin-auth-smoke/README.md) запускает настоящий `RealRepository`/CIO и проверяет заполненную комнату, ошибки авторизации, внешний отзыв токена и восстановление участия. Для него внешний Gradle init script использует существующий компилятор desktop; исходники desktop и Maven-сборка backend не меняются.
 
 Обе задачи запускаются явно и создают аккаунты в выбранной БД; используйте сервер разработки. Новый harness принимает только loopback-адрес, не управляет сервером/БД и не входит в backend CI. Подтверждённые результаты и команды — в [AUTH_INTEGRATION.md](../../docs/backend/AUTH_INTEGRATION.md). Compose UI, клиентские команды комнаты и WS этими проверками не подтверждаются.
+
+## Живые команды комнаты и WebSocket Kotlin
+
+После desktop-этапа 6 доступен `backendRoomSmoke`: два production `RealRepository`/CIO выполняют create/join, меняют цель и задачу, проходят FOCUS/pause/resume/finish, читают неизменяемую историю и закрывают комнату во время BREAK. Команда из `desktop/` при работающем Java backend:
+
+```powershell
+.\gradlew.bat backendRoomSmoke '-Dfocusduo.smoke.baseUrl=http://127.0.0.1:8090' --console=plain
+```
+
+Дополнительный [kotlin-room-smoke](kotlin-room-smoke/README.md) проверяет цикл подключения, logout/login с восстановлением участия, отзыв токена активного WS и поведение CLOSED. Он добавляется внешним Gradle init script из `backend/`, не меняет клиентскую сборку и не входит в CI.
+
+Обе проверки используют настоящие REST и WS, но не запускают Compose-окна. Нужны JDK 21 и отдельный локальный backend; проверенные Windows-команды и результат — в [ROOM_INTEGRATION.md](../../docs/backend/ROOM_INTEGRATION.md). Используйте одноразовую БД: записи аккаунтов остаются, а desktop `LiveBackendRoomTest` при падении до штатных close/logout не гарантирует серверную очистку. Дополнительный harness пытается закрыть только собственную комнату и отозвать свои сессии с ограниченными ожиданиями; недоступный сервер может помешать очистке.
