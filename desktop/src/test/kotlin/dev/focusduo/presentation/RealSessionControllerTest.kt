@@ -144,6 +144,40 @@ class RealSessionControllerTest {
         } finally { controller.close() }
     }
 
+    @Test fun `automatic identity and membership recovery clears restoration error without repeating login`() = runBlocking<Unit> {
+        val recoveryRead = CompletableDeferred<Unit>()
+        val releaseRecovery = CompletableDeferred<Unit>()
+        val authRequests = AtomicInteger()
+        val meRequests = AtomicInteger()
+        val controller = RealSessionController(store(), engineFactory = { MockEngine { request ->
+            when (request.url.encodedPath) {
+                "/api/v1/auth/login" -> { authRequests.incrementAndGet(); respond(AUTH, headers = JSON) }
+                "/api/v1/me" -> {
+                    if (meRequests.incrementAndGet() == 1) throw IOException("outage")
+                    recoveryRead.complete(Unit)
+                    releaseRecovery.await()
+                    respond(UPDATED_USER, headers = JSON)
+                }
+                "/api/v1/rooms/current" -> respond("""{"room":null}""", headers = JSON)
+                else -> error("Unexpected recovery request")
+            }
+        } })
+        try {
+            controller.initialize()
+            controller.login("anna", PASSWORD)
+            val repository = assertNotNull(controller.state.value.repository)
+            assertNotNull(controller.state.value.restoreError)
+            withTimeout(5_000) { recoveryRead.await() }
+            releaseRecovery.complete(Unit)
+            withTimeout(5_000) { controller.state.first { it.restoreError == null } }
+            assertSame(repository, controller.state.value.repository)
+            assertEquals("Анна после /me", repository.state.value.currentUser.displayName)
+            assertNull(repository.state.value.room)
+            assertEquals(1, authRequests.get())
+            assertTrue(repository.recoveryVersion.value > 0L)
+        } finally { releaseRecovery.complete(Unit); controller.close() }
+    }
+
     @Test fun `duplicate login is ignored while a request is pending`() = runBlocking<Unit> {
         val entered = CompletableDeferred<Unit>()
         val release = CompletableDeferred<Unit>()

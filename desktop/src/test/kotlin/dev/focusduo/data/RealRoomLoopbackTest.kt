@@ -179,7 +179,7 @@ class RealRoomLoopbackTest {
                 await { repository.state.value.room!!.serverNow > original.serverNow }
                 assertEquals(original.code, repository.state.value.room!!.code)
                 backend.connections.last().close(CloseReason(CloseReason.Codes.GOING_AWAY, "disconnect"))
-                await { repository.connectionState.value.status == RealConnectionStatus.DISCONNECTED }
+                await { repository.connectionState.value.status == RealConnectionStatus.RECONNECTING }
                 assertFalse(repository.canMutate)
                 expectError("CONNECTION_NOT_READY") { repository.finishRound(ROUND_ID) }
                 backend.firstSnapshotGate = CompletableDeferred()
@@ -214,7 +214,7 @@ class RealRoomLoopbackTest {
             RealRepository.login(backend.origin(), "daniyar", "Password123!").use { repository ->
                 repository.bootstrap(); await { repository.canMutate }
                 backend.connections.last().close(CloseReason(CloseReason.Codes.GOING_AWAY, "disconnect"))
-                await { repository.connectionState.value.status == RealConnectionStatus.DISCONNECTED }
+                await { repository.connectionState.value.status == RealConnectionStatus.RECONNECTING }
                 backend.room = sampleRoom().copy(revision = 16)
                 repository.reconnect()
                 await { backend.handshakes.size == 2 }
@@ -228,22 +228,19 @@ class RealRoomLoopbackTest {
         }
     }
 
-    @Test fun `ambiguous room creation requires membership refresh and ambiguous task requires resynchronization`() = runBlocking<Unit> {
+    @Test fun `ambiguous room creation keeps pending intent and blocks all new writes after synchronization`() = runBlocking<Unit> {
         Backend().use { backend ->
             RealRepository.login(backend.origin(), "daniyar", "Password123!").use { repository ->
                 repository.bootstrap()
                 backend.malformedNext = true
                 expectError("PROTOCOL_ERROR") { repository.createRoom() }
-                expectError("ROOM_RESTORE_REQUIRED") { repository.createRoom() }
+                expectError("PENDING_COMMAND") { repository.createRoom() }
                 assertEquals(1, backend.requests.count { it.key != null })
-                repository.refreshCurrentRoom(); await { repository.canMutate }
-                backend.malformedNext = true
-                expectError("PROTOCOL_ERROR") { repository.addTask("результат неизвестен") }
-                assertEquals(RealConnectionStatus.DISCONNECTED, repository.connectionState.value.status)
+                await { repository.pendingCommand.value?.retryAvailable == true }
                 assertFalse(repository.canMutate)
-                expectError("CONNECTION_NOT_READY") { repository.addTask("не повторять автоматически") }
-                assertEquals(2, backend.requests.count { it.key != null })
-                repository.reconnect(); await { repository.canMutate }
+                expectError("PENDING_COMMAND") { repository.addTask("не повторять автоматически") }
+                assertEquals(1, backend.requests.count { it.key != null }, "Recovery must only perform GETs and WS handshake")
+                assertEquals("Создание комнаты", repository.pendingCommand.value!!.description)
             }
         }
     }

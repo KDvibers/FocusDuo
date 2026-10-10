@@ -162,6 +162,15 @@ class RealSessionController(
                 state.value.repository?.close()
                 mutableState.value = state.value.copy(repository = repository, loading = false, authError = null, restoreError = null, notice = null)
                 sessionWatcher = scope.launch {
+                    launch {
+                        repository.recoveryVersion.collect { version ->
+                            if (version > 0L) synchronized(lock) {
+                                if (owns(expected, repository) && state.value.restoreError?.code in RECOVERABLE_RESTORE_ERRORS) {
+                                    mutableState.value = state.value.copy(restoreError = null)
+                                }
+                            }
+                        }
+                    }
                     repository.sessionStatus.collect { status ->
                         when (status) {
                             RealSessionStatus.ACTIVE -> Unit
@@ -181,6 +190,7 @@ class RealSessionController(
     }
 
     private suspend fun restore(expected: Long, repository: RealRepository) {
+        val recoveryBefore = repository.recoveryVersion.value
         try {
             repository.refreshMe()
             repository.refreshCurrentRoom()
@@ -195,7 +205,11 @@ class RealSessionController(
                 expire(expected, repository)
             } else {
                 synchronized(lock) {
-                    if (owns(expected, repository)) mutableState.value = state.value.copy(restoreError = safe)
+                    if (owns(expected, repository)) {
+                        // Recovery may finish before this catch publishes the original transport error.
+                        val recovered = safe.code in RECOVERABLE_RESTORE_ERRORS && repository.recoveryVersion.value > recoveryBefore
+                        mutableState.value = state.value.copy(restoreError = safe.takeUnless { recovered })
+                    }
                 }
             }
         }
@@ -269,6 +283,10 @@ class RealSessionController(
 
     private fun safeFailure(failure: Exception): RepositoryException = failure as? RepositoryException
         ?: RepositoryException("INTERNAL_ERROR", "Не удалось выполнить действие. Попробуй ещё раз.")
+
+    private companion object {
+        val RECOVERABLE_RESTORE_ERRORS = setOf("NETWORK_ERROR", "NETWORK_TIMEOUT", "INTERNAL_ERROR")
+    }
 
     override fun close() {
         synchronized(lock) {
