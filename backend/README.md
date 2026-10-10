@@ -154,6 +154,8 @@ py -3 backend/scripts/smoke.py --base-url http://127.0.0.1:8090 --wait-seconds 6
 
 После desktop-этапа 6 на Windows прошли `test check backendAuthSmoke backendRoomSmoke`: **143 обычных теста + 2 живых теста**, без failures/errors/skips. Два настоящих Kotlin `RealRepository`/CIO работали через REST/WS с отдельным Java JAR и PostgreSQL в WSL: create/join, задача, FOCUS/pause/resume/finish, неизменяемая история, BREAK/close. Это два repository в одной JVM; Compose-окна и LAN ещё не проверены. Команды, дополнительные сценарии и границы — в [ROOM_INTEGRATION](../docs/backend/ROOM_INTEGRATION.md), дальнейшая приёмка — в [INTEGRATION](../docs/backend/INTEGRATION.md) и [HANDOFF](../docs/backend/HANDOFF.md).
 
+После desktop-этапа 7 повторный `test check backendAuthSmoke backendRoomSmoke` прошёл **171 обычный тест + 2 живых**, без ошибок и пропусков. Новые opt-in проверки подтвердили потерянные ответы после настоящего commit, точный ручной replay без повторного эффекта, реальный 409 и автоматическое восстановление двух Kotlin repository после двух принудительных остановок Java с той же БД (PAUSED и RUNNING). UI, физический сон и LAN этим не проверяются. Точные команды изолированного стенда, результаты и замечание Kotlin-разработчику — в [RECOVERY_INTEGRATION](../docs/backend/RECOVERY_INTEGRATION.md).
+
 Дополнительный локальный режим допускает выделенный PostgreSQL 17 без Docker:
 
 ```powershell
