@@ -1,0 +1,82 @@
+{
+  "mode": "offline",
+  "controller": {
+    "container": "focusduo-recovery-4f0f20d499c4",
+    "dbPort": 55437,
+    "serverPid": null,
+    "generation": 1
+  },
+  "scope": {
+    "ownerUsername": "expired_a_b020e086ff7045878203",
+    "peerUsername": "expired_b_b020e086ff7045878203",
+    "ownerId": "bbed4007-64a9-4c66-8842-9d0f44e10c57",
+    "peerId": "00a1948e-fdb0-4e8c-acaa-4ad91ba4da4e",
+    "roomId": "9bf53ee0-2d4c-4058-bbf2-eba13400b387",
+    "roundId": "81d97422-85ce-4405-a792-2b509e69b8f3",
+    "originalEndsAt": "2026-10-11T20:38:25.835000+00:00"
+  },
+  "database": {
+    "room": {
+      "id": "9bf53ee0-2d4c-4058-bbf2-eba13400b387",
+      "code": "FD-8NKE85",
+      "status": "OPEN",
+      "ownerId": "bbed4007-64a9-4c66-8842-9d0f44e10c57",
+      "revision": 8,
+      "roundCount": 1,
+      "historyCount": 0,
+      "currentRoundId": "81d97422-85ce-4405-a792-2b509e69b8f3",
+      "activeMemberships": 2
+    },
+    "round": {
+      "id": "81d97422-85ce-4405-a792-2b509e69b8f3",
+      "kind": "FOCUS",
+      "endsAt": "2026-10-11T20:38:25.835+00:00",
+      "roomId": "9bf53ee0-2d4c-4058-bbf2-eba13400b387",
+      "status": "RUNNING",
+      "endedAt": null,
+      "startedAt": "2026-10-11T20:33:25.835+00:00",
+      "activeElapsedMs": 0,
+      "durationSeconds": 300,
+      "completionReason": null,
+      "endsAtMatchesOriginal": true,
+      "endedAtMatchesOriginal": null
+    },
+    "users": [
+      {
+        "id": "bbed4007-64a9-4c66-8842-9d0f44e10c57",
+        "sessions": 1,
+        "username": "expired_a_b020e086ff7045878203",
+        "liveSessions": 1,
+        "activeMemberships": 1,
+        "unrevokedSessions": 1
+      },
+      {
+        "id": "00a1948e-fdb0-4e8c-acaa-4ad91ba4da4e",
+        "sessions": 1,
+        "username": "expired_b_b020e086ff7045878203",
+        "liveSessions": 1,
+        "activeMemberships": 1,
+        "unrevokedSessions": 1
+      }
+    ],
+    "history": [],
+    "database": "focusduo_recovery",
+    "databaseNow": "2026-10-11T20:38:42.107745+00:00",
+    "originalDeadlinePassed": true
+  },
+  "checks": {
+    "isolatedDatabase": true,
+    "twoScopedUsers": true,
+    "ownedRoom": true,
+    "sameRound": true,
+    "oneRound": true,
+    "sameCurrentRound": true,
+    "focus300": true,
+    "javaStopped": true,
+    "deadlinePassed": true,
+    "storedRunning": true,
+    "noHistory": true,
+    "originalDeadlinePreserved": true
+  },
+  "pass": true
+}
