@@ -2,6 +2,8 @@
 
 Java 21, Spring Boot 3.5.16, PostgreSQL 17, Flyway и Maven 3.9.11. Maven Wrapper 3.3.4 находится в этой папке; отдельная установка Maven не требуется. Первый запуск wrapper и сборка требуют доступа к Maven Central. SHA-256 дистрибутива Maven закреплён в `.mvn/wrapper/maven-wrapper.properties`.
 
+**Состояние после PR #21:** основной совместный сценарий двух компьютеров через Tailscale прошёл [ручную приёмку](../docs/backend/REMOTE_ACCEPTANCE_2026-10-12.md). Следующий этап — [Windows-упаковка клиента](../docs/backend/WINDOWS_PACKAGING_HANDOFF.md); сервер и БД продолжают работать отдельно. [Инструкция общего подключения](../docs/backend/SERVER_CONNECTION.md) описывает HTTPS/WSS, адрес в интерфейсе и диагностику. Числа тестов, версии и ограничения в исторических отчётах ниже относятся к своим прогонам, а не к новому выполнению на текущем коммите.
+
 Для Linux/WSL дополнительно нужны Bash, `curl` или `wget` и **`unzip`**. Wrapper проверяет закреплённый ZIP-дистрибутив; отсутствие `unzip` нужно исправить установкой утилиты, сохранив checksum. Для Docker-проверок нужны работающий Docker Engine и Compose v2. HTTP smoke использует Python 3.9+ без сторонних пакетов.
 
 ## Локальный .env
