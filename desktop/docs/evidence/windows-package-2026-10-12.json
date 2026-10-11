@@ -1,0 +1,159 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-12",
+  "timezone": "Asia/Qyzylorda",
+  "source": {
+    "baseCommit": "467ed63a601c78fe317bcb4ab5cfdef360cf32c5",
+    "branch": "feat/desktop-windows-package",
+    "state": "Uncommitted desktop-only packaging changes; no commit or push performed"
+  },
+  "environment": {
+    "windows": "Майкрософт Windows 11 Pro",
+    "version": "10.0.26300",
+    "build": "26300",
+    "architecture": "x64",
+    "jdk": "Amazon Corretto 21.0.6.7.1 / 21.0.6+7-LTS",
+    "gradle": "8.13",
+    "compose": "1.9.1",
+    "wix": "3.11.2.4516",
+    "adminToken": false
+  },
+  "artifact": {
+    "file": "FocusDuo-0.1.0.msi",
+    "relativeBuildPath": "desktop/build/compose/binaries/main/msi/FocusDuo-0.1.0.msi",
+    "version": "0.1.0",
+    "bytes": 91317919,
+    "sha256": "8C47303CA6D871F994CC7248C86D39C728EF69D88ABE99AAC660DC5284E4B987",
+    "signature": "NotSigned",
+    "productCode": "{EC91A13E-498D-3938-84A8-85AFF619F998}",
+    "upgradeUuid": "10aee174-af1c-4dc4-9705-bec80b54639c"
+  },
+  "verification": {
+    "freshTestRun": {
+      "errors": 0,
+      "skipped": 0,
+      "failures": 0,
+      "tests": 199
+    },
+    "check": "PASS",
+    "runtimeArtifactsWithNotices": 66,
+    "createDistributable": "PASS",
+    "runDistributable": "PASS",
+    "packageMsi": "PASS",
+    "installExitCode": 0,
+    "installerContext": 2,
+    "installerSidMatchesCurrentUser": true,
+    "desktopShortcutLaunch": "PASS",
+    "startMenuShortcutFileLaunch": "PASS",
+    "jdkFreeChildEnvironmentLaunch": "PASS: JAVA_HOME empty, PATH only Windows/System32",
+    "loadedJvm": "Installed runtime/bin/server/jvm.dll",
+    "loadedSkiko": "Installed app/skiko-windows-x64.dll",
+    "settings": "PASS: URL and nonsecret QA username saved through UI to isolated profile",
+    "relaunch": "PASS: URL and username restored, password blank; room recovery after login NOT_RUN",
+    "ui": "Installed DEMO, 1280x800 and 1000x700 launch options, scrolling, maximize, 134-character Russian task at 1280, Tab focus leaves field",
+    "uninstall": "PASS: Windows Installer /x /passive, log MainEngineThread return 0",
+    "afterUninstall": {
+      "executablePresent": false,
+      "runtimePresent": false,
+      "installDirectoryPresent": false,
+      "desktopShortcutPresent": false,
+      "startMenuShortcutPresent": false,
+      "registrationPresent": false,
+      "originalPreferencesUnchanged": true,
+      "isolatedQaPreferencesUnchanged": true
+    },
+    "reinstallExitCode": 0,
+    "afterReinstall": {
+      "productCount": 1,
+      "shortcutCount": 2,
+      "version": "0.1.0",
+      "launch": "PASS: saved URL/name restored, password blank"
+    },
+    "finalState": "Installed after reinstall; all QA app windows closed; pre-existing user Java window preserved"
+  },
+  "pending": [
+    "Two installed clients HTTPS/WSS real login/create/join/tasks/FOCUS/result: USER_PENDING on second PC",
+    "Installed-client unavailable-server error and post-login room recovery: NOT_RUN",
+    "Clean Windows without separately installed JDK/Gradle: NOT_RUN",
+    "Uninstall from Windows Settings UI: NOT_RUN; application search stayed loading, used Windows Installer CLI",
+    "Cross-version upgrade: NOT_RUN"
+  ],
+  "networkPreflight": "curl HTTPS /api/v1/me returned 401 with TLS verify 0; this is not installed-client HTTPS/WSS acceptance",
+  "screenshots": [
+    {
+      "file": "../screenshots/windows-package-image-login.jpg",
+      "bytes": 48271,
+      "sha256": "B0A4271E425F701EC8CA36049FC531CF75999B03BA0725B23355D4DB15F7962E"
+    },
+    {
+      "file": "../screenshots/windows-package-installed-after-reinstall.jpg",
+      "bytes": 50572,
+      "sha256": "E4551A06A07B859C1C4B83E714B47AE1686D80D33D255296E44E0167EA18EBDB"
+    },
+    {
+      "file": "../screenshots/windows-package-installed-demo-maximized.jpg",
+      "bytes": 96160,
+      "sha256": "9470EC7795FEFF1AD426CC11EF3E203810C3013AD7B4FE1426D7A27863C3D2B8"
+    },
+    {
+      "file": "../screenshots/windows-package-installed-demo-room-1000.jpg",
+      "bytes": 46274,
+      "sha256": "24EF92619F09A916507DCCDF78F7F996AF6F89F91D2B339359854E7F891C166F"
+    },
+    {
+      "file": "../screenshots/windows-package-installed-demo-room-1280.jpg",
+      "bytes": 75538,
+      "sha256": "89138EC5FEC71EE8595597BC19ED923C55EAD25D374D4A6969900E3E6DCCDDA2"
+    },
+    {
+      "file": "../screenshots/windows-package-installed-demo-scroll-1000.jpg",
+      "bytes": 48660,
+      "sha256": "7B3F37AC631E3BE3C9D0AFD5419949FDDA8C95D71F5309E3DF61E1177D6E7CEA"
+    },
+    {
+      "file": "../screenshots/windows-package-installed-demo-scroll.jpg",
+      "bytes": 77111,
+      "sha256": "701531C2919B40521FB393EDFF43BB5EAB58BAA51508B85EC21636DAAE7EBA4B"
+    },
+    {
+      "file": "../screenshots/windows-package-installed-login.jpg",
+      "bytes": 48291,
+      "sha256": "873D415E43B7C9799F2051C86A4220177B715738EAF5002A73B42A2EECFA6895"
+    },
+    {
+      "file": "../screenshots/windows-package-installed-relaunch-1000.jpg",
+      "bytes": 44622,
+      "sha256": "20B66D7AC52ADD7426FF8B68AFF4D24594D25A83088929CBB61909EB6CF61075"
+    },
+    {
+      "file": "../screenshots/windows-package-installed-saving.jpg",
+      "bytes": 48813,
+      "sha256": "051A9F5F8EE86626659CE21F35A718355B7C50086057CE7A06DB1D53A427AB68"
+    },
+    {
+      "file": "../screenshots/windows-package-installed-server.jpg",
+      "bytes": 50677,
+      "sha256": "EF010FC3E4DDBB9A6068280A3D8E083ED3990CE69E2BD16F206643FECEE0B4DB"
+    },
+    {
+      "file": "../screenshots/windows-package-msi-directory.jpg",
+      "bytes": 21031,
+      "sha256": "7D5219382CDB7AE41AA0B38B7A9FF3A33340097A97DBD9EA424D2070383952D5"
+    },
+    {
+      "file": "../screenshots/windows-package-msi-welcome.jpg",
+      "bytes": 27767,
+      "sha256": "D47F85B1036D016570AECAFFCD8521317AA0C4202DC21C281F86FA45FCCA582E"
+    },
+    {
+      "file": "../screenshots/windows-package-shortcut-icon.jpg",
+      "bytes": 35829,
+      "sha256": "30239ABCAAD262D0337DA3F5E176FD183CFBCA3410C764A6EF76CE760F955153"
+    },
+    {
+      "file": "../screenshots/windows-package-uninstall-progress.jpg",
+      "bytes": 7921,
+      "sha256": "6C7F145D116A9A9189D3F8CD723780DA9A9238DF9930B4BA1D575ED042DA8933"
+    }
+  ]
+}

@@ -1,6 +1,7 @@
 package dev.focusduo
 
 import androidx.compose.runtime.*
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
@@ -26,6 +27,7 @@ fun main(args: Array<String>) {
         Window(
             onCloseRequest = ::exitApplication,
             title = if (demo) "FocusDuo — Демо" else "FocusDuo",
+            icon = painterResource("icons/focusduo.png"),
             state = windowState,
         ) {
             SideEffect { window.minimumSize = Dimension(840, 600) }
