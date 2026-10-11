@@ -1,0 +1,163 @@
+{
+  "checkpoint": "two-compose-running-before-java-stop",
+  "status": "PASS",
+  "observedAt": "2026-10-12T01:43:49.8536977+05:00",
+  "runtime": {
+    "kind": "focusduo-isolated-compose-stage8-v1",
+    "stopped": false,
+    "baseUrl": "http://127.0.0.1:8090",
+    "dbPort": 55438,
+    "javaPid": 19540,
+    "generation": 1,
+    "controllerPid": 39024,
+    "postgresData": "C:\\Users\\user\\.codex\\worktrees\\desktop-wake-recovery\\focusDuo\\desktop\\build\\focus-expiry-20261012\\postgres-data",
+    "runDirectory": "C:\\Users\\user\\.codex\\worktrees\\desktop-wake-recovery\\focusDuo\\desktop\\build\\focus-expiry-20261012"
+  },
+  "room": {
+    "id": "7b2f692d-a523-48a4-930f-9a323211025f",
+    "code": "FD-JN2XEK",
+    "status": "OPEN",
+    "revision": 10,
+    "breakDurationSeconds": 60,
+    "focusDurationSeconds": 300
+  },
+  "round": {
+    "id": "e99b023c-c5cc-480b-93b4-6a21bd041f36",
+    "kind": "FOCUS",
+    "endsAt": "2026-10-12T01:48:01.44+05:00",
+    "status": "RUNNING",
+    "endedAt": null,
+    "startedAt": "2026-10-12T01:41:02.701+05:00",
+    "activeElapsedMs": 49,
+    "durationSeconds": 300,
+    "completionReason": null
+  },
+  "remainingAtSqlMs": 252050.0,
+  "invariants": {
+    "oneRoom": true,
+    "oneRound": true,
+    "noHistoryYet": true,
+    "running": true,
+    "focus": true,
+    "fiveMinutes": true,
+    "seedActive49ms": true,
+    "futureDeadline": true,
+    "twoTasks": true,
+    "twoActiveMemberships": true,
+    "twoGuiSessions": true
+  },
+  "database": {
+    "rooms": [
+      {
+        "id": "7b2f692d-a523-48a4-930f-9a323211025f",
+        "code": "FD-JN2XEK",
+        "status": "OPEN",
+        "revision": 10,
+        "breakDurationSeconds": 60,
+        "focusDurationSeconds": 300
+      }
+    ],
+    "tasks": [
+      {
+        "id": "e9d52c79-7e7e-4694-80e0-57b8bce7d2d6",
+        "title": "Проверить восстановление паузы и длинной русской задачи после двух перезапусков сервера",
+        "userId": "d04b8538-1a5d-43aa-8abc-e9aed638bfa9",
+        "completed": true
+      },
+      {
+        "id": "d3ea00ae-e914-4ed4-a585-8f85112ac4f2",
+        "title": "Убедиться, что общий таймер продолжает работу по исходному серверному сроку завершения",
+        "userId": "5af92645-1ad3-46dc-a71f-4c0701b8255d",
+        "completed": false
+      }
+    ],
+    "users": [
+      {
+        "id": "d04b8538-1a5d-43aa-8abc-e9aed638bfa9",
+        "username": "gui82_a_3c3fd1a0614e",
+        "displayName": "Владелец — восстановление"
+      },
+      {
+        "id": "5af92645-1ad3-46dc-a71f-4c0701b8255d",
+        "username": "gui82_b_3c3fd1a0614e",
+        "displayName": "Участник — восстановление"
+      }
+    ],
+    "counts": {
+      "rooms": 1,
+      "tasks": 2,
+      "users": 2,
+      "rounds": 1,
+      "history": 0,
+      "sessions": 4,
+      "openRooms": 1,
+      "migrations": 2,
+      "activeMemberships": 2,
+      "unrevokedSessions": 2,
+      "idempotencyResults": 10,
+      "historyParticipants": 0
+    },
+    "rounds": [
+      {
+        "id": "e99b023c-c5cc-480b-93b4-6a21bd041f36",
+        "kind": "FOCUS",
+        "endsAt": "2026-10-12T01:48:01.44+05:00",
+        "status": "RUNNING",
+        "endedAt": null,
+        "startedAt": "2026-10-12T01:41:02.701+05:00",
+        "activeElapsedMs": 49,
+        "durationSeconds": 300,
+        "completionReason": null
+      }
+    ],
+    "history": [],
+    "members": [
+      {
+        "goal": "Сохранить комнату, задачи и паузу после рестарта Java без ручного обновления",
+        "slot": 1,
+        "active": true,
+        "userId": "d04b8538-1a5d-43aa-8abc-e9aed638bfa9",
+        "displayName": "Владелец — восстановление"
+      },
+      {
+        "goal": "Проверить восстановление второго Compose-клиента и согласованный итог",
+        "slot": 2,
+        "active": true,
+        "userId": "5af92645-1ad3-46dc-a71f-4c0701b8255d",
+        "displayName": "Участник — восстановление"
+      }
+    ],
+    "sessions": [
+      {
+        "userId": "d04b8538-1a5d-43aa-8abc-e9aed638bfa9",
+        "expired": false,
+        "revoked": true,
+        "createdAt": "2026-10-12T01:41:02.258784+05:00",
+        "expiresAt": "2026-10-13T01:41:02.258784+05:00"
+      },
+      {
+        "userId": "5af92645-1ad3-46dc-a71f-4c0701b8255d",
+        "expired": false,
+        "revoked": true,
+        "createdAt": "2026-10-12T01:41:02.33294+05:00",
+        "expiresAt": "2026-10-13T01:41:02.33294+05:00"
+      },
+      {
+        "userId": "d04b8538-1a5d-43aa-8abc-e9aed638bfa9",
+        "expired": false,
+        "revoked": false,
+        "createdAt": "2026-10-12T01:41:39.320763+05:00",
+        "expiresAt": "2026-10-13T01:41:39.320763+05:00"
+      },
+      {
+        "userId": "5af92645-1ad3-46dc-a71f-4c0701b8255d",
+        "expired": false,
+        "revoked": false,
+        "createdAt": "2026-10-12T01:42:36.656084+05:00",
+        "expiresAt": "2026-10-13T01:42:36.656084+05:00"
+      }
+    ],
+    "inspectedAt": "2026-10-12T01:43:49.389387+05:00",
+    "serverVersion": "17.2"
+  }
+}

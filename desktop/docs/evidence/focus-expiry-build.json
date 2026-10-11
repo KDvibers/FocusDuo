@@ -1,0 +1,32 @@
+{
+  "kind": "focusduo-focus-expiry-build-v1",
+  "recordedAt": "2026-10-12T01:51:31.7243831+05:00",
+  "desktopBaseCommit": "1a6fa9421b5667a3000492fc2c0e8e4fd0234cdc",
+  "branch": "feat/desktop-focus-expiry",
+  "java": "Corretto 21.0.6",
+  "productionDiffFromPreviouslyTested774378c": [],
+  "junitRerunThisStage": false,
+  "clients": [
+    {
+      "profile": "focus-expiry-a",
+      "jarSha256": "3C1D3AE6F53649BF72D3777E094785747A1A83A5F6A7E4F2EFADDA70C32982FA",
+      "immutableJarFile": "client-482be751-0d57-4aee-9e51-afe0948db9c4.jar",
+      "gradleOutcome": "BUILD SUCCESSFUL",
+      "mode": "REAL",
+      "baseUrl": "http://127.0.0.1:8090"
+    },
+    {
+      "profile": "focus-expiry-b",
+      "jarSha256": "3C1D3AE6F53649BF72D3777E094785747A1A83A5F6A7E4F2EFADDA70C32982FA",
+      "immutableJarFile": "client-262d5881-ddef-4010-8aee-d164f472592f.jar",
+      "gradleOutcome": "BUILD SUCCESSFUL",
+      "mode": "REAL",
+      "baseUrl": "http://127.0.0.1:8090"
+    }
+  ],
+  "clientProcessExitCodes": [
+    0,
+    0
+  ],
+  "remainingTestComposeWindows": 0
+}

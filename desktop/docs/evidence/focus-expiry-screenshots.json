@@ -1,0 +1,137 @@
+{
+  "kind": "focusduo-focus-expiry-screenshots-v1",
+  "count": 13,
+  "formatNote": "Native sky JPEG screenshot payloads saved unchanged with .jpg extension; MIME and dimensions parsed from original bytes.",
+  "screenshots": [
+    {
+      "path": "desktop/docs/screenshots/focus-expiry-logout-owner.jpg",
+      "mimeType": "image/jpeg",
+      "width": 1267,
+      "height": 794,
+      "bytes": 51562,
+      "sha256": "09BDDE7CED8A22255F841BDC7C669FBF2D5D816FFC8810FCF560C1089A8E6252",
+      "source": "NATIVE_SKY_SCREENSHOT",
+      "pixelEditing": "none"
+    },
+    {
+      "path": "desktop/docs/screenshots/focus-expiry-logout-peer.jpg",
+      "mimeType": "image/jpeg",
+      "width": 1267,
+      "height": 794,
+      "bytes": 52186,
+      "sha256": "39727B3C1B4345651A4F51C974699C315DCD0208ABEFFDE9F392BCFD5B90A4BC",
+      "source": "NATIVE_SKY_SCREENSHOT",
+      "pixelEditing": "none"
+    },
+    {
+      "path": "desktop/docs/screenshots/focus-expiry-offline-disabled-owner.jpg",
+      "mimeType": "image/jpeg",
+      "width": 1267,
+      "height": 794,
+      "bytes": 88738,
+      "sha256": "107BE11AAB6FCABE90166B90A42ABD1546B26D245B926C574E7B27C530C95819",
+      "source": "NATIVE_SKY_SCREENSHOT",
+      "pixelEditing": "none"
+    },
+    {
+      "path": "desktop/docs/screenshots/focus-expiry-offline-owner.jpg",
+      "mimeType": "image/jpeg",
+      "width": 1267,
+      "height": 794,
+      "bytes": 82085,
+      "sha256": "B48570883C40F7110A113D1D361F966871E28D1FBC8B531CFB358723AFFE0096",
+      "source": "NATIVE_SKY_SCREENSHOT",
+      "pixelEditing": "none"
+    },
+    {
+      "path": "desktop/docs/screenshots/focus-expiry-offline-peer.jpg",
+      "mimeType": "image/jpeg",
+      "width": 1267,
+      "height": 794,
+      "bytes": 82771,
+      "sha256": "0376757BD20EF8BA19AB53905901319891B5B0CF0F4221DCA5A8773174FE3F5A",
+      "source": "NATIVE_SKY_SCREENSHOT",
+      "pixelEditing": "none"
+    },
+    {
+      "path": "desktop/docs/screenshots/focus-expiry-paused-owner.jpg",
+      "mimeType": "image/jpeg",
+      "width": 1267,
+      "height": 794,
+      "bytes": 81082,
+      "sha256": "C45AA2318C83111A22E55D7E4EBE65FBB64FE055BB665BD1D0418AA01E698287",
+      "source": "NATIVE_SKY_SCREENSHOT",
+      "pixelEditing": "none"
+    },
+    {
+      "path": "desktop/docs/screenshots/focus-expiry-paused-peer.jpg",
+      "mimeType": "image/jpeg",
+      "width": 1267,
+      "height": 794,
+      "bytes": 81036,
+      "sha256": "F7BB1A9B2ADB9EF0EEE3861BA8A397EE3F5FF5FF660D7D7CC2AB9CB14A4EA46D",
+      "source": "NATIVE_SKY_SCREENSHOT",
+      "pixelEditing": "none"
+    },
+    {
+      "path": "desktop/docs/screenshots/focus-expiry-result-owner.jpg",
+      "mimeType": "image/jpeg",
+      "width": 1267,
+      "height": 794,
+      "bytes": 80348,
+      "sha256": "04253C8D23778ADD4CB1D50F928AFA182C606AD6530BCA9874E5F8B3D4AA357E",
+      "source": "NATIVE_SKY_SCREENSHOT",
+      "pixelEditing": "none"
+    },
+    {
+      "path": "desktop/docs/screenshots/focus-expiry-result-peer.jpg",
+      "mimeType": "image/jpeg",
+      "width": 1267,
+      "height": 794,
+      "bytes": 79041,
+      "sha256": "A18A8E764E065F6A3F82DE20DEB9CE300099CF606EAE755C6E56D77DB84CF9E6",
+      "source": "NATIVE_SKY_SCREENSHOT",
+      "pixelEditing": "none"
+    },
+    {
+      "path": "desktop/docs/screenshots/focus-expiry-running-owner.jpg",
+      "mimeType": "image/jpeg",
+      "width": 1267,
+      "height": 794,
+      "bytes": 80506,
+      "sha256": "A52D5DE43C16AE949C6C3A5570444127BD363B62160454E6E01C12772E60723C",
+      "source": "NATIVE_SKY_SCREENSHOT",
+      "pixelEditing": "none"
+    },
+    {
+      "path": "desktop/docs/screenshots/focus-expiry-running-peer.jpg",
+      "mimeType": "image/jpeg",
+      "width": 1267,
+      "height": 794,
+      "bytes": 81100,
+      "sha256": "A892AB8C09F5E641297506FE7439CB3C6DE1AC3DCE950B3197F63A8EF430B8FA",
+      "source": "NATIVE_SKY_SCREENSHOT",
+      "pixelEditing": "none"
+    },
+    {
+      "path": "desktop/docs/screenshots/focus-expiry-zero-owner.jpg",
+      "mimeType": "image/jpeg",
+      "width": 1267,
+      "height": 794,
+      "bytes": 92466,
+      "sha256": "D34658FA9C78B909841D124EA687445E36B4DF1177ED9DFB389ADDB73EB8F13D",
+      "source": "NATIVE_SKY_SCREENSHOT",
+      "pixelEditing": "none"
+    },
+    {
+      "path": "desktop/docs/screenshots/focus-expiry-zero-peer.jpg",
+      "mimeType": "image/jpeg",
+      "width": 1267,
+      "height": 794,
+      "bytes": 86947,
+      "sha256": "ADB3AEB7DC51B7A7C8575BD891594362AB4C0AE8EDE5CF9E3CEDB04A1DB9EA2C",
+      "source": "NATIVE_SKY_SCREENSHOT",
+      "pixelEditing": "none"
+    }
+  ]
+}

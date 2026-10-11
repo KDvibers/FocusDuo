@@ -26,7 +26,11 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--base-url', default='http://127.0.0.1:8090')
     parser.add_argument('--output', default='desktop/build/stage8-2-seed.json')
+    parser.add_argument('--focus-seconds', type=int, default=900,
+                        help='FOCUS duration: 300-10800 seconds, in whole minutes (default: 900)')
     args = parser.parse_args()
+    if not 300 <= args.focus_seconds <= 10800 or args.focus_seconds % 60:
+        parser.error('--focus-seconds must be 300-10800 and a multiple of 60')
     base = args.base_url.rstrip('/')
     uri = urllib.parse.urlsplit(base)
     if (uri.scheme != 'http' or uri.hostname not in ('127.0.0.1', 'localhost', '::1')
@@ -75,7 +79,7 @@ def main():
                 'username': username, 'displayName': name, 'password': password}))
         owner, peer = (session['accessToken'] for session in sessions)
         snapshot = request('POST', '/rooms', {
-            'focusDurationSeconds': 900, 'breakDurationSeconds': 60}, owner, mutation=True)
+            'focusDurationSeconds': args.focus_seconds, 'breakDurationSeconds': 60}, owner, mutation=True)
         snapshot = request('POST', '/rooms/join', {'code': snapshot['code']}, peer, mutation=True)
 
         def command(token, method, suffix, body=None):

@@ -1,0 +1,43 @@
+{
+  "checkpoint": "java-force-stopped-before-focus-deadline",
+  "status": "PASS",
+  "observedAt": "2026-10-12T01:43:51.3669296+05:00",
+  "runtime": {
+    "kind": "focusduo-isolated-compose-stage8-v1",
+    "stopped": false,
+    "baseUrl": "http://127.0.0.1:8090",
+    "dbPort": 55438,
+    "javaPid": null,
+    "generation": 1,
+    "controllerPid": 39024,
+    "postgresData": "C:\\Users\\user\\.codex\\worktrees\\desktop-wake-recovery\\focusDuo\\desktop\\build\\focus-expiry-20261012\\postgres-data",
+    "runDirectory": "C:\\Users\\user\\.codex\\worktrees\\desktop-wake-recovery\\focusDuo\\desktop\\build\\focus-expiry-20261012"
+  },
+  "targetRoundId": "e99b023c-c5cc-480b-93b4-6a21bd041f36",
+  "originalEndsAt": "2026-10-12T01:48:01.44+05:00",
+  "beforeDeadline": true,
+  "javaStopped": true,
+  "postgresPid": 484,
+  "userPostgres5432Pid": 10172,
+  "listeners": [
+    {
+      "LocalAddress": "::",
+      "LocalPort": 5432,
+      "OwningProcess": 10172
+    },
+    {
+      "LocalAddress": "127.0.0.1",
+      "LocalPort": 55438,
+      "OwningProcess": 484
+    },
+    {
+      "LocalAddress": "0.0.0.0",
+      "LocalPort": 5432,
+      "OwningProcess": 10172
+    }
+  ],
+  "controllerResult": {
+    "id": "2b0173e0-30c1-4322-bdb0-be0893a5a726",
+    "status": "ok"
+  }
+}
