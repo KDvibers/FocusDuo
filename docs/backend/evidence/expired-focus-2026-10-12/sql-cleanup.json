@@ -1,0 +1,116 @@
+{
+  "mode": "cleanup",
+  "controller": {
+    "container": "focusduo-recovery-4f0f20d499c4",
+    "dbPort": 55437,
+    "serverPid": 4643,
+    "generation": 2
+  },
+  "scope": {
+    "ownerUsername": "expired_a_b020e086ff7045878203",
+    "peerUsername": "expired_b_b020e086ff7045878203",
+    "ownerId": "bbed4007-64a9-4c66-8842-9d0f44e10c57",
+    "peerId": "00a1948e-fdb0-4e8c-acaa-4ad91ba4da4e",
+    "roomId": "9bf53ee0-2d4c-4058-bbf2-eba13400b387",
+    "roundId": "81d97422-85ce-4405-a792-2b509e69b8f3",
+    "originalEndsAt": "2026-10-11T20:38:25.835000+00:00"
+  },
+  "database": {
+    "room": {
+      "id": "9bf53ee0-2d4c-4058-bbf2-eba13400b387",
+      "code": "FD-8NKE85",
+      "status": "CLOSED",
+      "ownerId": "bbed4007-64a9-4c66-8842-9d0f44e10c57",
+      "revision": 11,
+      "roundCount": 1,
+      "historyCount": 1,
+      "currentRoundId": "81d97422-85ce-4405-a792-2b509e69b8f3",
+      "activeMemberships": 0
+    },
+    "round": {
+      "id": "81d97422-85ce-4405-a792-2b509e69b8f3",
+      "kind": "FOCUS",
+      "endsAt": null,
+      "roomId": "9bf53ee0-2d4c-4058-bbf2-eba13400b387",
+      "status": "COMPLETED",
+      "endedAt": "2026-10-11T20:38:25.835+00:00",
+      "startedAt": "2026-10-11T20:33:25.835+00:00",
+      "activeElapsedMs": 300000,
+      "durationSeconds": 300,
+      "completionReason": "ELAPSED",
+      "endsAtMatchesOriginal": null,
+      "endedAtMatchesOriginal": true
+    },
+    "users": [
+      {
+        "id": "bbed4007-64a9-4c66-8842-9d0f44e10c57",
+        "sessions": 1,
+        "username": "expired_a_b020e086ff7045878203",
+        "liveSessions": 0,
+        "activeMemberships": 0,
+        "unrevokedSessions": 0
+      },
+      {
+        "id": "00a1948e-fdb0-4e8c-acaa-4ad91ba4da4e",
+        "sessions": 1,
+        "username": "expired_b_b020e086ff7045878203",
+        "liveSessions": 0,
+        "activeMemberships": 0,
+        "unrevokedSessions": 0
+      }
+    ],
+    "history": [
+      {
+        "kind": "FOCUS",
+        "roomId": "9bf53ee0-2d4c-4058-bbf2-eba13400b387",
+        "status": "COMPLETED",
+        "endedAt": "2026-10-11T20:38:25.835+00:00",
+        "roundId": "81d97422-85ce-4405-a792-2b509e69b8f3",
+        "linkedUserIds": [
+          "00a1948e-fdb0-4e8c-acaa-4ad91ba4da4e",
+          "bbed4007-64a9-4c66-8842-9d0f44e10c57"
+        ],
+        "activeElapsedMs": 300000,
+        "durationSeconds": 300,
+        "completionReason": "ELAPSED",
+        "snapshotIdsMatch": true,
+        "participantUserIds": [
+          "00a1948e-fdb0-4e8c-acaa-4ad91ba4da4e",
+          "bbed4007-64a9-4c66-8842-9d0f44e10c57"
+        ],
+        "endedAtMatchesOriginal": true,
+        "snapshotDeadlineMatchesOriginal": true
+      }
+    ],
+    "database": "focusduo_recovery",
+    "databaseNow": "2026-10-11T20:40:24.548431+00:00",
+    "originalDeadlinePassed": true
+  },
+  "checks": {
+    "isolatedDatabase": true,
+    "twoScopedUsers": true,
+    "ownedRoom": true,
+    "sameRound": true,
+    "oneRound": true,
+    "sameCurrentRound": true,
+    "focus300": true,
+    "javaRunning": true,
+    "completedElapsed": true,
+    "active300000": true,
+    "endedAtOriginalDeadline": true,
+    "deadlineCleared": true,
+    "oneHistory": true,
+    "historyElapsed": true,
+    "historyFocus300": true,
+    "historySnapshotIds": true,
+    "historyActive300000": true,
+    "historyDeadline": true,
+    "bothHistoryParticipants": true,
+    "bothHistoryLinks": true,
+    "roomClosed": true,
+    "noActiveMemberships": true,
+    "noUnrevokedSessions": true,
+    "noOtherActiveMemberships": true
+  },
+  "pass": true
+}

@@ -1,0 +1,58 @@
+// Component GUI adapter only. Production desktop sources and build files remain unchanged.
+gradle.projectsEvaluated {
+    def desktop = gradle.rootProject
+    def root = desktop.projectDir.parentFile
+    def sources = desktop.files(
+        new File(root, 'backend/scripts/kotlin-expired-focus-smoke/RealExpiredFocusSmoke.kt'),
+        new File(root, 'backend/scripts/kotlin-expired-focus-smoke/ExpiredFocusUi.kt'))
+    def outputRoot = new File(root, 'backend/target/kotlin-expired-focus-smoke/ui')
+    def applicationJarTask = desktop.tasks.named('jar')
+    def runtimeDependencies = desktop.configurations.getByName('runtimeClasspath')
+    def pluginConfiguration = desktop.configurations.getByName('kotlinCompilerPluginClasspathMain')
+    def launchDirectory
+    def applicationJar
+    def classesDirectory
+    def prepare = desktop.tasks.register('prepareExpiredFocusUiRuntime') {
+        dependsOn(applicationJarTask)
+        inputs.files(applicationJarTask, runtimeDependencies)
+        outputs.upToDateWhen { false }
+        doLast {
+            launchDirectory = new File(outputRoot, 'launch-' + UUID.randomUUID())
+            launchDirectory.mkdirs()
+            applicationJar = new File(launchDirectory, 'desktop-application.jar')
+            java.nio.file.Files.copy(applicationJarTask.get().archiveFile.get().asFile.toPath(), applicationJar.toPath())
+            classesDirectory = new File(launchDirectory, 'classes')
+            classesDirectory.mkdirs()
+        }
+    }
+    def compile = desktop.tasks.register('compileExpiredFocusUi', JavaExec) {
+        dependsOn(prepare)
+        classpath = desktop.configurations.getByName('kotlinCompilerClasspath')
+        mainClass.set('org.jetbrains.kotlin.cli.jvm.K2JVMCompiler')
+        inputs.files(sources, applicationJarTask, runtimeDependencies, pluginConfiguration)
+        outputs.upToDateWhen { false }
+        doFirst {
+            def composePlugin = pluginConfiguration.files.find { it.name.startsWith('kotlin-compose-compiler-plugin-embeddable-') }
+            if (composePlugin == null) throw new GradleException('Compose compiler plugin was not found in the desktop main compiler configuration')
+            args = ['-no-stdlib', '-no-reflect', '-jvm-target', '21',
+                    '-classpath', desktop.files(applicationJar, runtimeDependencies).asPath,
+                    '-Xfriend-paths=' + applicationJar.absolutePath,
+                    '-Xplugin=' + composePlugin.absolutePath,
+                    '-d', classesDirectory.absolutePath] + sources.files.collect { it.absolutePath }
+        }
+        doLast {
+            new File(outputRoot, 'latest-classpath.txt').setText(
+                desktop.files(classesDirectory, applicationJar, runtimeDependencies).asPath, 'UTF-8')
+        }
+    }
+    desktop.tasks.register('expiredFocusUiSmoke', JavaExec) {
+        group = 'verification'
+        description = 'Opt-in two-window component UI observation of a real 300-second FOCUS expiry.'
+        dependsOn(compile)
+        mainClass.set('dev.focusduo.smoke.expiredfocus.ExpiredFocusUiKt')
+        doFirst { classpath = desktop.files(classesDirectory, applicationJar, runtimeDependencies) }
+        systemProperty('focusduo.smoke.baseUrl', System.getProperty('focusduo.smoke.baseUrl', 'http://127.0.0.1:8090'))
+        systemProperty('focusduo.smoke.controlDir', System.getProperty('focusduo.smoke.controlDir', ''))
+        timeout.set(java.time.Duration.ofMinutes(20))
+    }
+}

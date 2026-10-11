@@ -1,0 +1,31 @@
+// Opt-in real-time expired FOCUS acceptance; no tracked desktop files are changed.
+gradle.projectsEvaluated {
+    def project = gradle.rootProject
+    def root = project.projectDir.parentFile
+    def smokeSource = new File(root, 'backend/scripts/kotlin-expired-focus-smoke/RealExpiredFocusSmoke.kt')
+    def output = new File(root, 'backend/target/kotlin-expired-focus-smoke/classes')
+    def main = project.extensions.getByType(org.gradle.api.tasks.SourceSetContainer).getByName('main')
+    def compileSmoke = project.tasks.register('compileRealExpiredFocusSmoke', JavaExec) {
+        classpath = project.configurations.getByName('kotlinCompilerClasspath')
+        mainClass.set('org.jetbrains.kotlin.cli.jvm.K2JVMCompiler')
+        inputs.file(smokeSource)
+        inputs.files(main.compileClasspath, main.output)
+        outputs.dir(output)
+        dependsOn(project.tasks.named('classes'))
+        doFirst {
+            args = ['-no-stdlib', '-no-reflect', '-jvm-target', '21',
+                    '-classpath', main.runtimeClasspath.filter { it.exists() }.asPath,
+                    '-d', output.absolutePath, smokeSource.absolutePath]
+        }
+    }
+    project.tasks.register('realExpiredFocusSmoke', JavaExec) {
+        group = 'verification'
+        description = 'Opt-in 300-second FOCUS expiry while the isolated Java process is stopped.'
+        dependsOn(compileSmoke)
+        classpath = project.files(output, main.runtimeClasspath)
+        mainClass.set('dev.focusduo.smoke.expiredfocus.RealExpiredFocusSmokeKt')
+        systemProperty('focusduo.smoke.baseUrl', System.getProperty('focusduo.smoke.baseUrl', 'http://127.0.0.1:8090'))
+        systemProperty('focusduo.smoke.controlDir', System.getProperty('focusduo.smoke.controlDir', ''))
+        timeout.set(java.time.Duration.ofMinutes(20))
+    }
+}
