@@ -19,6 +19,8 @@ Desktop-приложение для совместных рабочих сесс
   <img src="https://img.shields.io/badge/API-REST_%2B_WebSocket-356A57?style=flat-square" alt="REST и WebSocket">
 </p>
 
+[**Скачать FocusDuo 0.1.0 для Windows x64**](https://github.com/KDvibers/FocusDuo/releases/download/v0.1.0/FocusDuo-0.1.0.msi) · [Все файлы релиза](https://github.com/KDvibers/FocusDuo/releases/tag/v0.1.0)
+
 [Возможности](#features) · [Интерфейс](#screenshots) · [Установка](#quickstart) · [Работа вдвоём](#together) · [Разработка](#development) · [Документация](#docs)
 
 </div>
@@ -29,7 +31,7 @@ FocusDuo помогает выделить время на конкретную 
 
 Изменения появляются у партнёра автоматически. После сессии остаётся история с фактическим временем работы и сохранёнными результатами обоих участников.
 
-> **Версия 0.1.0 готова:** Java backend, desktop-клиент и установщик для Windows x64 со встроенной Java. Работа приложения подтверждена владельцем; [проверки и границы приёмки](docs/backend/WINDOWS_PACKAGE_ACCEPTANCE.md) сохранены в документации. Публичный файл для скачивания пока не опубликован.
+> **Версия 0.1.0 опубликована:** Java backend, desktop-клиент и установщик для Windows x64 со встроенной Java. [MSI и контрольная сумма доступны в GitHub Releases](https://github.com/KDvibers/FocusDuo/releases/tag/v0.1.0). Работа приложения подтверждена владельцем; [проверки и границы приёмки](docs/backend/WINDOWS_PACKAGE_ACCEPTANCE.md) сохранены в документации.
 
 <a id="features"></a>
 
@@ -75,7 +77,7 @@ FocusDuo помогает выделить время на конкретную 
 
 Пакет **`FocusDuo-0.1.0.msi`** устанавливает приложение для текущего пользователя, добавляет собственную иконку и ярлыки рабочего стола и меню «Пуск». Java runtime уже внутри: отдельно устанавливать Java, Gradle или Git и запускать PowerShell не требуется.
 
-1. Получите MSI у участника проекта и сверьте SHA-256 по [паспорту проверенного файла](docs/backend/WINDOWS_PACKAGE_ACCEPTANCE.md#какой-файл-проверяется). Публичного релиза пока нет.
+1. [Скачайте установщик FocusDuo-0.1.0.msi](https://github.com/KDvibers/FocusDuo/releases/download/v0.1.0/FocusDuo-0.1.0.msi). Для проверки целостности рядом опубликован [файл SHA-256](https://github.com/KDvibers/FocusDuo/releases/download/v0.1.0/FocusDuo-0.1.0.msi.sha256).
 2. Установите FocusDuo и откройте его ярлыком.
 3. Выберите «Адрес сервера и имя», укажите адрес общего backend и зарегистрируйтесь или войдите. Для знакомства без сервера откройте деморежим.
 
@@ -87,7 +89,7 @@ FocusDuo помогает выделить время на конкретную 
 
 Backend и PostgreSQL работают отдельно и в клиентский MSI не входят. Адрес по умолчанию — `http://127.0.0.1:8090`, если сервер находится на этом же компьютере. Для двух разных компьютеров нужен один общий адрес. [Подключение и диагностика](docs/backend/SERVER_CONNECTION.md).
 
-Пакет 0.1.0 не имеет цифровой подписи. Контрольная сумма, условия сборки и результаты установки/удаления описаны в [отчёте упаковки](desktop/docs/WINDOWS_PACKAGING.md); готовый MSI передаётся отдельно от исходников.
+Пакет 0.1.0 не имеет цифровой подписи. Контрольная сумма, условия сборки и результаты установки/удаления описаны в [отчёте упаковки](desktop/docs/WINDOWS_PACKAGING.md). В Assets выбирайте `.msi` для установки; архивы **Source code** содержат исходники. К выпуску приложена [краткая инструкция подключения](https://github.com/KDvibers/FocusDuo/releases/download/v0.1.0/CONNECTING_TO_SERVER.txt).
 
 <a id="together"></a>
 
@@ -261,7 +263,7 @@ FocusDuo рассчитан на **двух участников в комнат
 
 Встроенных звонков, чата и восстановления забытого пароля сейчас нет. Деморежим локальный; общая комната требует доступного backend. Для нескольких серверных экземпляров понадобится общая доставка WebSocket-событий.
 
-Установка и использование встроенного runtime проверены на Windows 11 x64. Чистая Windows без отдельного JDK/Gradle, обновление между версиями и удаление через интерфейс «Параметров Windows» отдельно не подтверждены. Подробный объём ручного подтверждения владельца и технических проверок сохранён в [финальной записи приёмки](docs/backend/WINDOWS_PACKAGE_ACCEPTANCE.md). Публикация установщика остаётся отдельным шагом.
+Установка и использование встроенного runtime проверены на Windows 11 x64. Чистая Windows без отдельного JDK/Gradle, обновление между версиями и удаление через интерфейс «Параметров Windows» отдельно не подтверждены. Подробный объём ручного подтверждения владельца и технических проверок сохранён в [финальной записи приёмки](docs/backend/WINDOWS_PACKAGE_ACCEPTANCE.md). Выпуск предоставляет клиент; публичный общий backend в него не входит.
 
 <a id="docs"></a>
 
@@ -287,6 +289,7 @@ FocusDuo/
 | Подключиться к общему серверу | [Подключение и диагностика](docs/backend/SERVER_CONNECTION.md) |
 | Разобраться в API | [Контракт V1](docs/FOCUSDUO_CONTRACT_V1.txt) · [OpenAPI](docs/contracts/openapi.yaml) · [HTTP-примеры](docs/contracts/requests.http) |
 | Понять состояние проекта | [HANDOFF](docs/backend/HANDOFF.md) · [Финальная приёмка](docs/backend/WINDOWS_PACKAGE_ACCEPTANCE.md) |
+| Скачать приложение и проверить файл | [GitHub Release v0.1.0](https://github.com/KDvibers/FocusDuo/releases/tag/v0.1.0) · [Протокол публикации](docs/backend/RELEASE_0.1.0.md) |
 | Проверить интеграцию | [Матрица проверок](docs/backend/INTEGRATION.md) · [Удалённая работа](docs/backend/REMOTE_ACCEPTANCE_2026-10-12.md) |
 | Собрать Windows-пакет | [Сборка MSI и сторонние компоненты](desktop/docs/WINDOWS_PACKAGING.md) · [Исходное задание](docs/backend/WINDOWS_PACKAGING_HANDOFF.md) |
 | Посмотреть этапы разработки | [Backend](docs/backend/ROADMAP.md) · [Desktop](desktop/docs/ROADMAP.md) |
