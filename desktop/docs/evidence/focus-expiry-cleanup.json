@@ -1,0 +1,44 @@
+{
+  "checkpoint": "owned-isolated-stand-cleaned-up",
+  "status": "PASS",
+  "requestedAt": "2026-10-12T01:51:30.8781644+05:00",
+  "observedAt": "2026-10-12T01:51:52.1311483+05:00",
+  "controllerExecSession": 75787,
+  "controllerExitCode": 0,
+  "controllerFinalOutput": "STOPPED own Java and PostgreSQL; disposable cluster removed, logs preserved",
+  "invariants": {
+    "controllerExitZero": true,
+    "stateStopped": true,
+    "javaPidNull": true,
+    "ownedPgDataRemoved": true,
+    "ownPortsAbsent": true,
+    "ownedProcessesGone": true,
+    "userPostgres5432Preserved": true
+  },
+  "finalRuntimeState": {
+    "kind": "focusduo-isolated-compose-stage8-v1",
+    "stopped": true,
+    "baseUrl": "http://127.0.0.1:8090",
+    "dbPort": 55438,
+    "javaPid": null,
+    "generation": 2,
+    "controllerPid": 39024,
+    "postgresData": "C:\\Users\\user\\.codex\\worktrees\\desktop-wake-recovery\\focusDuo\\desktop\\build\\focus-expiry-20261012\\postgres-data",
+    "runDirectory": "C:\\Users\\user\\.codex\\worktrees\\desktop-wake-recovery\\focusDuo\\desktop\\build\\focus-expiry-20261012"
+  },
+  "listeners": [
+    {
+      "LocalAddress": "::",
+      "LocalPort": 5432,
+      "OwningProcess": 10172
+    },
+    {
+      "LocalAddress": "0.0.0.0",
+      "LocalPort": 5432,
+      "OwningProcess": 10172
+    }
+  ],
+  "remainingOwnedProcesses": [],
+  "cleanupScope": "Existing controller shutdown: only Java Popen, owned PostgreSQL cluster with data path under desktop/build, own PostgreSQL data removed; logs retained",
+  "sourceOrEnvironmentMutation": "No backend/root source or .env writes performed. User PostgreSQL on5432 untouched."
+}

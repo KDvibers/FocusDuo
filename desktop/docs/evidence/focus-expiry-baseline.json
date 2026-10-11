@@ -1,0 +1,57 @@
+{
+  "scenario": "expired FOCUS after backend stop; two real Compose clients",
+  "status": "PASS_STAND_SETUP",
+  "observedAt": "2026-10-12T01:40:38.3552941+05:00",
+  "desktopBase": "1a6fa9421b5667a3000492fc2c0e8e4fd0234cdc",
+  "backendProductionCommit": "9153da6b5d58e1bfa2df3e9495741f293fac74a4",
+  "backendSourceMatchesOriginMain": true,
+  "backendJarSha256": "A01FE560A161E6B89E7E653E8D034662DC8A205315A145F5F4CDBFB47E148A11",
+  "backendRebuilt": false,
+  "runtime": {
+    "kind": "focusduo-isolated-compose-stage8-v1",
+    "stopped": false,
+    "baseUrl": "http://127.0.0.1:8090",
+    "dbPort": 55438,
+    "javaPid": 19540,
+    "generation": 1,
+    "controllerPid": 39024,
+    "postgresData": "C:\\Users\\user\\.codex\\worktrees\\desktop-wake-recovery\\focusDuo\\desktop\\build\\focus-expiry-20261012\\postgres-data",
+    "runDirectory": "C:\\Users\\user\\.codex\\worktrees\\desktop-wake-recovery\\focusDuo\\desktop\\build\\focus-expiry-20261012"
+  },
+  "postgresPid": 484,
+  "userPostgres5432Pid": 10172,
+  "readiness": "GET /api/v1/me ->401 UNAUTHORIZED",
+  "database": {
+    "rooms": [],
+    "tasks": [],
+    "users": [],
+    "counts": {
+      "rooms": 0,
+      "tasks": 0,
+      "users": 0,
+      "rounds": 0,
+      "history": 0,
+      "sessions": 0,
+      "openRooms": 0,
+      "migrations": 2,
+      "activeMemberships": 0,
+      "unrevokedSessions": 0,
+      "idempotencyResults": 0,
+      "historyParticipants": 0
+    },
+    "rounds": [],
+    "history": [],
+    "members": [],
+    "sessions": [],
+    "inspectedAt": "2026-10-12T01:40:09.642675+05:00",
+    "serverVersion": "17.2"
+  },
+  "constraints": [
+    "Only desktop/** may change",
+    "No .env read",
+    "User PostgreSQL :5432 not used or stopped",
+    "No passwords or bearer tokens saved in tracked evidence"
+  ],
+  "remaining": [],
+  "acceptanceOutcome": "Completed PASS: two real Compose clients automatically showed one ELAPSED FOCUS result after offline deadline; see focus-expiry-java-start.json, stability.json and final-db.json. Stand later cleaned up; see cleanup.json."
+}

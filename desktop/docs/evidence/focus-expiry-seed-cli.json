@@ -1,0 +1,124 @@
+{
+  "schema": "focusduo-focus-expiry-seed-cli-v1",
+  "recordedAtUtc": "2026-10-11T20:47:51.250418+00:00",
+  "script": "desktop/scripts/stage8-2-seed.py",
+  "scope": "CLI parser validation only; no successful REST seed is claimed here.",
+  "environment": {
+    "FOCUSDUO_QA_PASSWORD": "ABSENT",
+    "networkRequests": "NONE: each case exits during argument/password validation"
+  },
+  "cases": [
+    {
+      "arguments": [],
+      "expectedExitCode": 2,
+      "actualExitCode": 2,
+      "expectedErrorSubstring": "FOCUSDUO_QA_PASSWORD is required",
+      "errorMatched": true,
+      "stdoutEmpty": true,
+      "status": "PASS"
+    },
+    {
+      "arguments": [
+        "--focus-seconds",
+        "300"
+      ],
+      "expectedExitCode": 2,
+      "actualExitCode": 2,
+      "expectedErrorSubstring": "FOCUSDUO_QA_PASSWORD is required",
+      "errorMatched": true,
+      "stdoutEmpty": true,
+      "status": "PASS"
+    },
+    {
+      "arguments": [
+        "--focus-seconds",
+        "10800"
+      ],
+      "expectedExitCode": 2,
+      "actualExitCode": 2,
+      "expectedErrorSubstring": "FOCUSDUO_QA_PASSWORD is required",
+      "errorMatched": true,
+      "stdoutEmpty": true,
+      "status": "PASS"
+    },
+    {
+      "arguments": [
+        "--focus-seconds",
+        "299"
+      ],
+      "expectedExitCode": 2,
+      "actualExitCode": 2,
+      "expectedErrorSubstring": "--focus-seconds must be 300-10800 and a multiple of 60",
+      "errorMatched": true,
+      "stdoutEmpty": true,
+      "status": "PASS"
+    },
+    {
+      "arguments": [
+        "--focus-seconds",
+        "10860"
+      ],
+      "expectedExitCode": 2,
+      "actualExitCode": 2,
+      "expectedErrorSubstring": "--focus-seconds must be 300-10800 and a multiple of 60",
+      "errorMatched": true,
+      "stdoutEmpty": true,
+      "status": "PASS"
+    },
+    {
+      "arguments": [
+        "--focus-seconds",
+        "301"
+      ],
+      "expectedExitCode": 2,
+      "actualExitCode": 2,
+      "expectedErrorSubstring": "--focus-seconds must be 300-10800 and a multiple of 60",
+      "errorMatched": true,
+      "stdoutEmpty": true,
+      "status": "PASS"
+    },
+    {
+      "arguments": [
+        "--focus-seconds",
+        "-60"
+      ],
+      "expectedExitCode": 2,
+      "actualExitCode": 2,
+      "expectedErrorSubstring": "--focus-seconds must be 300-10800 and a multiple of 60",
+      "errorMatched": true,
+      "stdoutEmpty": true,
+      "status": "PASS"
+    },
+    {
+      "arguments": [
+        "--focus-seconds",
+        "300.5"
+      ],
+      "expectedExitCode": 2,
+      "actualExitCode": 2,
+      "expectedErrorSubstring": "invalid int value",
+      "errorMatched": true,
+      "stdoutEmpty": true,
+      "status": "PASS"
+    }
+  ],
+  "help": {
+    "arguments": [
+      "--help"
+    ],
+    "expectedExitCode": 0,
+    "actualExitCode": 0,
+    "focusOptionDocumented": true,
+    "status": "PASS"
+  },
+  "syntax": {
+    "method": "Python compile() in memory; no bytecode output",
+    "status": "PASS"
+  },
+  "summary": {
+    "parserCases": 8,
+    "parserPassed": 8,
+    "help": "PASS",
+    "syntax": "PASS"
+  }
+}
